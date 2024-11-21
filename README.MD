@@ -1,27 +1,23 @@
-# mParticle Xamarin SDK
+# mParticle MAUI SDK
 
-This is the repository of the mParticle Xamarin SDK, which is compatible with iOS and Android apps. The SDK consists of a common C# API layer and two Xamarin binding libraries for mParticle's native iOS and Android SDKs.
+This is the repository of the mParticle MAUI SDK, which is compatible with iOS and Android apps. The SDK consists of a common C# API layer and two MAUI binding libraries for mParticle's native iOS and Android SDKs.
 
 ## Installation
 
-This SDK is distributed via the public NuGet gallery: https://www.nuget.org/packages/mParticle.Xamarin/. 
+This SDK is distributed via the public NuGet gallery: https://www.nuget.org/packages/mParticle.MAUI/. 
 
-If you have both an iOS and an Android project, you should add the NuGet package to each following the Xamarin Add Package dialog. [See here](https://developer.xamarin.com/guides/cross-platform/xamarin-studio/nuget_walkthrough/) for a detailed walkthrough on using NuGet with a Xamarin project.
-
-```bash
-Install-Package mParticle.Xamarin -Version 2.1.0
-```
+If you have both an iOS and an Android project, you should add the NuGet package to each following the Nuget Add Package dialog. [See here](https://code.visualstudio.com/docs/csharp/package-management/) for a detailed walkthrough on using NuGet with a MAUI project in Visual Studio Code.
 
 ### mParticle Singleton
 
-The mParticle.Xamarin package contains a class file `MParticle.cs`, which exposes the mParticle API via `MParticle.Instance`.
+The mParticle.MAUI package contains a class file `MParticle.cs`, which exposes the mParticle API via `MParticle.Instance`.
 
 ### Initialization
 
-The SDK must be initialized with your mParticle workspace key and secret prior to use. This call should be placed in your Xamarin application initialization, *as early as possible*:
+The SDK must be initialized with your mParticle workspace key and secret prior to use. This call should be placed in your MAUI application initialization, *as early as possible*:
 
 ```cs
-using mParticle.Xamarin;
+using mParticle.MAUI;
 namespace MyProject
 {
     public class Example
@@ -111,7 +107,7 @@ MParticle.Instance.LogScreenEvent
 
 ### Identity
 
-Version 2 of the MParticle Xamarin SDK supports the full range of Identity Sync features. For more indepth information about MParticle's Identity features, checkout either the [Android docs](http://docs.mparticle.com/developers/sdk/android/identity/) or the [iOS docs](http://docs.mparticle.com/developers/sdk/ios/identity) on the topic
+Version 3 of the MParticle MAUI SDK supports the full range of Identity Sync features. For more indepth information about MParticle's Identity features, checkout either the [Android docs](http://docs.mparticle.com/developers/sdk/android/identity/) or the [iOS docs](http://docs.mparticle.com/developers/sdk/ios/identity) on the topic
 
 
 #### Accessing IdentityApi
@@ -199,15 +195,15 @@ While most of mParticle's integration are server side, several require additiona
 
 **Android**
 
-1. Create a new Xamarin Android binding project
+1. Create a new MAUI Android binding project
 2. Find the required Kit aar/artifact by navigating to the [mParticle Core repository](https://github.com/mParticle/mparticle-android-sdk#kits), which links to all kits on Maven Central.
 3. Download the aar file directly from Maven Central.
 2. Add the `.aar` file to the Jars folder and set the build action to LibraryProjectZip.
 3. View the `POM` of the kit Maven artifact to see if it specifies a transitive dependency. Most kits specify a transitive dependency on a 3rd-party SDK.
 3. Download the `.jar` or `.aar` file of the transitive dependency:
    * If this file is a jar, you can add to the same binding project in the Jars folder and set the build action to EmbeddedReferenceJar.
-   * If the file is an aar, another binding project must be made and referenced by the kit binding project. (This is due to a limiting of Xamarin bindings).
-4. Reference the binding project in your main Xamarin application.
+   * If the file is an aar, another binding project must be made and referenced by the kit binding project. (This is due to a limiting of MAUI bindings).
+4. Reference the binding project in your main MAUI application.
 
 To verify that the kit was successfully detected, look for a string that matches "[Service Provider Name] kit detected" so for instance "AppsFlyer Detected"
 
@@ -215,19 +211,13 @@ To verify that the kit was successfully detected, look for a string that matches
 
 1. Compile a static version of the kit library that targets i386 and x86_64. All our kits are open source [located here](https://github.com/mparticle-integrations).
 2. Compile or retrieve a static version of the service provider's library
-3. You can add these as NativeReferences to your Xamarin iOS application
-
-Additional information on troubleshooting Xamarin bindings can be found here for Android and iOS:
-
-- Android: https://developer.xamarin.com/guides/android/advanced_topics/binding-a-java-library/troubleshooting-bindings/
-- iOS: https://developer.xamarin.com/guides/ios/troubleshooting/mtouch-errors/
+3. You can add these as NativeReferences to your MAUI iOS application
 
 ## Building this project
 
-If you do not use NuGet in your Xamarin project, you can build this project manually:
+If you do not use NuGet in your MAUI project, you can build this project manually:
 
-1. Open the `.sln` file in Xamarin Studio, select `Release and Build`. Alternatively, run `msbuild mParticle.Xamarin.sln /p:Configuration=Release /t:Rebuild` from a terminal.
-4. (Optional) Go to to the Library folder and run `nuget pack`. This will create the NuGet package.
+1. Run the `build.sh` script from a macOS terminal (or on Windows, run the individual commands contained within).
 
 ## Testing install referrer on Android
 

@@ -5,7 +5,7 @@
 //
 using Foundation;
 
-namespace mParticle.Xamarin.iOS.Sample
+namespace mParticle.MAUI.iOS.Sample
 {
     [Register("ViewController")]
     partial class ViewController
