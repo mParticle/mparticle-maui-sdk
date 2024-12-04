@@ -5,9 +5,16 @@ on:
 
 jobs:
   Build: 
-    runs-on: macOS-14
+    runs-on: macOS-15
     steps:
     - uses: actions/checkout@v4
+    - name: Install Android SDK 34
+      run: |
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platforms;android-34"
+    - name: Install Mono Framework for nuget command
+      run: |
+        curl https://download.mono-project.com/archive/6.12.0/macos-10-universal/MonoFramework-MDK-6.12.0.206.macos10.xamarin.universal.pkg -o /tmp/MonoFramework-MDK-6.12.0.206.macos10.xamarin.universal.pkg
+        sudo installer -pkg /tmp/MonoFramework-MDK-6.12.0.206.macos10.xamarin.universal.pkg -target /
     - name: Install MAUI workload
       run: dotnet workload install maui
     - name: Build artifacts
