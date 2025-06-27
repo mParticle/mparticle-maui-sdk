@@ -5,8 +5,8 @@ public class SampleCalls
     private const string ConstantUserAttribute = "Test Attribute Key";
     public static void Init()
     {
-        string key = "REPLACE WITH iOS APP KEY";
-        string secret = "REPLACE WITH iOS APP SECRET";
+        string key = "REPLACE_WITH_iOS_APP_KEY";
+        string secret = "REPLACE_WITH_iOS_APP_SECRET";
 
         OnUserIdentified _identityStateListener = null;
         _identityStateListener = newUser =>
