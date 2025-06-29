@@ -11,7 +11,7 @@
     <ObjcBindingCoreSource Include="StructsAndEnums.cs" />
   </ItemGroup>
   <ItemGroup>
-    <NativeReference Include="..\mParticle_Apple_SDK.xcframework">
+    <NativeReference Include="..\mParticleSPMWrapper.xcframework">
       <Kind>Framework</Kind>
       <SmartLink>False</SmartLink>
     </NativeReference>

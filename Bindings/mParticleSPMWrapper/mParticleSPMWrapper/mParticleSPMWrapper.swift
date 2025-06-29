@@ -6,4 +6,4 @@
 //
 
 import Foundation
-import mParticle_Apple_SDK
+@_exported import mParticle_Apple_SDK
