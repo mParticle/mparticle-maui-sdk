@@ -124,3 +124,9 @@ mparticle.xml
 # NuGet
 
 *.nupkg
+
+Bindings/archives/
+Bindings/mParticle_Apple_SDK.xcframework/
+Bindings/mParticleSPMWrapper.xcframework/
+archives/
+
