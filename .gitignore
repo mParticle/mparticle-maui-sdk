@@ -130,3 +130,10 @@ Bindings/mParticle_Apple_SDK.xcframework/
 Bindings/mParticleSPMWrapper.xcframework/
 archives/
 
+# Xcode user data
+xcuserdata/
+*.xcuserstate
+*.xcuserdatad
+project.xcworkspace/xcuserdata/
+DerivedData/
+

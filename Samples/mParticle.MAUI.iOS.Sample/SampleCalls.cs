@@ -1,6 +1,4 @@
-﻿using mParticle.MAUI.iOSBinding;
-
-namespace mParticle.MAUI.iOS.Sample;
+﻿namespace mParticle.MAUI.iOS.Sample;
 
 public class SampleCalls
 {
@@ -10,25 +8,68 @@ public class SampleCalls
         string key = "REPLACE_WITH_iOS_APP_KEY";
         string secret = "REPLACE_WITH_iOS_APP_SECRET";
 
-        var options = MParticleOptions.OptionsWithKey(key, secret);
-        var request = MPIdentityApiRequest.RequestWithEmptyUser();
-        request.Email = "email@example.com";
-        options.IdentifyRequest = request;
-        options.OnIdentifyComplete = (apiResult, error) =>
+        OnUserIdentified _identityStateListener = null;
+        _identityStateListener = newUser =>
         {
-            if (error != null) {
-                Console.WriteLine("Identify complete with error: " + error.LocalizedDescription);
-            } else if (apiResult != null) {
-                Console.WriteLine("Identify complete with result: " + apiResult.User.UserId);
+            MParticle.Instance.Identity.RemoveIdentityStateListener(_identityStateListener);
+            if (newUser != null)
+            {
+                Console.WriteLine("New User Identified\n" + newUser.ToString());
+                newUser.SetUserAttribute("uattr_array", new string[] { "You get an attribute", "And you get an atrribute" }.ToList().Aggregate((arg1, arg2) => arg1 + arg2 + ", "));
+                newUser.SetUserAttribute(ConstantUserAttribute, "Test Attribute Value");
+
+                //set User Tag
+                newUser.SetUserTag("Something Completely New");
+                ModifyUser();
+            }
+            else
+            {
+                Console.WriteLine("New User is null!");
+                throw new Exception("User Should not be null");
             }
         };
 
-        MParticle.SharedInstance().StartWithOptions(options);
+        MParticle.Instance.Initialize(new MParticleOptions()
+        {
+            InstallType = InstallType.KnownUpgrade,
+            Environment = Environment.Development,
+            ApiKey = key,
+            ApiSecret = secret,
+            IdentifyRequest = new IdentityApiRequest()
+            {
+                UserIdentities = new Dictionary<UserIdentity, string>() {
+                //{ UserIdentity.Yahoo, "tom@yahoo.com" },
+                { UserIdentity.IOSAdvertiserId, "C56A4180-65AA-42EC-A945-5FD21DEC0538" },
+                { UserIdentity.CustomerId, "Other Identity" }
+            },
+                UserAliasHandler = ((previousUser, newUser) => newUser.SetUserAttributes(previousUser.GetUserAttributes()))
+            },
+            DevicePerformanceMetricsDisabled = false,
+            IdDisabled = false,
+            UploadInterval = 650,
+            SessionTimeout = 50,
+            LogLevel = LogLevel.INFO,
+            ConfigMaxAgeSeconds = 60,
+            AttributionListener = new AttributionListener()
+            {
+                OnAttributionError = error => Console.WriteLine("AttributionError\n" + "Error Message = " + error.Message + "\nService Provider = " + error.ServiceProviderId),
+                OnAttributionResult = result => Console.WriteLine("AttributionResult\n" + "LinkUrl = " + result.LinkUrl + "\nParameters" + result.Parameters + "\nService Provider" + result.ServiceProviderId)
+            },
+            LocationTracking = new LocationTracking("GPS", 100, 350, 22),
+            PushRegistration = new PushRegistration()
+            {
+                AndroidSenderId = "12345-abcdefg",
+                AndroidInstanceId = "andriod-secret-instance-id",
+                IOSToken = "09876654321qwerty"
+            },
+            IdentityStateListener = _identityStateListener
+        });
     }
 
     public static void MakeTestCalls()
     {
-        var mparticle = MParticle.SharedInstance();
+
+        var mparticle = MParticle.Instance;
 
         Console.WriteLine(mparticle.Environment);
         mparticle.SetOptOut(false);
@@ -85,7 +126,7 @@ public class SampleCalls
     public static void ModifyUser()
     {
         Thread.Sleep(2000);
-        MParticle.SharedInstance().Identity.Modify(new IdentityApiRequest()
+        MParticle.Instance.Identity.Modify(new IdentityApiRequest()
         {
             UserIdentities = new Dictionary<UserIdentity, string>()
             {
@@ -119,7 +160,7 @@ public class SampleCalls
     public static void LoginNewUser()
     {
         Thread.Sleep(2000);
-        var mparticle = MParticle.SharedInstance();
+        var mparticle = MParticle.Instance;
         mparticle.Identity.Login(new IdentityApiRequest(mparticle.Identity.CurrentUser)
         {
             UserAliasHandler = (previousUser, newUser) =>

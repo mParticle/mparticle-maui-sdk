@@ -4,6 +4,11 @@ set -e
 # .NET MAUI
 # 
 
+# Build xcframework first (required for iOS binding)
+echo "Building xcframework..."
+chmod +x Bindings/build_xcframework_spm.sh
+./Bindings/build_xcframework_spm.sh
+
 # Restore packages
 dotnet restore
 
