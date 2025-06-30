@@ -42,8 +42,8 @@ cd ../..
 echo "Using archived frameworks with SPM dependencies..."
 
 # Use the archived frameworks directly (SPM dependencies should be included in archive)
-iOS_FRAMEWORK_PATH="Bindings/archives/mParticleSPMWrapper-ios.xcarchive/Products/Library/Frameworks/mParticleSPMWrapper.framework"
-SIMULATOR_FRAMEWORK_PATH="Bindings/archives/mParticleSPMWrapper-ios-simulator.xcarchive/Products/Library/Frameworks/mParticleSPMWrapper.framework"
+iOS_FRAMEWORK_PATH="Bindings/archives/mParticleSPMWrapper-ios.xcarchive/Products/usr/local/lib/mParticleSPMWrapper.framework"
+SIMULATOR_FRAMEWORK_PATH="Bindings/archives/mParticleSPMWrapper-ios-simulator.xcarchive/Products/usr/local/lib/mParticleSPMWrapper.framework"
 
 # Verify frameworks exist
 if [ ! -d "$iOS_FRAMEWORK_PATH" ]; then
