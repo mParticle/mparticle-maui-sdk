@@ -31,4 +31,4 @@ let package = Package(
             sources: ["mParticleSPMWrapper.swift"]
         )
     ]
-) 
+)
