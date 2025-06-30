@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Clean old AARs from Android binding Jars directory
+rm -f Bindings/mParticle.MAUI.AndroidBinding/Jars/*.aar
+
 # .NET MAUI
 # 
 
