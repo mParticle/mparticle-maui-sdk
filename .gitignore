@@ -137,3 +137,5 @@ xcuserdata/
 project.xcworkspace/xcuserdata/
 DerivedData/
 
+Bindings/mParticle.MAUI.AndroidBinding/Jars/*.aar
+

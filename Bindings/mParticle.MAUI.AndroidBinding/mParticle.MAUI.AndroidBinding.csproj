@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <MParticleAarVersion>5.56.5</MParticleAarVersion>
     <TargetFramework>net8.0-android</TargetFramework>
     <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
@@ -9,15 +10,15 @@
     <PackageReference Include="Xamarin.Kotlin.StdLib" Version="1.9.21" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Jars\" />
-    <None Remove="Jars\android-core-5.56.5.aar" />
+    <AndroidLibrary Include="Jars/android-core-$(MParticleAarVersion).aar" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Jars\" />
+    <TransformFile Include="Transforms\Metadata.xml" />
+    <TransformFile Include="Transforms\EnumFields.xml" />
+    <TransformFile Include="Transforms\EnumMethods.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <LibraryProjectZip Include="Jars\android-core-5.56.5.aar">
-      <Pack></Pack>
-    </LibraryProjectZip>
-  </ItemGroup>
+  <Target Name="DownloadMParticleAar" BeforeTargets="PrepareForBuild">
+    <MakeDir Directories="Jars" />
+    <Exec Command="if [ ! -f &quot;Jars/android-core-$(MParticleAarVersion).aar&quot; ]; then curl -L -o Jars/android-core-$(MParticleAarVersion).aar https://repo1.maven.org/maven2/com/mparticle/android-core/$(MParticleAarVersion)/android-core-$(MParticleAarVersion).aar; fi" />
+  </Target>
 </Project>
