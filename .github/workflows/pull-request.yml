@@ -1,8 +1,12 @@
-name: MAUI CI
+name: Pull request
 
 on:
   pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   pr-branch-check-name:
@@ -29,3 +33,17 @@ jobs:
       run: dotnet workload install maui
     - name: Build artifacts
       run: ./build.sh
+
+  pr-notify:
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.draft == false
+    needs:
+      - Build
+      - pr-branch-check-name
+      - pr-title-check
+      - pr-branch-target-gitflow
+    name: Notify GChat
+    uses: ROKT/rokt-workflows/.github/workflows/oss_pr_opened_notification.yml@main
+    secrets:
+      gchat_webhook: ${{ secrets.GCHAT_PRS_WEBHOOK }}
