@@ -19,6 +19,14 @@
   </ItemGroup>
   <Target Name="DownloadMParticleAar" BeforeTargets="PrepareForBuild">
     <MakeDir Directories="Jars" />
-    <Exec Command="if [ ! -f &quot;Jars/android-core-$(MParticleAarVersion).aar&quot; ]; then curl -L -o Jars/android-core-$(MParticleAarVersion).aar https://repo1.maven.org/maven2/com/mparticle/android-core/$(MParticleAarVersion)/android-core-$(MParticleAarVersion).aar; fi" />
+    <PropertyGroup>
+      <AarFile>Jars/android-core-$(MParticleAarVersion).aar</AarFile>
+      <AarUrl>https://repo1.maven.org/maven2/com/mparticle/android-core/$(MParticleAarVersion)/android-core-$(MParticleAarVersion).aar</AarUrl>
+    </PropertyGroup>
+    <DownloadFile 
+      SourceUrl="$(AarUrl)"
+      DestinationFolder="Jars"
+      DestinationFileName="android-core-$(MParticleAarVersion).aar"
+      Condition="!Exists('$(AarFile)')" />
   </Target>
 </Project>
