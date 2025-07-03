@@ -10,23 +10,11 @@
     <PackageReference Include="Xamarin.Kotlin.StdLib" Version="1.9.21" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidLibrary Include="Jars/android-core-$(MParticleAarVersion).aar" />
+    <AndroidLibrary Include="Jars/android-core.aar" />
   </ItemGroup>
   <ItemGroup>
     <TransformFile Include="Transforms\Metadata.xml" />
     <TransformFile Include="Transforms\EnumFields.xml" />
     <TransformFile Include="Transforms\EnumMethods.xml" />
   </ItemGroup>
-  <Target Name="DownloadMParticleAar" BeforeTargets="PrepareForBuild">
-    <MakeDir Directories="Jars" />
-    <PropertyGroup>
-      <AarFile>Jars/android-core-$(MParticleAarVersion).aar</AarFile>
-      <AarUrl>https://repo1.maven.org/maven2/com/mparticle/android-core/$(MParticleAarVersion)/android-core-$(MParticleAarVersion).aar</AarUrl>
-    </PropertyGroup>
-    <DownloadFile 
-      SourceUrl="$(AarUrl)"
-      DestinationFolder="Jars"
-      DestinationFileName="android-core-$(MParticleAarVersion).aar"
-      Condition="!Exists('$(AarFile)')" />
-  </Target>
 </Project>
