@@ -1,8 +1,42 @@
 #!/bin/bash
 set -e
 
+# Configuration
+AAR_VERSION="5.70.2"
+AAR_DOWNLOAD_FILENAME="android-core-${AAR_VERSION}.aar"
+AAR_URL="https://repo1.maven.org/maven2/com/mparticle/android-core/${AAR_VERSION}/${AAR_DOWNLOAD_FILENAME}"
+AAR_DIR="Bindings/mParticle.MAUI.AndroidBinding/Jars"
+AAR_PATH="${AAR_DIR}/android-core.aar"
+
+# Clean old AARs from Android binding Jars directory
+echo "Cleaning old AAR files..."
+rm -f ${AAR_DIR}/*.aar
+
+# Create Jars directory if it doesn't exist
+mkdir -p ${AAR_DIR}
+
+# Download mParticle Android Core AAR
+echo "Downloading ${AAR_DOWNLOAD_FILENAME}..."
+echo "URL: ${AAR_URL}"
+echo "Destination: ${AAR_PATH}"
+
+if ! curl -L --fail -o "${AAR_PATH}" "${AAR_URL}"; then
+    echo "Error: Failed to download AAR file"
+    exit 1
+fi
+
+if [ ! -f "${AAR_PATH}" ]; then
+    echo "Error: AAR file not found at ${AAR_PATH} after download"
+    exit 1
+fi
+
 # .NET MAUI
 # 
+
+# Build xcframework first (required for iOS binding)
+echo "Building xcframework..."
+chmod +x Bindings/build_xcframework_spm.sh
+./Bindings/build_xcframework_spm.sh
 
 # Restore packages
 dotnet restore

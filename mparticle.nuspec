@@ -6,10 +6,11 @@
        <title>mParticle .NET MAUI SDK</title>
        <authors>Wasi Haider, Sam Dozor, Will Passidomo, Brandon Stalnaker, mParticle Inc.</authors>
        <owners>mParticle Inc.</owners>
-       <licenseUrl>https://github.com/mParticle/mparticle-maui-sdk/blob/master/LICENSE</licenseUrl>
-       <projectUrl>https://github.com/mparticle/mparticle-maui-sdk</projectUrl>
+       <license type="expression">Apache-2.0</license>
+       <projectUrl>https://github.com/mParticle/mparticle-maui-sdk</projectUrl>
        <requireLicenseAcceptance>false</requireLicenseAcceptance>
-       <iconUrl>https://static.mparticle.com/sdk/nuget_logo.png</iconUrl>
+       <icon>assets/nuget_logo.png</icon>
+       <readme>README.MD</readme>
        <description>
          mParticle .NET MAUI SDK
        </description>
@@ -23,7 +24,9 @@
     </dependencies>
    </metadata>
    <files>
-     
+     <file src="assets/nuget_logo.png" target="assets" />
+     <file src="README.MD" target="" />
+
      <!--MAUI.iOS-->
      <file src="Library/mParticle.MAUI.iOS/bin/Release/net8.0-ios/mParticle.*" target="lib/net8.0-ios18.0" />
 

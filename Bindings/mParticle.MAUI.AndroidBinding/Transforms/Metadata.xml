@@ -111,5 +111,8 @@
   <attr path="/api/package[@name='com.mparticle']/class[@name='MParticleTask']/method[@name='getResult']" name="return">com.mparticle.identity.IdentityApiResult</attr>
   <attr path="/api/package[@name='com.mparticle.identity']/class[@name='BaseIdentityTask']/method[@name='getResult']" name="return">com.mparticle.identity.IdentityApiResult</attr>
 
-    
+  <!-- AudienceTask abstract member signatures to match BaseAudienceTask -->
+  <attr path="/api/package[@name='com.mparticle.audience']/class[@name='AudienceTask']/method[@name='addSuccessListener']" name="return">com.mparticle.audience.BaseAudienceTask</attr>
+  <attr path="/api/package[@name='com.mparticle.audience']/class[@name='AudienceTask']/method[@name='addFailureListener']" name="return">com.mparticle.audience.BaseAudienceTask</attr>
+  <attr path="/api/package[@name='com.mparticle.audience']/class[@name='AudienceTask']/method[@name='getResult']" name="return">com.mparticle.audience.AudienceResponse</attr>
 </metadata>

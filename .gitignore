@@ -124,3 +124,18 @@ mparticle.xml
 # NuGet
 
 *.nupkg
+
+Bindings/archives/
+Bindings/mParticle_Apple_SDK.xcframework/
+Bindings/mParticleSPMWrapper.xcframework/
+archives/
+
+# Xcode user data
+xcuserdata/
+*.xcuserstate
+*.xcuserdatad
+project.xcworkspace/xcuserdata/
+DerivedData/
+
+Bindings/mParticle.MAUI.AndroidBinding/Jars/*.aar
+

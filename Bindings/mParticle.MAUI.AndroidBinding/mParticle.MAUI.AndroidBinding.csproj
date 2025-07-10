@@ -1,20 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <MParticleAarVersion>5.70.2</MParticleAarVersion>
     <TargetFramework>net8.0-android</TargetFramework>
     <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Jars\" />
-    <None Remove="Jars\android-core-5.56.5.aar" />
+    <PackageReference Include="Xamarin.Kotlin.StdLib" Version="1.9.21" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Jars\" />
+    <AndroidLibrary Include="Jars/android-core.aar" />
   </ItemGroup>
   <ItemGroup>
-    <LibraryProjectZip Include="Jars\android-core-5.56.5.aar">
-      <Pack></Pack>
-    </LibraryProjectZip>
+    <TransformFile Include="Transforms\Metadata.xml" />
+    <TransformFile Include="Transforms\EnumFields.xml" />
+    <TransformFile Include="Transforms\EnumMethods.xml" />
   </ItemGroup>
 </Project>
