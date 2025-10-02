@@ -1,0 +1,15 @@
+{
+  "originHash" : "48e6da250f86ad208e0915bb05c11313bdacd02166253b9965d151395766c8d3",
+  "pins" : [
+    {
+      "identity" : "mparticle-apple-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mParticle/mparticle-apple-sdk",
+      "state" : {
+        "branch" : "test/spm-static-linking",
+        "revision" : "950306f5bdad0f37dc3c05652bbe06c8014fb9a3"
+      }
+    }
+  ],
+  "version" : 3
+}
