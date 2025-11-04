@@ -53,11 +53,20 @@ jobs:
       - name: Build SDK
         run: dotnet build Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj
 
-      - name: Build SampleApp
+      - name: Build SDK SampleApp
         run: dotnet build SampleApp/SampleApp.csproj
 
       - name: Pack SDK
         run: dotnet pack Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj
+
+      - name: Build Rokt Kit
+        run: dotnet build Kits/rokt/Sdk/MParticle.Maui.Rokt/MParticle.Maui.Kits.Rokt.csproj
+
+      - name: Build Rokt Kit SampleApp
+        run: dotnet build Kits/rokt/SampleApp/SampleApp.csproj
+
+      - name: Pack Rokt Kit
+        run: dotnet pack Kits/rokt/Sdk/MParticle.Maui.Rokt/MParticle.Maui.Kits.Rokt.csproj
 
       - name: Find and rename nupkg file
         run: |

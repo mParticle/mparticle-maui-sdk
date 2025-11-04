@@ -44,7 +44,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../../../mparticle-maui-sdk/Sdk/mParticle.Maui.Sdk/mParticle.Maui.Sdk.csproj" />
+        <ProjectReference Include="../../../../Sdk/mParticle.Maui.Sdk/mParticle.Maui.Sdk.csproj" />
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework.Contains('ios'))">
@@ -225,9 +225,9 @@
 
     <!-- Copy Rokt_Widget.xcframework from SPM to resources after build and update manifest -->
     <Target Name="CopyRoktWidgetFramework" AfterTargets="_CreateBindingResourcePackage" Condition="$(TargetFramework.Contains('ios'))">
-        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleRoktBinding-*/SourcePackages/artifacts/rokt-sdk-ios/Rokt_Widget/Rokt_Widget.xcframework &quot;$(OutputPath)MParticle.Maui.Rokt.resources/&quot;" />
+        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleRoktBinding-*/SourcePackages/artifacts/rokt-sdk-ios/Rokt_Widget/Rokt_Widget.xcframework &quot;$(OutputPath)MParticle.Maui.Kits.Rokt.resources/&quot;" />
         <!-- Append Rokt_Widget as a NativeReference to the manifest before the closing BindingAssembly tag -->
-        <Exec Command="sed -i '' 's|&lt;/BindingAssembly&gt;|&lt;NativeReference Name=&quot;Rokt_Widget.xcframework&quot;&gt;&lt;Kind&gt;Framework&lt;/Kind&gt;&lt;SmartLink&gt;false&lt;/SmartLink&gt;&lt;/NativeReference&gt;&lt;/BindingAssembly&gt;|g' &quot;$(OutputPath)MParticle.Maui.Rokt.resources/manifest&quot;" />
+        <Exec Command="sed -i '' 's|&lt;/BindingAssembly&gt;|&lt;NativeReference Name=&quot;Rokt_Widget.xcframework&quot;&gt;&lt;Kind&gt;Framework&lt;/Kind&gt;&lt;SmartLink&gt;false&lt;/SmartLink&gt;&lt;/NativeReference&gt;&lt;/BindingAssembly&gt;|g' &quot;$(OutputPath)MParticle.Maui.Kits.Rokt.resources/manifest&quot;" />
     </Target>
 
     <!-- Clean MParticleRoktBinding DerivedData from global Xcode cache during clean -->
