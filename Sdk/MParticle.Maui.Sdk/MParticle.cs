@@ -538,20 +538,14 @@ public class RoktApiWrapper : RoktApi
         RoktConfig config = null,
         RoktEventCallback callbacks = null)
     {
-        Console.WriteLine("javaAttributes");
         var javaAttributes = Utils.ConvertToDictionary(attributes);
-        Console.WriteLine("javaEmbeddedViews");
         var javaEmbeddedViews = Utils.ConvertEmbeddedViewsToWeakReferenceDictionary(embeddedViews);
-        Console.WriteLine("ConvertToRoktConfig");
         var javaConfig = Utils.ConvertToRoktConfig(config);
-        Console.WriteLine("ConvertToRoktEventCallback");
         var javaCallbacks = Utils.ConvertToRoktEventCallback(callbacks);
 
-        Console.WriteLine("_mparticleInstance.Rokt()");
         var roktInstance = _mparticleInstance.Rokt();
         if (roktInstance != null)
         {
-            Console.WriteLine("roktInstance.SelectPlacements()");
             // Android Rokt API: selectPlacements(identifier, attributes, callbacks, embeddedViews, fontTypefaces, config)
             roktInstance.SelectPlacements(identifier, javaAttributes, javaCallbacks, javaEmbeddedViews, null, javaConfig);
         }
