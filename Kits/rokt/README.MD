@@ -71,3 +71,5 @@ public static class MauiProgram
     }
 }
 ```
+
+For Android you also need to ensure your activty extends `MauiAppCompatActivity`
