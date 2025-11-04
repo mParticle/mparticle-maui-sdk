@@ -13,7 +13,7 @@ dotnet add package mParticle.MAUI
 dotnet add package mParticle.MAUI.Kits.Rokt
 ```
 
-### Initialization
+### Initialization and registration
 
 The SDK must be initialized with your mParticle workspace key and secret prior to use. This call should be placed in your MAUI application initialization, *as early as possible*:
 
