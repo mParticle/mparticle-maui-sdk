@@ -1,0 +1,55 @@
+---
+description: "Build, test, and development workflow commands
+alwaysApply: false
+---
+# Build, Test, and Lint Commands
+
+When working with this project, always use these commands for building, testing, and linting:
+
+## Building and Testing
+```bash
+# Build the SDK
+dotnet build Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj
+
+# Pack the SDK
+dotnet pack Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj
+
+# Build the sample app
+dotnet build SampleApp/SampleApp.csproj
+```
+
+## Running the example app
+```bash
+# Navigate to Example directory
+cd SampleApp
+
+# To run android
+dotnet build -t:Run -f net8.0-android
+
+# To run iOS
+dotnet build -t:Run -f net8.0-ios
+
+# To run iOS on a specific device
+dotnet build -t:Run -f net8.0-ios -p:_DeviceName=:v2:udid=MY_SPECIFIC_UDID
+```
+
+## Linting and Formatting with Trunk
+```bash
+# Check all files for linting issues
+trunk check --all
+
+# Format all files
+trunk fmt --all
+
+# Check specific files
+trunk check Sdk/MParticle.Maui.Sdk/
+
+# Format specific files
+trunk fmt Sdk/MParticle.Maui.Sdk/
+```
+
+## Pre-commit Checks
+Always run these commands before committing:
+1. Ensure project builds
+2. Ensure all tests pass
+3. Ensure trunk check all passes

@@ -1,0 +1,23 @@
+#checkov:skip=CKV_OPENAPI_4:Not required to have auth schema defs
+openapi: 3.0.0
+info:
+  title: MParticle MAUI SDK
+  x-cortex-tag: maui-sdk
+  x-cortex-type: service
+  description: |
+    MParticle MAUI SDK
+  x-cortex-git:
+    github:
+      repository: mParticle/mparticle-maui-sdk
+
+  x-cortex-owners:
+    - type: group
+      name: sdk-engineering
+      provider: CORTEX
+  x-cortex-groups:
+    - lang-csharp
+
+  x-cortex-oncall:
+    opsgenie:
+      type: SCHEDULE
+      id: Mobile Integrations_schedule

@@ -1,0 +1,57 @@
+# This file controls the behavior of Trunk: https://docs.trunk.io/cli
+# To learn more about the format of this file, see https://docs.trunk.io/reference/trunk-yaml
+version: 0.1
+cli:
+  version: 1.22.12
+  sha256:
+    darwin_arm64: 744929fbd319da62b4f17a077002045664754017306c49887e3613c1435d5c97
+    darwin_x86_64: 9118290d392b8abdd5fa80d13c8fe422a86186458536f66700e9b1b2c0416fb4
+    linux_arm64: e84f13a724627199bf8935a366e9cfc8b7b34f442c2a2952c9d4e53a0cabc8af
+    linux_x86_64: 0c8d78f7d39d26bb8916fd1d05f912612916aa411c64c2d06a14de1dbca27c75
+    mingw_x86_64: 82a7624060f79e88d406a343b05aae830e14193b17a1e31b06da3a940394dec9
+    windows_x86_64: 1cebe82d5ac50774e0c6b74565848bd8d38efde719ec7b1ec5e947444b87fb89
+# Trunk provides extensibility via plugins. (https://docs.trunk.io/plugins)
+plugins:
+  sources:
+    - id: trunk
+      ref: v1.6.7
+      uri: https://github.com/trunk-io/plugins
+    - id: rokt-trunk-plugin
+      ref: main
+      uri: https://github.com/ROKT/rokt-workflows
+# Many linters and tools depend on runtimes - configure them here. (https://docs.trunk.io/runtimes)
+runtimes:
+  enabled:
+    - go@1.21.0
+    - java@13.0.11
+    - node@18.20.5
+    - python@3.10.8
+# This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
+lint:
+  enabled:
+    - actionlint@1.7.7
+    - checkov@3.2.403
+    - git-diff-check
+    - ktlint@1.5.0
+    - markdownlint@0.44.0
+    - oxipng@9.1.4
+    - prettier@3.5.3
+    - shellcheck@0.10.0
+    - shfmt@3.6.0
+    - svgo@3.3.2
+    - taplo@0.9.3
+    - trufflehog@3.88.23
+    - swiftlint@0.57.0
+    - validate-actions-versions
+  disabled:
+    - yamllint
+  ignore:
+    - linters: [shellcheck]
+      paths:
+        - "**/gradlew"
+actions:
+  enabled:
+    - trunk-announce
+    - trunk-check-pre-push-always
+    - trunk-fmt-pre-commit
+    - trunk-upgrade-available
