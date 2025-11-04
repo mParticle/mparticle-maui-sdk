@@ -141,7 +141,7 @@ jobs:
           commit-message: Create ${{ steps.bump-version.outputs.new_version }}
           branch: release/${{ steps.bump-version.outputs.new_version }}
           title: Prepare release ${{ steps.bump-version.outputs.new_version }}
-          add-paths: CHANGELOG.md, VERSION, ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}
+          add-paths: CHANGELOG.md, VERSION, ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}, ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}
           base: main
           body: |
             Preparing for release ${{ steps.bump-version.outputs.new_version }}
