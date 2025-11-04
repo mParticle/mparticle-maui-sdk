@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sdk="clr-namespace:mParticle.MAUI;assembly=mParticle.Maui.Sdk"
+             x:Class="SampleApp.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25"
+            Margin="0,0,0,50">
+            <Image
+                Source="main_logo.png"
+                HeightRequest="185"
+                Aspect="AspectFit"
+                SemanticProperties.Description="mParticle Rokt kit MAUI Test App Logo" />
+
+            <Label
+                Text="mParticle Rokt kit MAUI Test App!"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level1" />
+            
+            <Button
+                x:Name="InitializeBtn"
+                Text="Initialize mParticle SDK" 
+                SemanticProperties.Hint="Initialize the mParticle SDK"
+                Clicked="OnInitializeClicked"
+                HorizontalOptions="Fill" />
+            
+            <Label
+                Text="Rokt Test Functions"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level3"
+                Margin="0,20,0,10" />
+            
+            <Button
+                x:Name="ShowRoktEmbeddedBtn"
+                Text="Show Rokt Embedded" 
+                SemanticProperties.Hint="Show Rokt Embedded"
+                Clicked="OnShowRoktEmbeddedClicked"
+                HorizontalOptions="Fill" />
+            
+            <Button
+                x:Name="ShowRoktOverlayBtn"
+                Text="Show Rokt Overlay" 
+                SemanticProperties.Hint="Show Rokt Overlay"
+                Clicked="OnShowRoktOverlayClicked"
+                HorizontalOptions="Fill" />
+
+            <sdk:RoktEmbeddedView
+                x:Name="Location1"/>
+            
+            <Label
+                Text="Individual Test Functions"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level3"
+                Margin="0,20,0,10" />
+            
+            <Button
+                x:Name="BasicEventsBtn"
+                Text="Log Basic Events" 
+                SemanticProperties.Hint="Log basic app events of various types"
+                Clicked="OnBasicEventsClicked"
+                HorizontalOptions="Fill" />
+                
+            <Button
+                x:Name="CommerceEventsBtn"
+                Text="Log Commerce Events" 
+                SemanticProperties.Hint="Log commerce events with products and transactions"
+                Clicked="OnCommerceEventsClicked"
+                HorizontalOptions="Fill" />
+                
+            <Button
+                x:Name="ScreenEventsBtn"
+                Text="Log Screen &amp; Breadcrumbs" 
+                SemanticProperties.Hint="Log screen views and breadcrumbs"
+                Clicked="OnScreenEventsClicked"
+                HorizontalOptions="Fill" />
+                
+            <Button
+                x:Name="UploadBypassBtn"
+                Text="Test Upload Bypass" 
+                SemanticProperties.Hint="Test events with upload bypass flags"
+                Clicked="OnUploadBypassClicked"
+                HorizontalOptions="Fill" />
+                
+            <Button
+                x:Name="ATTStatusBtn"
+                Text="Set ATT Status" 
+                SemanticProperties.Hint="Set iOS App Tracking Transparency status"
+                Clicked="OnATTStatusClicked"
+                HorizontalOptions="Fill" />
+            
+            <Button
+                x:Name="ExecuteBtn"
+                Text="Run All Tests" 
+                FontAttributes="Bold"
+                SemanticProperties.Hint="Run all test functions at once"
+                Clicked="OnExecuteClicked"
+                HorizontalOptions="Fill"
+                Margin="0,20,0,0" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
