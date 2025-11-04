@@ -1,12 +1,14 @@
 # mParticle MAUI SDK
 
-This is the repository of the mParticle MAUI SDK, which is compatible with iOS and Android apps. The SDK consists of a common C# API layer and two MAUI binding libraries for mParticle's native iOS and Android SDKs.
+This is the repository of the mParticle MAUI SDK, which is compatible with iOS and Android apps.
 
 ## Installation
 
 This SDK is distributed via the public NuGet gallery: https://www.nuget.org/packages/mParticle.MAUI/. 
 
-If you have both an iOS and an Android project, you should add the NuGet package to each following the Nuget Add Package dialog. [See here](https://code.visualstudio.com/docs/csharp/package-management/) for a detailed walkthrough on using NuGet with a MAUI project in Visual Studio Code.
+```
+dotnet add package mParticle.MAUI
+```
 
 ### mParticle Singleton
 
