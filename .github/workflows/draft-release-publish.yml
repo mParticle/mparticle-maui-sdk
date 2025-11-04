@@ -98,10 +98,10 @@ jobs:
 
       - name: Build Rokt Kit
         run: dotnet build Kits/rokt/Sdk/MParticle.Maui.Rokt/MParticle.Maui.Kits.Rokt.csproj -c Release -p:Version=${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}
-  
+
       - name: Pack Rokt Kit
         run: dotnet pack Kits/rokt/Sdk/MParticle.Maui.Rokt/MParticle.Maui.Kits.Rokt.csproj -c Release -p:Version=${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}
-  
+
       - name: Publish Rokt Kit to NuGet Test Gallery
         run: dotnet nuget push Kits/rokt/Sdk/MParticle.Maui.Rokt/bin/Release/mParticle.Maui.Kits.Rokt.${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{ secrets.NUGET_TEST_API_KEY }}
 

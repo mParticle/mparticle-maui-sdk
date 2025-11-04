@@ -62,7 +62,7 @@ jobs:
 
       - name: Publish SDK to NuGet Gallery
         run: dotnet nuget push Sdk/MParticle.Maui.Sdk/bin/Release/MParticle.Maui.Sdk.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
-      
+
       - name: Build Rokt Kit
         run: dotnet build Kits/rokt/Sdk/MParticle.Maui.Rokt/MParticle.Maui.Kits.Rokt.csproj -c Release
 

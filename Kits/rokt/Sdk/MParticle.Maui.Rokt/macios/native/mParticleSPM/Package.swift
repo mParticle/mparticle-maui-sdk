@@ -17,7 +17,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/mparticle-integrations/mparticle-apple-integration-rokt.git", exact: "8.3.2"),
+        .package(url: "https://github.com/mparticle-integrations/mparticle-apple-integration-rokt.git", exact: "8.3.2")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

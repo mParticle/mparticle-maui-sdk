@@ -19,7 +19,7 @@ import Foundation
 /// SPM wrapper for mParticle_Rokt_Swift dependency
 /// This module provides a clean interface to the Rokt iOS SDK
 /// and allows for easy version management through Swift Package Manager
-public struct mParticleSPM {
+public struct MParticleSPM {
     // This is a wrapper module that re-exports mParticle_Rokt_Swift
     // All functionality is available through the imported mParticle_Apple_SDK module
 }
