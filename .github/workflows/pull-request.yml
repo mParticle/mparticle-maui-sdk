@@ -68,7 +68,7 @@ jobs:
       - name: Pack Rokt Kit
         run: dotnet pack Kits/rokt/Sdk/MParticle.Maui.Rokt/MParticle.Maui.Kits.Rokt.csproj
 
-      - name: Find and rename nupkg file
+      - name: Find and rename SDK nupkg file
         run: |
           # Find the generated nupkg file
           NUPKG_FILE=$(find Sdk/MParticle.Maui.Sdk/bin/Release -name "*.nupkg" | head -1)
@@ -83,11 +83,32 @@ jobs:
           cp "$NUPKG_FILE" "$RENAMED_FILE"
           echo "Renamed to: $RENAMED_FILE"
 
-      - name: Upload Package Artifact
+      - name: Upload SDK Package Artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: MParticle.Maui.Sdk.nupkg
           path: Sdk/MParticle.Maui.Sdk/bin/Release/MParticle.Maui.Sdk.nupkg
+
+      - name: Find and rename Rokt Kit nupkg file
+        run: |
+          # Find the generated nupkg file
+          NUPKG_FILE=$(find Kits/rokt/Sdk/MParticle.Maui.Rokt/bin/Release -name "*.nupkg" | head -1)
+          if [ -z "$NUPKG_FILE" ]; then
+            echo "No nupkg file found"
+            exit 1
+          fi
+          echo "Found nupkg file: $NUPKG_FILE"
+
+          # Rename to remove version number
+          RENAMED_FILE="Kits/rokt/Sdk/MParticle.Maui.Rokt/bin/Release/mParticle.Maui.Kits.Rokt.nupkg"
+          cp "$NUPKG_FILE" "$RENAMED_FILE"
+          echo "Renamed to: $RENAMED_FILE"
+
+      - name: Upload Rokt Kit Package Artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mParticle.Maui.Kits.Rokt.nupkg
+          path: Kits/rokt/Sdk/MParticle.Maui.Rokt/bin/Release/mParticle.Maui.Kits.Rokt.nupkg
 
   pr-notify:
     if: >
