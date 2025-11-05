@@ -239,6 +239,19 @@ To test if the install referrer is working, run the following in the terminal:
 
 Then go to the mParticle Live Stream, click on the Android - Batch, click View Event and you should see your value in the device info.
 
+## Developers
+
+Prerequisites:
+- [Android](https://developer.android.com/studio)
+- [XCode](https://developer.apple.com/xcode)
+- [Dotnet 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- Nuget - `brew install nuget`
+- Maui workload - `dotnet workload install maui`
+
+Once you have installed the pre-requistes run `dotnet restore` to finish installing all required dependencies.
+
+For the rest of the run commands you can find them [here](.cursor/rules/build-and-test.mdc)
+
 ## License
 
 [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
