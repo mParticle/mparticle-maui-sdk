@@ -242,8 +242,8 @@ Then go to the mParticle Live Stream, click on the Android - Batch, click View E
 ## Developers
 
 Prerequisites:
-- [Android](https://developer.android.com/studio)
-- [XCode](https://developer.apple.com/xcode)
+- [Android](https://developer.android.com/studio) additionally ensuring you have an emulator setup
+- [XCode](https://developer.apple.com/xcode) additionally ensuring you have a simulator setup
 - [Dotnet 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - Nuget - `brew install nuget`
 - Maui workload - `dotnet workload install maui`
