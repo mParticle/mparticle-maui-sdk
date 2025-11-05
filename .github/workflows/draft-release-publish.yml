@@ -85,6 +85,12 @@ jobs:
           fi
           echo "version-suffix=$version_suffix" >> $GITHUB_OUTPUT
 
+      - name: Export full version with suffix
+        id: full-version
+        run: |
+          full_version="${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}"
+          echo "full-version-with-suffix=$full_version" >> $GITHUB_OUTPUT
+
       - name: Update changelog
         uses: thomaseizinger/keep-a-changelog-new-release@f62c3c390716df5af712ba5d94f4f4a8efc1306d # v3.1.0
         with:
@@ -94,22 +100,22 @@ jobs:
         run: dotnet restore
 
       - name: Build SDK
-        run: dotnet build ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }} -c Release -p:Version=${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}
+        run: dotnet build ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }} -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}
 
       - name: Pack SDK
-        run: dotnet pack ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }} -c Release -p:Version=${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}
+        run: dotnet pack ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }} -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}
 
       - name: Publish to NuGet Test Gallery
-        run: dotnet nuget push ${{ env.SDK_PATH }}/bin/Release/MParticle.Maui.Sdk.${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{ secrets.NUGET_TEST_API_KEY }}
+        run: dotnet nuget push ${{ env.SDK_PATH }}/bin/Release/MParticle.Maui.Sdk.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{ secrets.NUGET_TEST_API_KEY }}
 
       - name: Build Rokt Kit
-        run: dotnet build ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }} -c Release -p:Version=${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}
+        run: dotnet build ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }} -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}
 
       - name: Pack Rokt Kit
-        run: dotnet pack ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }} -c Release -p:Version=${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}
+        run: dotnet pack ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }} -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}
 
       - name: Publish Rokt Kit to NuGet Test Gallery
-        run: dotnet nuget push ${{ env.ROKT_KIT_PATH }}/bin/Release/mParticle.Maui.Kits.Rokt.${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{ secrets.NUGET_TEST_API_KEY }}
+        run: dotnet nuget push ${{ env.ROKT_KIT_PATH }}/bin/Release/mParticle.Maui.Kits.Rokt.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{ secrets.NUGET_TEST_API_KEY }}
 
       - name: Set .csproj version for SDK
         uses: vers-one/dotnet-project-version-updater@6d4de57b8f089d58a00b6ede1f3f05c77bb8e541 # v1.7
@@ -126,14 +132,14 @@ jobs:
       - name: Upload Package Artifact for SDK
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: MParticle.Maui.Sdk.${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}.nupkg
-          path: ${{ env.SDK_PATH }}/bin/Release/MParticle.Maui.Sdk.${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}.nupkg
+          name: MParticle.Maui.Sdk.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg
+          path: ${{ env.SDK_PATH }}/bin/Release/MParticle.Maui.Sdk.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg
 
       - name: Upload Package Artifact for Rokt Kit
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: mParticle.Maui.Kits.Rokt.${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}.nupkg
-          path: ${{ env.ROKT_KIT_PATH }}/bin/Release/mParticle.Maui.Kits.Rokt.${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}.nupkg
+          name: mParticle.Maui.Kits.Rokt.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg
+          path: ${{ env.ROKT_KIT_PATH }}/bin/Release/mParticle.Maui.Kits.Rokt.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
@@ -147,4 +153,4 @@ jobs:
             Preparing for release ${{ steps.bump-version.outputs.new_version }}
             - Bumped version
             - Updated changelog
-            - Generated test build ${{ steps.bump-version.outputs.new_version }}${{ steps.version-suffix.outputs.version-suffix }}
+            - Generated test build ${{ steps.full-version.outputs.full-version-with-suffix }}
