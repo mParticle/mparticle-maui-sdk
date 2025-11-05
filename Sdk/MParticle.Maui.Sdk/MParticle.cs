@@ -66,6 +66,12 @@ public class MParticleSDKImpl : MParticleSDK
     {
         get
         {
+            if (!_isInitialized)
+            {
+                Console.WriteLine(SdkNotInitializedWarning);
+                return Environment.AutoDetect;
+            }
+
             switch (iOSBinding.MParticle.SharedInstance.Environment)
             {
                 case iOSBinding.MPEnvironment.Development:
@@ -108,6 +114,8 @@ public class MParticleSDKImpl : MParticleSDK
         {
             mparticle.PushNotificationToken = options.PushRegistration.IOSToken;
         }
+        
+        _isInitialized = true;
         return this;
     }
 
@@ -268,6 +276,10 @@ public class MParticleSDKImpl : MParticleSDK
     {
         get
         {
+            if (!_isInitialized)
+            {
+                return new NoOpRoktApiWrapper();
+            }
             return new RoktApiWrapper(iOSBinding.MParticle.SharedInstance.Rokt);
         }
     }
@@ -356,6 +368,12 @@ public class MParticleSDKImpl : MParticleSDK
     {
         get
         {
+            if (!_isInitialized)
+            {
+                Console.WriteLine(SdkNotInitializedWarning);
+                return Environment.AutoDetect;
+            }
+
             var environment = mParticle.MAUI.AndroidBinding.MParticle.Instance.GetEnvironment();
             if (environment == mParticle.MAUI.AndroidBinding.MParticle.Environment.AutoDetect)
                 return MAUI.Environment.AutoDetect;
@@ -368,11 +386,21 @@ public class MParticleSDKImpl : MParticleSDK
 
     public override void LeaveBreadcrumb(string breadcrumbName)
     {
+        if (!_isInitialized)
+        {
+            Console.WriteLine(SdkNotInitializedWarning);
+            return;
+        }
         mParticle.MAUI.AndroidBinding.MParticle.Instance.LeaveBreadcrumb(breadcrumbName);
     }
 
     public override void LogCommerceEvent(CommerceEvent commerceEvent, bool shouldUploadEvent = true)
     {
+        if (!_isInitialized)
+        {
+            Console.WriteLine(SdkNotInitializedWarning);
+            return;
+        }
         Android.CommerceBinding.CommerceEvent.Builder bindingCommerceEventBuilder = null;
 
         if (commerceEvent.ProductAction > 0 && commerceEvent.Products != null && commerceEvent.Products.Length > 0)
@@ -445,6 +473,11 @@ public class MParticleSDKImpl : MParticleSDK
 
     public override void LogEvent(string eventName, EventType eventType, Dictionary<string, string> eventInfo, bool shouldUploadEvent = true)
     {
+        if (!_isInitialized)
+        {
+            Console.WriteLine(SdkNotInitializedWarning);
+            return;
+        }
         var mpEventType = mParticle.MAUI.AndroidBinding.MParticle.EventType.ValueOf(eventType.ToString());
         IDictionary<string, object> castedEventInfo = eventInfo.ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
         var mpEvent = new mParticle.MAUI.AndroidBinding.MPEvent.Builder(eventName, mpEventType).CustomAttributes(castedEventInfo).ShouldUploadEvent(shouldUploadEvent).Build();
@@ -453,6 +486,11 @@ public class MParticleSDKImpl : MParticleSDK
 
     public override void LogScreen(string screenName, Dictionary<string, string> eventInfo)
     {
+        if (!_isInitialized)
+        {
+            Console.WriteLine(SdkNotInitializedWarning);
+            return;
+        }
         mParticle.MAUI.AndroidBinding.MParticle.Instance.LogScreen(screenName, eventInfo);
     }
 
@@ -462,6 +500,11 @@ public class MParticleSDKImpl : MParticleSDK
 
     public override void SetOptOut(bool optOut)
     {
+        if (!_isInitialized)
+        {
+            Console.WriteLine(SdkNotInitializedWarning);
+            return;
+        }
         mParticle.MAUI.AndroidBinding.MParticle.Instance.OptOut = new Java.Lang.Boolean(optOut);
     }
 
@@ -486,13 +529,13 @@ public class MParticleSDKImpl : MParticleSDK
             version
         );
 
-        var instance = new MParticleSDKImpl();
         if (options.IdentityStateListener != null)
         {
-            instance.Identity.AddIdentityStateListener(options.IdentityStateListener);
+            Identity.AddIdentityStateListener(options.IdentityStateListener);
         }
 
-        return instance;
+        _isInitialized = true;
+        return this;
     }
 
     public override IdentityApi Identity
@@ -507,6 +550,10 @@ public class MParticleSDKImpl : MParticleSDK
     {
         get
         {
+            if (!_isInitialized)
+            {
+                return new NoOpRoktApiWrapper();
+            }
             return new RoktApiWrapper(mParticle.MAUI.AndroidBinding.MParticle.Instance);
         }
     }
@@ -518,6 +565,11 @@ public class MParticleSDKImpl : MParticleSDK
 
     public override void Upload()
     {
+        if (!_isInitialized)
+        {
+            Console.WriteLine(SdkNotInitializedWarning);
+            return;
+        }
         mParticle.MAUI.AndroidBinding.MParticle.Instance.Upload();
     }
 }
@@ -538,6 +590,11 @@ public class RoktApiWrapper : RoktApi
         RoktConfig config = null,
         RoktEventCallback callbacks = null)
     {
+        if (_mparticleInstance == null)
+        {
+            Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
+            return;
+        }
         var javaAttributes = Utils.ConvertToDictionary(attributes);
         var javaEmbeddedViews = Utils.ConvertEmbeddedViewsToWeakReferenceDictionary(embeddedViews);
         var javaConfig = Utils.ConvertToRoktConfig(config);
@@ -572,5 +629,19 @@ public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, global::And
     }
 }
 #endif
+
+// No-op implementation for when SDK is not initialized
+public class NoOpRoktApiWrapper : RoktApi
+{
+    public override void SelectPlacements(
+        string identifier,
+        Dictionary<string, string> attributes = null,
+        Dictionary<string, RoktEmbeddedView> embeddedViews = null,
+        RoktConfig config = null,
+        RoktEventCallback callbacks = null)
+    {
+        Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
+    }
+}
 
 public class RoktEmbeddedView : Microsoft.Maui.Controls.View {}

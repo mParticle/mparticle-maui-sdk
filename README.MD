@@ -250,7 +250,7 @@ Prerequisites:
 
 Once you have installed the pre-requistes run `dotnet restore` to finish installing all required dependencies.
 
-For the rest of the run commands you can find them [here](.cursor/rules/build-and-test.mdc)
+For the rest of the run commands you can find them [here](.cursor/rules/build-and-test.mdc). For day to day running and testing you should run using the Sample App on the platform of your choice.
 
 ## License
 
