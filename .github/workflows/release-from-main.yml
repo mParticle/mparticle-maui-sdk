@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: NuGet login (OIDC → temp API key)
-        uses: NuGet/login@v1
+        uses: NuGet/login@d22cc5f58ff5b88bf9bd452535b4335137e24544 # v1.1.0
         id: login
         with:
           user: rokt
