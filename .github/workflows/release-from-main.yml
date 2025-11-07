@@ -74,7 +74,7 @@ jobs:
         run: dotnet pack ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}.csproj -c Release
 
       - name: Publish SDK to NuGet Gallery
-        run: dotnet nuget push ${{ env.SDK_PATH }}/bin/Release/${{ env.SDK_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push ${{ env.SDK_PATH }}/bin/Release/mParticle.MAUI.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
 
       - name: Build Rokt Kit
         run: dotnet build ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj -c Release
@@ -89,7 +89,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ${{ env.SDK_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
-          path: ${{ env.SDK_PATH }}/bin/Release/${{ env.SDK_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+          path: ${{ env.SDK_PATH }}/bin/Release/mParticle.MAUI.${{ needs.setup-and-version.outputs.final_version }}.nupkg
 
       - name: Upload Package Artifact for Rokt Kit
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -109,7 +109,7 @@ jobs:
         uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 # v1.16.0
         with:
           artifacts: |
-            ${{ env.SDK_PATH }}/bin/Release/${{ env.SDK_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+            ${{ env.SDK_PATH }}/bin/Release/mParticle.MAUI.${{ needs.setup-and-version.outputs.final_version }}.nupkg
             ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
           makeLatest: true
           tag: ${{ needs.setup-and-version.outputs.final_version }}
