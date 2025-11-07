@@ -22,6 +22,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 env:
   SDK_PATH: Sdk/MParticle.Maui.Sdk
