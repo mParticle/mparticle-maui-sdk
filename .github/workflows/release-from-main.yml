@@ -10,6 +10,12 @@ on:
 permissions:
   contents: write
 
+env:
+  SDK_PATH: Sdk/MParticle.Maui.Sdk
+  SDK_PROJECT: MParticle.Maui.Sdk
+  ROKT_KIT_PATH: Kits/rokt/Sdk/MParticle.Maui.Rokt
+  ROKT_KIT_PROJECT: MParticle.Maui.Kits.Rokt
+
 jobs:
   setup-and-version:
     runs-on: ubuntu-latest
@@ -55,19 +61,34 @@ jobs:
         run: dotnet restore
 
       - name: Build SDK
-        run: dotnet build Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj -c Release
+        run: dotnet build ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}.csproj -c Release
 
       - name: Pack SDK
-        run: dotnet pack Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj -c Release
+        run: dotnet pack ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}.csproj -c Release
 
-      - name: Publish to NuGet Gallery
-        run: dotnet nuget push Sdk/MParticle.Maui.Sdk/bin/Release/MParticle.Maui.Sdk.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+      - name: Publish SDK to NuGet Gallery
+        run: dotnet nuget push ${{ env.SDK_PATH }}/bin/Release/${{ env.SDK_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
 
-      - name: Upload Package Artifact
+      - name: Build Rokt Kit
+        run: dotnet build ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj -c Release
+
+      - name: Pack Rokt Kit
+        run: dotnet pack ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj -c Release
+
+      - name: Publish Rokt Kit to NuGet Gallery
+        run: dotnet nuget push ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+
+      - name: Upload Package Artifact for SDK
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: MParticle.Maui.Sdk.${{ needs.setup-and-version.outputs.final_version }}.nupkg
-          path: Sdk/MParticle.Maui.Sdk/bin/Release/MParticle.Maui.Sdk.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+          name: ${{ env.SDK_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+          path: ${{ env.SDK_PATH }}/bin/Release/${{ env.SDK_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+
+      - name: Upload Package Artifact for Rokt Kit
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+          path: ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
 
       - uses: ffurrer2/extract-release-notes@9989ccec43d726ef05aa1cd7b2854fb96b6df6ab # v2.2.0
         id: extract-release-notes
@@ -80,7 +101,9 @@ jobs:
       - name: Create Github release
         uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 # v1.16.0
         with:
-          artifacts: Sdk/MParticle.Maui.Sdk/bin/Release/MParticle.Maui.Sdk.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+          artifacts: |
+            ${{ env.SDK_PATH }}/bin/Release/${{ env.SDK_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+            ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
           makeLatest: true
           tag: ${{ needs.setup-and-version.outputs.final_version }}
           body: |

@@ -1,0 +1,239 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
+        <UseMaui>true</UseMaui>
+        <SingleProject>true</SingleProject>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsBindingProject>true</IsBindingProject>
+        <NoBindingEmbedding>true</NoBindingEmbedding>
+
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+        <RootNamespace>mParticle.MAUI</RootNamespace>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackageId>mParticle.Maui.Kits.Rokt</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>mParticle</Authors>
+        <Description>
+            The mParticle .NET MAUI SDK enables you to integrate Rokt and mParticle into your .NET MAUI mobile apps.
+        </Description>
+        <Copyright>Copyright (c) mParticle Inc. 2024</Copyright>
+        <PackageProjectUrl>https://www.mparticle.com/</PackageProjectUrl>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <None Include="LICENSE" Pack="true" PackagePath=""/>
+        <None Include="README.md" Pack="true" PackagePath=""/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
+        <PackageReference Include="ThisAssembly" Version="1.0.0" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Maui.NativeLibraryInterop.BuildTasks" Version="0.0.1-pre1" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../../../Sdk/mParticle.Maui.Sdk/mParticle.Maui.Sdk.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$(TargetFramework.Contains('ios'))">
+        <ObjcBindingApiDefinition Include="macios/mParticleRoktBinding.MaciOS.Binding/ApiDefinitions.cs" />
+        <NLIXcodeProjectReference Include="macios/native/mParticleRoktBinding/mParticleRoktBinding.xcodeproj">
+            <SchemeName>mParticleRoktBinding</SchemeName>
+            <!-- Metadata applicable to @(NativeReference) will be used if set, otherwise the following defaults will be used:
+            <Kind>Framework</Kind>
+            <SmartLink>true</SmartLink>
+            -->
+        </NLIXcodeProjectReference>
+        <Folder Include="macios\native\mParticleSPM\" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$(TargetFramework.Contains('android'))">
+        <NLIGradleProjectReference
+                Include="./android/native/MParticleRoktBinding">
+            <ModuleName>MParticleRoktBinding</ModuleName>
+            <Link>false</Link>
+            <!-- Metadata applicable to @(AndroidLibrary) will be used if set, otherwise the following defaults will be used: -->
+            <!--<Bind>true</Bind>
+            <Pack>true</Pack>
+            <Visible>true</Visible>-->
+        </NLIGradleProjectReference>
+    </ItemGroup>
+    
+    <ItemGroup Condition="$(TargetFramework.Contains('android'))">
+        <!--mParticle Android Core SDK-->
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-rokt-kit-5.74.3.aar">
+            <Bind>true</Bind>
+            <Link>false</Link>
+            <Pack>true</Pack>
+            <Visible>true</Visible>
+        </AndroidLibrary>
+
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-kit-base-5.74.3.aar">
+            <Bind>false</Bind>
+            <Link>false</Link>
+            <Pack>true</Pack>
+            <Visible>true</Visible>
+        </AndroidLibrary>
+
+         <!--Rokt SDK-->
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktsdk-4.11.3.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        
+        <!--Rokt Sdk Internal Modules-->
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.core.common-api-4.11.3.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core-network-4.11.3.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core-model-4.11.3.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core.data-impl-4.11.3.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.core.common-impl-4.11.3.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.network.types-dcui-schema-2.2.0.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.legacy-roktsdk-4.11.3.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core.data-api-4.11.3.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-core-0.7.1.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-modelmapper-0.7.1.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktux-0.7.1.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        
+    <!--Rokt SDK Dependency Bindings-->
+        <PackageReference Include="Xamarin.KotlinX.Serialization.Core.Jvm" Version="1.7.3.1" />
+        <PackageReference Include="Org.Jetbrains.Kotlinx.KotlinxSerializationJsonJvm" Version="1.7.3" />
+        <PackageReference Include="Square.Retrofit2" Version="2.9.0.8" />
+        <PackageReference Include="Square.Retrofit2.AdapterRxJava2" Version="2.9.0.8" />
+        <PackageReference Include="Square.Retrofit2.ConverterGson" Version="2.9.0.8" />
+        <PackageReference Include="Xamarin.Android.ReactiveX.RxAndroid" Version="2.1.1.1" />
+        
+        <PackageReference Include="Xamarin.AndroidX.Compose.Material" Version="1.7.2" />
+        <PackageReference Include="Xamarin.AndroidX.Compose.Material3" Version="1.3.0" />
+        <PackageReference Include="Xamarin.AndroidX.Activity" Version="1.9.3" />
+        <PackageReference Include="Xamarin.AndroidX.Activity.ktx" Version="1.9.3" />
+        <PackageReference Include="Xamarin.AndroidX.Activity.Compose" Version="1.9.3" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.8.6" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common.Java8" Version="2.8.6" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core" Version="2.8.6" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.8.6" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.8.6" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.8.6" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.8.6" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel.Ktx" Version="2.8.6" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel.Compose" Version="2.8.6" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModelSavedState" Version="2.8.6" />
+        <PackageReference Include="Xamarin.AndroidX.Collection" Version="1.4.4" />
+        <PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.3" />
+        <PackageReference Include="Xamarin.AndroidX.Navigation.Compose" Version="2.8.0.1" />
+
+        <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.1.21" />
+        
+    <!--Rokt SDK Dependencies Without Bindings-->
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\retrofit2-kotlinx-serialization-converter-0.8.0.jar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt-coil-compose-2.3.0.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt-coil-2.3.0.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt-coil-base-2.3.0.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt-coil-svg-2.3.0.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt-coil-compose-base-2.3.0.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\kotlinx-collections-immutable-jvm-0.3.7.jar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+    </ItemGroup>
+
+    <ItemGroup Condition="$(TargetFramework.Contains('android'))">
+      <TransformFile Include="android\Transforms\EnumFields.xml" />
+      <TransformFile Include="android\Transforms\EnumMethods.xml" />
+      <TransformFile Include="android\Transforms\Metadata.xml" />
+    </ItemGroup>
+    
+    <!-- iOS -->
+    <ItemGroup Condition="$(TargetFramework.Contains('ios')) != true">
+        <Compile Remove="**\ios\**\*.cs" />
+        <None Include="**\ios\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+        <Compile Remove="macios\native\mParticleRoktBinding\bin\**" />
+        <None Remove="macios\native\mParticleRoktBinding\bin\**" />
+        <Compile Remove="macios\mParticleRoktBinding.MaciOS.Binding\ApiDefinitions.cs" />
+        <Compile Remove="macios\mParticleRoktBinding.MaciOS.Binding\StructsAndEnums.cs" />
+        <Compile Remove="macios\mParticleRoktBinding.MaciOS.Binding\Utils\**\*.cs" />
+        <None Include="macios\mParticleRoktBinding.MaciOS.Binding\Utils\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+    </ItemGroup>
+
+    <!-- Android -->
+    <ItemGroup Condition="$(TargetFramework.Contains('android')) != true">
+        <Compile Remove="**\android\**\*.cs" />
+        <None Include="**\android\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+    </ItemGroup>
+
+    <!-- Copy Rokt_Widget.xcframework from SPM to resources after build and update manifest -->
+    <Target Name="CopyRoktWidgetFramework" AfterTargets="_CreateBindingResourcePackage" Condition="$(TargetFramework.Contains('ios'))">
+        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleRoktBinding-*/SourcePackages/artifacts/rokt-sdk-ios/Rokt_Widget/Rokt_Widget.xcframework &quot;$(OutputPath)MParticle.Maui.Kits.Rokt.resources/&quot;" />
+        <!-- Append Rokt_Widget as a NativeReference to the manifest before the closing BindingAssembly tag -->
+        <Exec Command="sed -i '' 's|&lt;/BindingAssembly&gt;|&lt;NativeReference Name=&quot;Rokt_Widget.xcframework&quot;&gt;&lt;Kind&gt;Framework&lt;/Kind&gt;&lt;SmartLink&gt;false&lt;/SmartLink&gt;&lt;/NativeReference&gt;&lt;/BindingAssembly&gt;|g' &quot;$(OutputPath)MParticle.Maui.Kits.Rokt.resources/manifest&quot;" />
+    </Target>
+
+    <!-- Clean MParticleRoktBinding DerivedData from global Xcode cache during clean -->
+    <Target Name="CleanmParticleRoktBindingDerivedData" BeforeTargets="Clean" Condition="$(TargetFramework.Contains('ios')) == true">
+        <Exec Command="rm -rf $(HOME)/Library/Developer/Xcode/DerivedData/mParticleRoktBinding-*" ContinueOnError="true" />
+        <Message Text="Cleaned mParticleRoktBinding DerivedData from $(HOME)/Library/Developer/Xcode/DerivedData" Importance="high" />
+    </Target>
+
+</Project>

@@ -16,6 +16,12 @@ permissions:
   checks: write
   id-token: write
 
+env:
+  SDK_PATH: Sdk/MParticle.Maui.Sdk
+  SDK_PROJECT: MParticle.Maui.Sdk
+  ROKT_KIT_PATH: Kits/rokt/Sdk/MParticle.Maui.Rokt
+  ROKT_KIT_PROJECT: MParticle.Maui.Kits.Rokt
+
 jobs:
   trunk-check:
     runs-on: macos-latest
@@ -51,18 +57,27 @@ jobs:
         run: dotnet restore
 
       - name: Build SDK
-        run: dotnet build Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj
+        run: dotnet build ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}.csproj
 
-      - name: Build SampleApp
+      - name: Build SDK SampleApp
         run: dotnet build SampleApp/SampleApp.csproj
 
       - name: Pack SDK
-        run: dotnet pack Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj
+        run: dotnet pack ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}.csproj
 
-      - name: Find and rename nupkg file
+      - name: Build Rokt Kit
+        run: dotnet build ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj
+
+      - name: Build Rokt Kit SampleApp
+        run: dotnet build Kits/rokt/SampleApp/SampleApp.csproj
+
+      - name: Pack Rokt Kit
+        run: dotnet pack ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj
+
+      - name: Find and rename SDK nupkg file
         run: |
           # Find the generated nupkg file
-          NUPKG_FILE=$(find Sdk/MParticle.Maui.Sdk/bin/Release -name "*.nupkg" | head -1)
+          NUPKG_FILE=$(find ${{ env.SDK_PATH }}/bin/Release -name "*.nupkg" | head -1)
           if [ -z "$NUPKG_FILE" ]; then
             echo "No nupkg file found"
             exit 1
@@ -70,15 +85,36 @@ jobs:
           echo "Found nupkg file: $NUPKG_FILE"
 
           # Rename to remove version number
-          RENAMED_FILE="Sdk/MParticle.Maui.Sdk/bin/Release/MParticle.Maui.Sdk.nupkg"
+          RENAMED_FILE="${{ env.SDK_PATH }}/bin/Release/${{ env.SDK_PROJECT }}.nupkg"
           cp "$NUPKG_FILE" "$RENAMED_FILE"
           echo "Renamed to: $RENAMED_FILE"
 
-      - name: Upload Package Artifact
+      - name: Upload SDK Package Artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: MParticle.Maui.Sdk.nupkg
-          path: Sdk/MParticle.Maui.Sdk/bin/Release/MParticle.Maui.Sdk.nupkg
+          name: ${{ env.SDK_PROJECT }}.nupkg
+          path: ${{ env.SDK_PATH }}/bin/Release/${{ env.SDK_PROJECT }}.nupkg
+
+      - name: Find and rename Rokt Kit nupkg file
+        run: |
+          # Find the generated nupkg file
+          NUPKG_FILE=$(find ${{ env.ROKT_KIT_PATH }}/bin/Release -name "*.nupkg" | head -1)
+          if [ -z "$NUPKG_FILE" ]; then
+            echo "No nupkg file found"
+            exit 1
+          fi
+          echo "Found nupkg file: $NUPKG_FILE"
+
+          # Rename to remove version number
+          RENAMED_FILE="${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.nupkg"
+          cp "$NUPKG_FILE" "$RENAMED_FILE"
+          echo "Renamed to: $RENAMED_FILE"
+
+      - name: Upload Rokt Kit Package Artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ env.ROKT_KIT_PROJECT }}.nupkg
+          path: ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.nupkg
 
   pr-notify:
     if: >

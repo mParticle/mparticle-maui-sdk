@@ -458,6 +458,9 @@ public abstract class RoktApi
 
 public abstract class MParticleSDK
 {
+    protected bool _isInitialized = false;
+    internal const string SdkNotInitializedWarning = "[mParticle MAUI SDK] Warning: SDK has not been initialized. Please call Initialize() before utilizing mParticle SDK.";
+
     /// <summary>
     /// Gets the environment.
     /// </summary>

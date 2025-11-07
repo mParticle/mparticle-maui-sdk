@@ -1,0 +1,33 @@
+{
+  "originHash" : "984067f045167c47dae622c44a6946459dde847c3d54b5b61193238c32b9ef3e",
+  "pins" : [
+    {
+      "identity" : "mparticle-apple-integration-rokt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mparticle-integrations/mparticle-apple-integration-rokt.git",
+      "state" : {
+        "revision" : "0a3b83fd60df0c272beaa8411fbf4c3418ff95b6",
+        "version" : "8.3.2"
+      }
+    },
+    {
+      "identity" : "mparticle-apple-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mParticle/mparticle-apple-sdk",
+      "state" : {
+        "revision" : "dffa5b707b0b1523a54f9a4bbf1c5e3056bf5948",
+        "version" : "8.40.0"
+      }
+    },
+    {
+      "identity" : "rokt-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ROKT/rokt-sdk-ios",
+      "state" : {
+        "revision" : "0656a9b02cd17fa580c31c99f001ed2ffc080817",
+        "version" : "4.14.2"
+      }
+    }
+  ],
+  "version" : 3
+}

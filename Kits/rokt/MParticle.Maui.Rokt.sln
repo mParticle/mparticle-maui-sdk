@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "SampleApp\SampleApp.csproj", "{23B7C358-0B60-4035-9013-B404210988DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sdk", "Sdk", "{CE5A82ED-3185-4F19-96E4-44E0C54456FC}"
+	ProjectSection(SolutionItems) = preProject
+		Sdk\Sdk.sln = Sdk\Sdk.sln
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mParticleRoktBinding", "mParticleRoktBinding", "{F1889422-43C1-44F6-9CB5-715354AD1CFD}"
+	ProjectSection(SolutionItems) = preProject
+		Sdk\mParticleRoktBinding\mParticleRoktBinding.sln = Sdk\mParticleRoktBinding\mParticleRoktBinding.sln
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MParticle.Maui.Rokt", "Sdk\MParticle.Maui.Rokt\MParticle.Maui.Rokt.csproj", "{5A7BEC09-63E0-461E-9B2B-B9E9A1F0AC58}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F1889422-43C1-44F6-9CB5-715354AD1CFD} = {CE5A82ED-3185-4F19-96E4-44E0C54456FC}
+		{5A7BEC09-63E0-461E-9B2B-B9E9A1F0AC58} = {CE5A82ED-3185-4F19-96E4-44E0C54456FC}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{23B7C358-0B60-4035-9013-B404210988DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23B7C358-0B60-4035-9013-B404210988DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23B7C358-0B60-4035-9013-B404210988DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23B7C358-0B60-4035-9013-B404210988DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A7BEC09-63E0-461E-9B2B-B9E9A1F0AC58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A7BEC09-63E0-461E-9B2B-B9E9A1F0AC58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A7BEC09-63E0-461E-9B2B-B9E9A1F0AC58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A7BEC09-63E0-461E-9B2B-B9E9A1F0AC58}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
