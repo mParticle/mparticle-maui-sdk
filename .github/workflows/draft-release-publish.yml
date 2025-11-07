@@ -45,6 +45,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
+      - name: NuGet login (OIDC → temp API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: rokt
+
       - name: Setup .NET
         uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
         with:
@@ -106,7 +112,7 @@ jobs:
         run: dotnet pack ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}.csproj -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}
 
       - name: Publish to NuGet Test Gallery
-        run: dotnet nuget push ${{ env.SDK_PATH }}/bin/Release/${{ env.SDK_PROJECT }}.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{ secrets.NUGET_TEST_API_KEY }}
+        run: dotnet nuget push ${{ env.SDK_PATH }}/bin/Release/${{ env.SDK_PROJECT }}.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}}
 
       - name: Build Rokt Kit
         run: dotnet build ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}
@@ -115,7 +121,7 @@ jobs:
         run: dotnet pack ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}
 
       - name: Publish Rokt Kit to NuGet Test Gallery
-        run: dotnet nuget push ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{ secrets.NUGET_TEST_API_KEY }}
+        run: dotnet nuget push ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}}
 
       - name: Set .csproj version for SDK
         uses: vers-one/dotnet-project-version-updater@6d4de57b8f089d58a00b6ede1f3f05c77bb8e541 # v1.7
