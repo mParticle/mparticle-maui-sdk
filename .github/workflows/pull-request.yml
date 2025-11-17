@@ -21,7 +21,7 @@ env:
   SDK_PATH: Sdk/MParticle.Maui.Sdk
   SDK_PROJECT: MParticle.Maui.Sdk
   ROKT_KIT_PATH: Kits/rokt/Sdk/MParticle.Maui.Rokt
-  ROKT_KIT_PROJECT: MParticle.Maui.Kits.Rokt
+  ROKT_KIT_PROJECT: mParticle.Maui.Kits.Rokt
 
 jobs:
   trunk-check:
