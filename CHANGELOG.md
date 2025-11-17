@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Corrected filename for Rokt kit CSPROJ file from `MParticle.Maui.Kits.Rokt` to `mParticle.Maui.Kits.Rokt`
+
 ## [4.0.0] - 2025-11-11
 
 ### Changed
