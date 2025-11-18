@@ -90,7 +90,7 @@ jobs:
           if [ -n "${{ github.event.inputs.version-suffix }}" ]; then
             version_suffix="${{ github.event.inputs.version-suffix }}"
           else
-            version_suffix="-alpha.${{ github.run_attempt }}"
+            version_suffix="-alpha.${{ github.run_number }}"
           fi
           echo "version-suffix=$version_suffix" >> $GITHUB_OUTPUT
 
