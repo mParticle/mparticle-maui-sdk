@@ -1,0 +1,6 @@
+<BindingAssembly>
+  <NativeReference Name="mParticle_Apple_SDK.xcframework">
+    <Kind>Framework</Kind>
+    <SmartLink>false</SmartLink>
+  </NativeReference>
+</BindingAssembly>

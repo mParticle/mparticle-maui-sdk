@@ -1,0 +1,6 @@
+<BindingAssembly>
+  <NativeReference Name="Rokt_Widget.xcframework">
+    <Kind>Framework</Kind>
+    <SmartLink>false</SmartLink>
+  </NativeReference>
+</BindingAssembly>
