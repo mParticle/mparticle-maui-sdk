@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.0] - 2026-02-16
+
 ### Changed
 
 - Upgraded target frameworks from .NET 8.0 to .NET 10.0 MAUI for all SDK and sample projects
@@ -36,7 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First release of the new MAUI only package: mParticle.MAUI
 
-[unreleased]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.0.1...HEAD
+[unreleased]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.1.0...HEAD
+[4.1.0]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/mParticle/mparticle-maui-sdk/compare/3.0.0...4.0.0
 [3.0.0]: https://github.com/mParticle/mparticle-maui-sdk/compare/08b6a85a91b4f1cf98607e3eb91ccb4b9eea6548...3.0.0
