@@ -24,17 +24,17 @@ dotnet build SampleApp/SampleApp.csproj
 cd SampleApp
 
 # To run android
-dotnet build -t:Run -f net8.0-android
+dotnet build -t:Run -f net10.0-android
 
 # To run iOS
-dotnet build -t:Run -f net8.0-ios
+dotnet build -t:Run -f net10.0-ios
 
 # To run iOS on a specific device you can find the UDID with
 xcrun simctl list devices | grep "Booted"
 
 # This UDID can then be used in the following command
 
-dotnet build -t:Run -f net8.0-ios -p:_DeviceName=:v2:udid=MY_SPECIFIC_UDID
+dotnet build -t:Run -f net10.0-ios -p:_DeviceName=:v2:udid=MY_SPECIFIC_UDID
 ```
 
 ## Linting and Formatting with Trunk

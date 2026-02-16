@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
+        <TargetFrameworks>net10.0-ios;net10.0-android</TargetFrameworks>
         <UseMaui>true</UseMaui>
         <SingleProject>true</SingleProject>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -47,13 +47,9 @@
     <ItemGroup Condition="$(TargetFramework.Contains('ios'))">
         <ObjcBindingApiDefinition Include="macios/mParticleBinding.MaciOS.Binding/ApiDefinitions.cs" />
         <ObjcBindingCoreSource Include="macios/mParticleBinding.MaciOS.Binding/StructsAndEnums.cs" />
-        <NLIXcodeProjectReference Include="macios/native/mParticleBinding/mParticleBinding.xcodeproj">
+        <XcodeProject Include="macios/native/mParticleBinding/mParticleBinding.xcodeproj">
             <SchemeName>mParticleBinding</SchemeName>
-            <!-- Metadata applicable to @(NativeReference) will be used if set, otherwise the following defaults will be used:
-            <Kind>Framework</Kind>
-            <SmartLink>true</SmartLink>
-            -->
-        </NLIXcodeProjectReference>
+        </XcodeProject>
         <Folder Include="macios\native\mParticleSPM\" />
     </ItemGroup>
 
@@ -78,22 +74,23 @@
         </AndroidLibrary>
         
         <!--mParticle SDK Dependencies-->
-        <PackageReference Include="Xamarin.AndroidX.Activity" Version="1.9.3" />
-        <PackageReference Include="Xamarin.AndroidX.Activity.ktx" Version="1.9.3" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common.Java8" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel.Ktx" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Collection" Version="1.4.4" />
-        <PackageReference Include="Xamarin.AndroidX.Collection.Jvm" Version="1.4.4" />
-        <PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.3" />
-        <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.1.21" />
-        <PackageReference Include="Xamarin.KotlinX.Coroutines.Core" Version="1.9.0" />
-        <PackageReference Include="Xamarin.KotlinX.Coroutines.Android" Version="1.9.0" />
+        <PackageReference Include="Xamarin.AndroidX.Activity" Version="1.10.1.3" />
+        <PackageReference Include="Xamarin.AndroidX.Activity.ktx" Version="1.10.1.3" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common.Java8" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel.Ktx" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Collection" Version="1.5.0.3" />
+        <PackageReference Include="Xamarin.AndroidX.Collection.Jvm" Version="1.5.0.3" />
+        <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.8.8.1" />
+        <PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.8.1" />
+        <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.0.1" />
+        <PackageReference Include="Xamarin.KotlinX.Coroutines.Core" Version="1.10.2.1" />
+        <PackageReference Include="Xamarin.KotlinX.Coroutines.Android" Version="1.10.2.1" />
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework.Contains('android'))">
@@ -120,11 +117,16 @@
         <None Include="**\android\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
     </ItemGroup>
 
-    <!-- Copy mParticle_Apple_SDK.xcframework from SPM to resources after build and update manifest -->
-    <Target Name="CopymParticleAppleSDKFramework" AfterTargets="_CreateBindingResourcePackage" Condition="$(TargetFramework.Contains('ios'))">
-        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleBinding-*/SourcePackages/artifacts/mparticle-apple-sdk/mParticle_Apple_SDK/mParticle_Apple_SDK.xcframework &quot;$(OutputPath)MParticle.Maui.Sdk.resources/&quot;" />
-        <!-- Append mParticle_Apple_SDK as a NativeReference to the manifest before the closing BindingAssembly tag -->
-        <Exec Command="sed -i '' 's|&lt;/BindingAssembly&gt;|&lt;NativeReference Name=&quot;mParticle_Apple_SDK.xcframework&quot;&gt;&lt;Kind&gt;Framework&lt;/Kind&gt;&lt;SmartLink&gt;false&lt;/SmartLink&gt;&lt;/NativeReference&gt;&lt;/BindingAssembly&gt;|g' &quot;$(OutputPath)MParticle.Maui.Sdk.resources/manifest&quot;" />
+    <!-- Copy mParticle_Apple_SDK.xcframework from SPM to resources after Build -->
+    <Target Name="CopymParticleAppleSDKFramework" AfterTargets="Build" Condition="$(TargetFramework.Contains('ios'))">
+        <!-- Copy xcframework from DerivedData -->
+        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleBinding-*/SourcePackages/artifacts/mparticle-apple-sdk/mParticle_Apple_SDK/mParticle_Apple_SDK.xcframework &quot;$(OutputPath)MParticle.Maui.Sdk.resources/&quot;" ContinueOnError="true" />
+        <!-- Copy manifest template if xcframework was copied successfully -->
+        <Copy 
+            SourceFiles="$(MSBuildThisFileDirectory)manifest.template" 
+            DestinationFiles="$(OutputPath)MParticle.Maui.Sdk.resources/manifest"
+            Condition="Exists('$(OutputPath)MParticle.Maui.Sdk.resources/mParticle_Apple_SDK.xcframework')"
+            SkipUnchangedFiles="true" />
     </Target>
 
     <!-- Clean mParticleBinding DerivedData from global Xcode cache during clean -->

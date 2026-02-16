@@ -57,12 +57,12 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
         with:
-          dotnet-version: 8.x
+          dotnet-version: 10.0.103
 
       - name: Setup XCode
         uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
         with:
-          xcode-version: 16.4
+          xcode-version: 26.2
 
       - name: Install .NET MAUI
         run: dotnet workload install maui
@@ -108,6 +108,17 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      - name: Resolve SPM dependencies for Xcode project
+        run: |
+          cd ${{ env.SDK_PATH }}/macios/native/mParticleBinding
+          xcodebuild -resolvePackageDependencies -project mParticleBinding.xcodeproj -scheme mParticleBinding
+
+      - name: Build Xcode project to generate framework
+        run: |
+          cd ${{ env.SDK_PATH }}/macios/native/mParticleBinding
+          xcodebuild -project mParticleBinding.xcodeproj -scheme mParticleBinding -configuration Release -sdk iphoneos build
+          xcodebuild -project mParticleBinding.xcodeproj -scheme mParticleBinding -configuration Release -sdk iphonesimulator build
+
       - name: Build SDK
         run: dotnet build ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}.csproj -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}
 
@@ -116,6 +127,17 @@ jobs:
 
       - name: Publish to NuGet Test Gallery
         run: dotnet nuget push ${{ env.SDK_PATH }}/bin/Release/mParticle.MAUI.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}}
+
+      - name: Resolve SPM dependencies for Rokt Kit iOS binding
+        run: |
+          cd ${{ env.ROKT_KIT_PATH }}/macios/native/mParticleRoktBinding
+          xcodebuild -resolvePackageDependencies -project mParticleRoktBinding.xcodeproj -scheme mParticleRoktBinding
+
+      - name: Build Xcode project for Rokt Kit iOS
+        run: |
+          cd ${{ env.ROKT_KIT_PATH }}/macios/native/mParticleRoktBinding
+          xcodebuild -project mParticleRoktBinding.xcodeproj -scheme mParticleRoktBinding -configuration Release -sdk iphoneos build
+          xcodebuild -project mParticleRoktBinding.xcodeproj -scheme mParticleRoktBinding -configuration Release -sdk iphonesimulator build
 
       - name: Build Rokt Kit
         run: dotnet build ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}

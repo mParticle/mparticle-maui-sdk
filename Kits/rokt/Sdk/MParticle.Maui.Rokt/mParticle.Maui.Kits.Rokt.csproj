@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
+        <TargetFrameworks>net10.0-ios;net10.0-android</TargetFrameworks>
         <UseMaui>true</UseMaui>
         <SingleProject>true</SingleProject>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -49,13 +49,9 @@
 
     <ItemGroup Condition="$(TargetFramework.Contains('ios'))">
         <ObjcBindingApiDefinition Include="macios/mParticleRoktBinding.MaciOS.Binding/ApiDefinitions.cs" />
-        <NLIXcodeProjectReference Include="macios/native/mParticleRoktBinding/mParticleRoktBinding.xcodeproj">
+        <XcodeProject Include="macios/native/mParticleRoktBinding/mParticleRoktBinding.xcodeproj">
             <SchemeName>mParticleRoktBinding</SchemeName>
-            <!-- Metadata applicable to @(NativeReference) will be used if set, otherwise the following defaults will be used:
-            <Kind>Framework</Kind>
-            <SmartLink>true</SmartLink>
-            -->
-        </NLIXcodeProjectReference>
+        </XcodeProject>
         <Folder Include="macios\native\mParticleSPM\" />
     </ItemGroup>
 
@@ -140,33 +136,35 @@
         </AndroidLibrary>
         
     <!--Rokt SDK Dependency Bindings-->
-        <PackageReference Include="Xamarin.KotlinX.Serialization.Core.Jvm" Version="1.7.3.1" />
+        <PackageReference Include="Xamarin.KotlinX.Serialization.Core.Jvm" Version="1.9.0.1" />
         <PackageReference Include="Org.Jetbrains.Kotlinx.KotlinxSerializationJsonJvm" Version="1.7.3" />
         <PackageReference Include="Square.Retrofit2" Version="2.9.0.8" />
         <PackageReference Include="Square.Retrofit2.AdapterRxJava2" Version="2.9.0.8" />
         <PackageReference Include="Square.Retrofit2.ConverterGson" Version="2.9.0.8" />
         <PackageReference Include="Xamarin.Android.ReactiveX.RxAndroid" Version="2.1.1.1" />
         
-        <PackageReference Include="Xamarin.AndroidX.Compose.Material" Version="1.7.2" />
+        <PackageReference Include="Xamarin.AndroidX.Compose.Material" Version="1.8.3.1" />
         <PackageReference Include="Xamarin.AndroidX.Compose.Material3" Version="1.3.0" />
-        <PackageReference Include="Xamarin.AndroidX.Activity" Version="1.9.3" />
-        <PackageReference Include="Xamarin.AndroidX.Activity.ktx" Version="1.9.3" />
-        <PackageReference Include="Xamarin.AndroidX.Activity.Compose" Version="1.9.3" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common.Java8" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel.Ktx" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel.Compose" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModelSavedState" Version="2.8.6" />
-        <PackageReference Include="Xamarin.AndroidX.Collection" Version="1.4.4" />
-        <PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.3" />
-        <PackageReference Include="Xamarin.AndroidX.Navigation.Compose" Version="2.8.0.1" />
+        <PackageReference Include="Xamarin.AndroidX.Activity" Version="1.10.1.3" />
+        <PackageReference Include="Xamarin.AndroidX.Activity.ktx" Version="1.10.1.3" />
+        <PackageReference Include="Xamarin.AndroidX.Activity.Compose" Version="1.10.1.3" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common.Java8" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel.Ktx" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel.Compose" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModelSavedState" Version="2.9.2.1" />
+        <PackageReference Include="Xamarin.AndroidX.Collection" Version="1.5.0.3" />
+        <PackageReference Include="Xamarin.AndroidX.Collection.Jvm" Version="1.5.0.3" />
+        <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.8.8.1" />
+        <PackageReference Include="Xamarin.AndroidX.Fragment.Ktx" Version="1.8.8.1" />
+        <PackageReference Include="Xamarin.AndroidX.Navigation.Compose" Version="2.9.2.1" />
 
-        <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.1.21" />
+        <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.0.1" />
         
     <!--Rokt SDK Dependencies Without Bindings-->
         <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\retrofit2-kotlinx-serialization-converter-0.8.0.jar">
@@ -223,11 +221,16 @@
         <None Include="**\android\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
     </ItemGroup>
 
-    <!-- Copy Rokt_Widget.xcframework from SPM to resources after build and update manifest -->
-    <Target Name="CopyRoktWidgetFramework" AfterTargets="_CreateBindingResourcePackage" Condition="$(TargetFramework.Contains('ios'))">
-        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleRoktBinding-*/SourcePackages/artifacts/rokt-sdk-ios/Rokt_Widget/Rokt_Widget.xcframework &quot;$(OutputPath)MParticle.Maui.Kits.Rokt.resources/&quot;" />
-        <!-- Append Rokt_Widget as a NativeReference to the manifest before the closing BindingAssembly tag -->
-        <Exec Command="sed -i '' 's|&lt;/BindingAssembly&gt;|&lt;NativeReference Name=&quot;Rokt_Widget.xcframework&quot;&gt;&lt;Kind&gt;Framework&lt;/Kind&gt;&lt;SmartLink&gt;false&lt;/SmartLink&gt;&lt;/NativeReference&gt;&lt;/BindingAssembly&gt;|g' &quot;$(OutputPath)MParticle.Maui.Kits.Rokt.resources/manifest&quot;" />
+    <!-- Copy Rokt_Widget.xcframework from SPM to resources after Build -->
+    <Target Name="CopyRoktWidgetFramework" AfterTargets="Build" Condition="$(TargetFramework.Contains('ios'))">
+        <!-- Copy xcframework from DerivedData -->
+        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleRoktBinding-*/SourcePackages/artifacts/rokt-sdk-ios/Rokt_Widget/Rokt_Widget.xcframework &quot;$(OutputPath)MParticle.Maui.Kits.Rokt.resources/&quot;" ContinueOnError="true" />
+        <!-- Copy manifest template if xcframework was copied successfully -->
+        <Copy 
+            SourceFiles="$(MSBuildThisFileDirectory)manifest.template" 
+            DestinationFiles="$(OutputPath)MParticle.Maui.Kits.Rokt.resources/manifest"
+            Condition="Exists('$(OutputPath)MParticle.Maui.Kits.Rokt.resources/Rokt_Widget.xcframework')"
+            SkipUnchangedFiles="true" />
     </Target>
 
     <!-- Clean MParticleRoktBinding DerivedData from global Xcode cache during clean -->

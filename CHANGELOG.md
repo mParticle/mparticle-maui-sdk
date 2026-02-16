@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgraded target frameworks from .NET 8.0 to .NET 10.0 MAUI for all SDK and sample projects
+- Updated Android dependencies
+
+### Fixed
+
+- Resolved XA4212 build error with AndroidX.Navigation.Compose on .NET 10 MAUI
+
 ## [4.0.1] - 2025-11-18
 
 ### Fixed
