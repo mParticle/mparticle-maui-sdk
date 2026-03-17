@@ -1,4 +1,9 @@
 <BindingAssembly>
+  <!-- mParticleRoktBinding first: contains MPKitRokt, required at mParticle init -->
+  <NativeReference Name="mParticleRoktBindingiOS.xcframework">
+    <Kind>Framework</Kind>
+    <SmartLink>false</SmartLink>
+  </NativeReference>
   <NativeReference Name="Rokt_Widget.xcframework">
     <Kind>Framework</Kind>
     <SmartLink>false</SmartLink>

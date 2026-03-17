@@ -221,15 +221,22 @@
         <None Include="**\android\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
     </ItemGroup>
 
-    <!-- Copy Rokt_Widget.xcframework from SPM to resources after Build -->
+    <!-- Copy Rokt_Widget.xcframework and mParticleRoktBindingiOS.xcframework to resources after Build -->
     <Target Name="CopyRoktWidgetFramework" AfterTargets="Build" Condition="$(TargetFramework.Contains('ios'))">
-        <!-- Copy xcframework from DerivedData -->
-        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleRoktBinding-*/SourcePackages/artifacts/rokt-sdk-ios/Rokt_Widget/Rokt_Widget.xcframework &quot;$(OutputPath)MParticle.Maui.Kits.Rokt.resources/&quot;" ContinueOnError="true" />
-        <!-- Copy manifest template if xcframework was copied successfully -->
+        <PropertyGroup>
+            <_RoktResourcesPath>$(OutputPath)MParticle.Maui.Kits.Rokt.resources</_RoktResourcesPath>
+            <_RoktBindingXcFrameworkPath>$(MSBuildProjectDirectory)/obj/$(Configuration)/$(TargetFramework)/xcode/mParticleRoktBinding-*/xcframeworks/mParticleRoktBindingiOS.xcframework</_RoktBindingXcFrameworkPath>
+        </PropertyGroup>
+        <MakeDir Directories="$(_RoktResourcesPath)" />
+        <!-- Copy Rokt_Widget.xcframework from SPM DerivedData -->
+        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleRoktBinding-*/SourcePackages/artifacts/rokt-sdk-ios/Rokt_Widget/Rokt_Widget.xcframework &quot;$(_RoktResourcesPath)/&quot;" ContinueOnError="true" />
+        <!-- Copy mParticleRoktBindingiOS.xcframework (MPKitRokt) from Xcode build output -->
+        <Exec Command="cp -R $(_RoktBindingXcFrameworkPath) &quot;$(_RoktResourcesPath)/&quot;" ContinueOnError="true" />
+        <!-- Copy manifest when both frameworks exist -->
         <Copy 
             SourceFiles="$(MSBuildThisFileDirectory)manifest.template" 
-            DestinationFiles="$(OutputPath)MParticle.Maui.Kits.Rokt.resources/manifest"
-            Condition="Exists('$(OutputPath)MParticle.Maui.Kits.Rokt.resources/Rokt_Widget.xcframework')"
+            DestinationFiles="$(_RoktResourcesPath)/manifest"
+            Condition="Exists('$(_RoktResourcesPath)/Rokt_Widget.xcframework') And Exists('$(_RoktResourcesPath)/mParticleRoktBindingiOS.xcframework')"
             SkipUnchangedFiles="true" />
     </Target>
 
