@@ -117,15 +117,22 @@
         <None Include="**\android\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
     </ItemGroup>
 
-    <!-- Copy mParticle_Apple_SDK.xcframework from SPM to resources after Build -->
+    <!-- Copy mParticle_Apple_SDK.xcframework and mParticleBindingiOS.xcframework to resources after Build -->
     <Target Name="CopymParticleAppleSDKFramework" AfterTargets="Build" Condition="$(TargetFramework.Contains('ios'))">
-        <!-- Copy xcframework from DerivedData -->
-        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleBinding-*/SourcePackages/artifacts/mparticle-apple-sdk/mParticle_Apple_SDK/mParticle_Apple_SDK.xcframework &quot;$(OutputPath)MParticle.Maui.Sdk.resources/&quot;" ContinueOnError="true" />
-        <!-- Copy manifest template if xcframework was copied successfully -->
+        <PropertyGroup>
+            <_SdkResourcesPath>$(OutputPath)MParticle.Maui.Sdk.resources</_SdkResourcesPath>
+            <_BindingXcFrameworkPath>$(MSBuildProjectDirectory)/obj/$(Configuration)/$(TargetFramework)/xcode/mParticleBinding-*/xcframeworks/mParticleBindingiOS.xcframework</_BindingXcFrameworkPath>
+        </PropertyGroup>
+        <MakeDir Directories="$(_SdkResourcesPath)" />
+        <!-- Copy mParticle_Apple_SDK.xcframework from SPM DerivedData -->
+        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleBinding-*/SourcePackages/artifacts/mparticle-apple-sdk/mParticle_Apple_SDK/mParticle_Apple_SDK.xcframework &quot;$(_SdkResourcesPath)/&quot;" ContinueOnError="true" />
+        <!-- Copy mParticleBindingiOS.xcframework (contains mParticleSPM) from Xcode build output -->
+        <Exec Command="cp -R $(_BindingXcFrameworkPath) &quot;$(_SdkResourcesPath)/&quot;" ContinueOnError="true" />
+        <!-- Copy manifest when both frameworks exist -->
         <Copy 
             SourceFiles="$(MSBuildThisFileDirectory)manifest.template" 
-            DestinationFiles="$(OutputPath)MParticle.Maui.Sdk.resources/manifest"
-            Condition="Exists('$(OutputPath)MParticle.Maui.Sdk.resources/mParticle_Apple_SDK.xcframework')"
+            DestinationFiles="$(_SdkResourcesPath)/manifest"
+            Condition="Exists('$(_SdkResourcesPath)/mParticle_Apple_SDK.xcframework') And Exists('$(_SdkResourcesPath)/mParticleBindingiOS.xcframework')"
             SkipUnchangedFiles="true" />
     </Target>
 
