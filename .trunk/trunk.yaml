@@ -43,6 +43,23 @@ lint:
     - trufflehog@3.88.23
     - swiftlint@0.57.0
     - validate-actions-versions
+    - mparticle-api-key-check
+  definitions:
+    - name: mparticle-api-key-check
+      files: [ALL]
+      commands:
+        - name: check-mparticle-keys
+          output: pass_fail
+          run: >-
+            sh -c '
+              if grep -E "(?i)[a-z]{2}[0-9]*-[0-9a-f]{32}" "${target}"; then
+                echo "ERROR: Possible mParticle API key detected in ${target}"
+                echo "       Format: xx...-[32 hex chars]  (e.g. us2-, eu1-, us-, au4-, etc.)"
+                echo "API keys should never be committed to version control!"
+                exit 1
+              fi
+            '
+          success_codes: [0, 1]
   disabled:
     - yamllint
   ignore:
