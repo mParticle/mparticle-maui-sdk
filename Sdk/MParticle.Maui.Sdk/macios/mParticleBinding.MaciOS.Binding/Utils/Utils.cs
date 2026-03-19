@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Foundation;
@@ -90,6 +90,7 @@ namespace mParticle.MAUI.iOS.Utils
             {
                 mpOptions.OnIdentifyComplete = ConvertToMpIdentifyCompleteListener(options.IdentityStateListener);
             }
+            mpOptions.ProxyAppDelegate = false; // NSProxy incompatible with .NET MAUI marshalling
             return mpOptions;
         }
 

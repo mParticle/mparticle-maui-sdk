@@ -27,6 +27,7 @@
 .vs/
 [Bb]in/
 [Oo]bj/
+LocalNuGet/
 _UpgradeReport_Files/
 [Pp]ackages/
 
@@ -51,3 +52,7 @@ profile
 DerivedData
 *.hmap
 *.ipa
+
+# Swift Package Manager
+**/.build/
+**/Package.resolved
