@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.1] - 2026-03-20
+
+### Fixed
+
+- Missing mParticleRoktBindingiOS.xcframework in the NuGet package
+- Issue with ProxyAppDelegate by disabling ProxyAppDelegate in iOS binding (NSProxy incompatible with MAUI)
+
 ## [4.1.0] - 2026-02-16
 
 ### Changed
@@ -38,7 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First release of the new MAUI only package: mParticle.MAUI
 
-[unreleased]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.1.0...HEAD
+[unreleased]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.1.1...HEAD
+[4.1.1]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/mParticle/mparticle-maui-sdk/compare/3.0.0...4.0.0
