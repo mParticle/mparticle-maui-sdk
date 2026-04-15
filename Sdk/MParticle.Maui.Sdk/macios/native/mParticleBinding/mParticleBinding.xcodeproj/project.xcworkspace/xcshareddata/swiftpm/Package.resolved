@@ -1,13 +1,22 @@
 {
-  "originHash" : "48e6da250f86ad208e0915bb05c11313bdacd02166253b9965d151395766c8d3",
+  "originHash" : "ce5bbb27789affa22311eedd9d0df13979c34b1728f8126b54ba4905e8615df8",
   "pins" : [
     {
       "identity" : "mparticle-apple-sdk",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mParticle/mparticle-apple-sdk",
       "state" : {
-        "revision" : "dffa5b707b0b1523a54f9a4bbf1c5e3056bf5948",
-        "version" : "8.40.0"
+        "revision" : "0bed61c5588bedf5ec120717c3c54b5176c73b29",
+        "version" : "9.0.0"
+      }
+    },
+    {
+      "identity" : "rokt-contracts-apple",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ROKT/rokt-contracts-apple.git",
+      "state" : {
+        "revision" : "ca2ff1061f5d2fe8d611c7ac17e2af8c931734b0",
+        "version" : "0.1.3"
       }
     }
   ],

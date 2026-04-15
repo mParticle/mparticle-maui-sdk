@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "mParticleSPM",
     platforms: [
-        .iOS(.v11)
+        .iOS(.v15)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -16,7 +16,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/mParticle/mparticle-apple-sdk", exact: "8.40.0")
+        .package(url: "https://github.com/mParticle/mparticle-apple-sdk", exact: "9.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
