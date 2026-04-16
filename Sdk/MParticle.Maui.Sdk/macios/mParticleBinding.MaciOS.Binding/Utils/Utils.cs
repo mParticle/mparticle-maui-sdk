@@ -90,7 +90,6 @@ namespace mParticle.MAUI.iOS.Utils
             {
                 mpOptions.OnIdentifyComplete = ConvertToMpIdentifyCompleteListener(options.IdentityStateListener);
             }
-            mpOptions.ProxyAppDelegate = false; // NSProxy incompatible with .NET MAUI marshalling
             return mpOptions;
         }
 
@@ -99,7 +98,7 @@ namespace mParticle.MAUI.iOS.Utils
             var bindingProduct = new iOSBinding.MPProduct();
             bindingProduct.Sku = product.Sku;
             bindingProduct.Name = product.Name;
-            bindingProduct.UnitPrice = product.Price;
+            bindingProduct.Price = new NSNumber(product.Price);
             bindingProduct.Quantity = new NSNumber(product.Quantity);
             bindingProduct.Brand = product.Brand;
             bindingProduct.Category = product.Category;
@@ -124,7 +123,7 @@ namespace mParticle.MAUI.iOS.Utils
                     return null;
                 }
                 var customKeys = product.AllKeys.ToDictionary(key => key.ToString(), key => product.ObjectForKeyedSubscript(key.ToString()).ToString());
-                return new Product(product.Name, product.Sku, product.UnitPrice, product.Quantity.DoubleValue)
+                return new Product(product.Name, product.Sku, product.Price?.DoubleValue ?? 0, product.Quantity.DoubleValue)
                 {
                     Brand = product.Brand,
                     CouponCode = product.CouponCode,

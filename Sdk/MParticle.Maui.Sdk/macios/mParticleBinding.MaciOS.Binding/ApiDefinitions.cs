@@ -327,10 +327,6 @@ namespace mParticle.MAUI.iOSBinding {
         // @property (readwrite, nonatomic) double totalAmount __attribute__((deprecated("use MPTransactionAttributes.revenue instead")));
         [Export("totalAmount")]
         double TotalAmount { get; set; }
-
-        // @property (readwrite, nonatomic) double unitPrice __attribute__((deprecated("use the price property instead")));
-        [Export("unitPrice")]
-        double UnitPrice { get; set; }
     }
 
     // @interface MPCart : NSObject <NSCoding>
@@ -761,10 +757,6 @@ namespace mParticle.MAUI.iOSBinding {
         [Export("environment", ArgumentSemantic.Assign)]
         MPEnvironment Environment { get; set; }
 
-        // @property(nonatomic, unsafe_unretained, readwrite) BOOL proxyAppDelegate;
-        [Export("proxyAppDelegate", ArgumentSemantic.Assign)]
-        bool ProxyAppDelegate { get; set; }
-
         // @property(nonatomic, unsafe_unretained, readwrite) BOOL automaticSessionTracking;
         [Export("automaticSessionTracking", ArgumentSemantic.Assign)]
         bool AutomaticSessionTracking { get; set; }
@@ -1033,26 +1025,6 @@ namespace mParticle.MAUI.iOSBinding {
         [Export("kitInstance:completionHandler:")]
         void KitInstance(NSNumber kitCode, Action<NSObject> completionHandler);
 
-        // @property (nonatomic, unsafe_unretained) BOOL backgroundLocationTracking;
-        [Export("backgroundLocationTracking")]
-        bool BackgroundLocationTracking { get; set; }
-
-        // @property (nonatomic, strong) CLLocation * _Nullable location;
-        [NullAllowed, Export("location", ArgumentSemantic.Strong)]
-        CLLocation Location { get; set; }
-
-        // -(void)beginLocationTracking:(CLLocationAccuracy)accuracy minDistance:(CLLocationDistance)distanceFilter;
-        [Export("beginLocationTracking:minDistance:")]
-        void BeginLocationTracking(double accuracy, double distanceFilter);
-
-        // -(void)beginLocationTracking:(CLLocationAccuracy)accuracy minDistance:(CLLocationDistance)distanceFilter authorizationRequest:(MPLocationAuthorizationRequest)authorizationRequest;
-        [Export("beginLocationTracking:minDistance:authorizationRequest:")]
-        void BeginLocationTracking(double accuracy, double distanceFilter, MPLocationAuthorizationRequest authorizationRequest);
-
-        // -(void)endLocationTracking;
-        [Export("endLocationTracking")]
-        void EndLocationTracking();
-
         // -(void)excludeURLFromNetworkPerformanceMeasuring:(NSURL * _Nonnull)url;
         [Export("excludeURLFromNetworkPerformanceMeasuring:")]
         void ExcludeURLFromNetworkPerformanceMeasuring(NSUrl url);
@@ -1144,11 +1116,6 @@ namespace mParticle.MAUI.iOSBinding {
         // @property (nonatomic, strong) NSString * _Nonnull identifier;
         [Export("identifier", ArgumentSemantic.Strong)]
         string Identifier { get; set; }
-
-        // +(RoktEmbeddedView * _Nonnull)createRoktEmbeddedView __attribute__((warn_unused_result("")));
-        [Static]
-        [Export("createRoktEmbeddedView")]
-        RoktEmbeddedView CreateRoktEmbeddedView();
     }
 
     // @interface RoktEvent : NSObject

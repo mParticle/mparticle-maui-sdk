@@ -102,14 +102,8 @@ public class MParticleSDKImpl : MParticleSDK
         iOSBinding.MParticle.SetWrapperSdkInternal(iOSBinding.MPWrapperSdk.MPWrapperSdkMaui, version);
         
         mparticle.LogLevel = Utils.ConvertToMpLogLevel(options.LogLevel);
-        if (options.LocationTracking != null && options.LocationTracking.Enabled)
-        {
-            mparticle.BeginLocationTracking(options.LocationTracking.MinDistance, options.LocationTracking.MinDistance);
-        }
-        else
-        {
-            mparticle.EndLocationTracking();
-        }
+        // mParticle Apple SDK 9 removed begin/end location tracking selectors.
+        // Keep LocationTracking as Android-only behavior for now.
         if (options.PushRegistration != null && options.PushRegistration.IOSToken != null)
         {
             mparticle.PushNotificationToken = options.PushRegistration.IOSToken;
@@ -350,7 +344,7 @@ public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, iOSBinding.
 
     protected override iOSBinding.RoktEmbeddedView CreatePlatformView()
     {
-        return iOSBinding.RoktEmbeddedView.CreateRoktEmbeddedView();
+        return new iOSBinding.RoktEmbeddedView();
     }
 }
 
