@@ -220,12 +220,12 @@ namespace mParticle.MAUI.iOS.Utils
             });
         }
 
-        internal static iOSBinding.MPRoktConfig ConvertToMpRoktConfig(RoktConfig config)
+        internal static iOSBinding.RoktConfig ConvertToMpRoktConfig(RoktConfig config)
         {
             if (config == null)
                 return null;
 
-            var mpConfig = new iOSBinding.MPRoktConfig();
+            var mpConfig = new iOSBinding.RoktConfig();
             
             if (config.CacheDuration.HasValue)
                 mpConfig.CacheDuration = NSNumber.FromInt32(config.CacheDuration.Value);
@@ -235,40 +235,42 @@ namespace mParticle.MAUI.iOS.Utils
             return mpConfig;
         }
 
-        internal static iOSBinding.MPRoktEventCallback ConvertToMpRoktEventCallback(RoktEventCallback callbacks)
+        internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(RoktEventCallback callbacks)
         {
             return ConvertToMpRoktEventCallback(callbacks, null);
         }
 
-        internal static iOSBinding.MPRoktEventCallback ConvertToMpRoktEventCallback(
+        internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(
             RoktEventCallback callbacks, 
             Action<string, double> heightCallback)
         {
-            var mpCallback = new iOSBinding.MPRoktEventCallback();
-            
-            if (callbacks?.OnLoad != null)
-                mpCallback.OnLoad = callbacks.OnLoad;
-                
-            if (callbacks?.OnUnLoad != null)
-                mpCallback.OnUnLoad = () => callbacks.OnUnLoad?.Invoke("Unknown");
-                
-            if (callbacks?.OnShouldShowLoadingIndicator != null)
-                mpCallback.OnShouldShowLoadingIndicator = callbacks.OnShouldShowLoadingIndicator;
-                
-            if (callbacks?.OnShouldHideLoadingIndicator != null)
-                mpCallback.OnShouldHideLoadingIndicator = callbacks.OnShouldHideLoadingIndicator;
-                
-            // Combine both the user's callback and our internal height management
-            mpCallback.OnEmbeddedSizeChange = (identifier, size) => 
+            if (callbacks == null && heightCallback == null)
             {
-                // Call user's callback if provided
-                callbacks?.OnEmbeddedSizeChange?.Invoke(identifier, (float)size);
-                
-                // Call internal height management callback
-                heightCallback?.Invoke(identifier, (double)size);
+                return null;
+            }
+
+            return roktEvent =>
+            {
+                switch (roktEvent)
+                {
+                    case iOSBinding.RoktShowLoadingIndicator:
+                        callbacks?.OnShouldShowLoadingIndicator?.Invoke();
+                        break;
+                    case iOSBinding.RoktHideLoadingIndicator:
+                        callbacks?.OnShouldHideLoadingIndicator?.Invoke();
+                        break;
+                    case iOSBinding.RoktPlacementReady:
+                        callbacks?.OnLoad?.Invoke();
+                        break;
+                    case iOSBinding.RoktPlacementClosed:
+                        callbacks?.OnUnLoad?.Invoke("Unknown");
+                        break;
+                    case iOSBinding.RoktEmbeddedSizeChanged sizeChanged:
+                        callbacks?.OnEmbeddedSizeChange?.Invoke(sizeChanged.Identifier, (float)sizeChanged.UpdatedHeight);
+                        heightCallback?.Invoke(sizeChanged.Identifier, (double)sizeChanged.UpdatedHeight);
+                        break;
+                }
             };
-                    
-            return mpCallback;
         }
 
         internal static NSDictionary<NSString, NSString> ConvertToNSDictionary<T, V>(Dictionary<string, string> dictionary) where T : NSString where V : NSString
@@ -289,9 +291,9 @@ namespace mParticle.MAUI.iOS.Utils
             // Filter to only include views that have valid platform handlers and views
             var filteredViews = embeddedViews
                 .Where(kvp => kvp.Value?.Handler is { PlatformView: UIKit.UIView })
-                .Select(kvp => new KeyValuePair<string, iOSBinding.MPRoktEmbeddedView>(
+                .Select(kvp => new KeyValuePair<string, iOSBinding.RoktEmbeddedView>(
                     kvp.Key,
-                    (kvp.Value.Handler?.PlatformView as iOSBinding.MPRoktEmbeddedView)!
+                    (kvp.Value.Handler?.PlatformView as iOSBinding.RoktEmbeddedView)!
                 ))
                 .Where(kvp => kvp.Value != null)
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
@@ -301,7 +303,7 @@ namespace mParticle.MAUI.iOS.Utils
                 return null;
             }
             
-            // Create NSDictionary with native MPRoktEmbeddedView instances
+            // Create NSDictionary with native RoktEmbeddedView instances
             var keys = filteredViews.Keys.ToArray();
             var values = filteredViews.Values.ToArray();
             

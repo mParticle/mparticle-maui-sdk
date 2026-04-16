@@ -339,7 +339,7 @@ public class RoktApiWrapper : RoktApi
     }
 }
 
-public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, iOSBinding.MPRoktEmbeddedView>
+public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, iOSBinding.RoktEmbeddedView>
 {
     public static IPropertyMapper<RoktEmbeddedView, RoktEmbeddedViewHandler> PropertyMapper = 
         new PropertyMapper<RoktEmbeddedView, RoktEmbeddedViewHandler>(ViewHandler.ViewMapper);
@@ -348,9 +348,9 @@ public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, iOSBinding.
     {
     }
 
-    protected override iOSBinding.MPRoktEmbeddedView CreatePlatformView()
+    protected override iOSBinding.RoktEmbeddedView CreatePlatformView()
     {
-        return iOSBinding.MPRoktEmbeddedView.CreateMPRoktEmbeddedView();
+        return iOSBinding.RoktEmbeddedView.CreateRoktEmbeddedView();
     }
 }
 

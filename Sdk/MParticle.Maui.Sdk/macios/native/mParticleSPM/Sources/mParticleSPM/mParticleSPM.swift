@@ -23,28 +23,15 @@ public struct MParticleSPM {
     // All functionality is available through the imported mParticle_Apple_SDK module
 }
 
-/// Extension to MPRoktEmbeddedView to provide factory method for MAUI SDK
-public extension MPRoktEmbeddedView {
-    /// Factory method to create a new MPRoktEmbeddedView instance.
+/// Extension to RoktEmbeddedView to provide factory method for MAUI SDK
+public extension RoktEmbeddedView {
+    /// Factory method to create a new RoktEmbeddedView instance.
     /// This is the recommended way to create embedded views for use with Rokt placements in MAUI.
     ///
-    /// Uses runtime class lookup to ensure compatibility with dynamic linking scenarios
-    /// where multiple frameworks may reference the same class.
-    ///
-    /// - Returns: A new instance of MPRoktEmbeddedView configured for use with Rokt
-    @objc static func createMPRoktEmbeddedView() -> MPRoktEmbeddedView {
-        // Use runtime class lookup to ensure we get the exact class that exists in the runtime
-        // This avoids binding/class identity issues between different frameworks
-        let className = "MPRoktEmbeddedView"
+    /// - Returns: A new instance of RoktEmbeddedView configured for use with Rokt
+    @objc static func createRoktEmbeddedView() -> RoktEmbeddedView {
 
-        guard let embeddedViewClass = NSClassFromString(className) as? MPRoktEmbeddedView.Type else {
-            // Fallback to direct initialization if runtime lookup fails
-            let fallbackView = MPRoktEmbeddedView(frame: .zero)
-            fallbackView.translatesAutoresizingMaskIntoConstraints = false
-            return fallbackView
-        }
-
-        let embeddedView = embeddedViewClass.init(frame: .zero)
+        let embeddedView = RoktEmbeddedView(frame: .zero)
         embeddedView.translatesAutoresizingMaskIntoConstraints = false
 
         return embeddedView
