@@ -11,6 +11,15 @@
       }
     },
     {
+      "identity" : "mp-apple-integration-rokt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mparticle-integrations/mp-apple-integration-rokt.git",
+      "state" : {
+        "revision" : "bcd5582584079c76171c1cbf5d767a230ab147a8",
+        "version" : "9.0.0"
+      }
+    },
+    {
       "identity" : "mparticle-apple-sdk",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mParticle/mparticle-apple-sdk",

@@ -18,7 +18,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/mParticle/mparticle-apple-sdk", exact: "9.0.0"),
-        .package(path: "../../../../../../../../mparticle-apple-sdk/kits/rokt/rokt")
+        .package(url: "https://github.com/mparticle-integrations/mp-apple-integration-rokt.git", exact: "9.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -26,7 +26,7 @@ let package = Package(
             name: "mParticleSPM",
             dependencies: [
                 .product(name: "mParticle-Apple-SDK", package: "mparticle-apple-sdk"),
-                .product(name: "mParticle-Rokt", package: "rokt")
+                .product(name: "mParticle-Rokt", package: "mp-apple-integration-rokt")
             ]
         )
     ]
