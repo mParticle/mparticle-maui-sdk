@@ -344,7 +344,9 @@ public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, iOSBinding.
 
     protected override iOSBinding.RoktEmbeddedView CreatePlatformView()
     {
-        return new iOSBinding.RoktEmbeddedView();
+        var embeddedView = new iOSBinding.RoktEmbeddedView();
+        embeddedView.TranslatesAutoresizingMaskIntoConstraints = false;
+        return embeddedView;
     }
 }
 
