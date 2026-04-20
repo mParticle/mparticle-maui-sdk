@@ -261,8 +261,8 @@ namespace mParticle.MAUI.iOS.Utils
                     case iOSBinding.RoktPlacementReady:
                         callbacks?.OnLoad?.Invoke();
                         break;
-                    case iOSBinding.RoktPlacementClosed:
-                        callbacks?.OnUnLoad?.Invoke("Unknown");
+                    case iOSBinding.RoktPlacementClosed closed:
+                        callbacks?.OnUnLoad?.Invoke(closed.Identifier ?? "Unknown");
                         break;
                     case iOSBinding.RoktEmbeddedSizeChanged sizeChanged:
                         callbacks?.OnEmbeddedSizeChange?.Invoke(sizeChanged.Identifier, (float)sizeChanged.UpdatedHeight);
