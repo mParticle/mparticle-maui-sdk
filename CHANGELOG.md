@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This release upgrades the iOS binding to mParticle Apple SDK 9 and contains breaking changes. See [MIGRATING.md](./MIGRATING.md) for the full 4.x → 5.0 upgrade guide.
 
+### Added
+
+- iOS-only `RoktApi.SelectShoppableAds` C# API, wrapping the `selectShoppableAds:attributes:config:onEvent:` selector from mParticle Apple SDK 9. Android exposes a no-op bridge for API compatibility until native support lands, matching the Flutter and React Native SDKs. Requires a payment extension to be registered on the native iOS side.
+- `Show Rokt Shoppable Ads (iOS)` demo button in the Rokt sample app.
+
 ### Changed
 
 - **BREAKING**: iOS minimum deployment target raised from `11.0` to `15.0`.

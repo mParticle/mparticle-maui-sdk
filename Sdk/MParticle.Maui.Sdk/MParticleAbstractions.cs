@@ -454,6 +454,24 @@ public abstract class RoktApi
         Dictionary<string, RoktEmbeddedView> embeddedViews = null,
         RoktConfig config = null,
         RoktEventCallback callbacks = null);
+
+    /// <summary>
+    /// Displays a Shoppable Ads overlay placement.
+    /// </summary>
+    /// <remarks>
+    /// This method is currently implemented only on iOS (requires iOS 15+ and
+    /// the Rokt kit to have a payment extension registered natively).
+    /// Android keeps a no-op bridge for API compatibility until native support lands.
+    /// </remarks>
+    /// <param name="identifier">The view name / placement identifier.</param>
+    /// <param name="attributes">Optional attributes for targeting.</param>
+    /// <param name="config">Optional display configuration (color mode, caching).</param>
+    /// <param name="callbacks">Optional event callbacks.</param>
+    public abstract void SelectShoppableAds(
+        string identifier,
+        Dictionary<string, string> attributes = null,
+        RoktConfig config = null,
+        RoktEventCallback callbacks = null);
 }
 
 public abstract class MParticleSDK

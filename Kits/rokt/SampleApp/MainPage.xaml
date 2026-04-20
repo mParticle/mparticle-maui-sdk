@@ -47,6 +47,13 @@
                 Clicked="OnShowRoktOverlayClicked"
                 HorizontalOptions="Fill" />
 
+            <Button
+                x:Name="ShowRoktShoppableAdsBtn"
+                Text="Show Rokt Shoppable Ads (iOS)"
+                SemanticProperties.Hint="Show Rokt Shoppable Ads overlay (iOS only)"
+                Clicked="OnShowRoktShoppableAdsClicked"
+                HorizontalOptions="Fill" />
+
             <sdk:RoktEmbeddedView
                 x:Name="Location1"/>
             
