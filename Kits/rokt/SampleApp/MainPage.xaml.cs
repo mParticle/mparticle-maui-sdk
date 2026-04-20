@@ -317,4 +317,38 @@ public partial class MainPage : ContentPage
             callbacks: callbacks
         );
     }
+
+    private void OnShowRoktShoppableAdsClicked(object sender, EventArgs e)
+    {
+        Console.WriteLine("Show Rokt Shoppable Ads Called");
+        var mparticle = MParticle.Instance;
+
+        var attributes = new Dictionary<string, string>
+        {
+            ["email"] = "test@gmail.com",
+            ["firstname"] = "Jenny",
+            ["lastname"] = "Smith",
+            ["billingzipcode"] = "07762",
+            ["confirmationref"] = "54321",
+            ["country"] = "US"
+        };
+
+        var callbacks = new RoktEventCallback
+        {
+            OnLoad = () => Console.WriteLine("Rokt shoppable ads placement loaded"),
+            OnUnLoad = (reason) => Console.WriteLine($"Rokt shoppable ads placement unloaded with reason: {reason}"),
+            OnShouldShowLoadingIndicator = () => Console.WriteLine("Should show loading indicator"),
+            OnShouldHideLoadingIndicator = () => Console.WriteLine("Should hide loading indicator")
+        };
+
+        // Note: on iOS this requires a payment extension to be registered natively
+        // (see the Rokt kit docs for the one-time AppDelegate/Scene setup).
+        // On Android this call is a no-op until native support lands.
+        mparticle.Rokt.SelectShoppableAds(
+            identifier: "MSDKShoppableAdsLayout",
+            attributes: attributes,
+            config: null,
+            callbacks: callbacks
+        );
+    }
 }
