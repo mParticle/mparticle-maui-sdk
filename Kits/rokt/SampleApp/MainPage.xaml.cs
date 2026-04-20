@@ -325,12 +325,25 @@ public partial class MainPage : ContentPage
 
         var attributes = new Dictionary<string, string>
         {
-            ["email"] = "test@gmail.com",
+            ["country"] = "US",
+            ["shippingstate"] = "NY",
+            ["shippingzipcode"] = "10001",
             ["firstname"] = "Jenny",
-            ["lastname"] = "Smith",
+            ["stripeApplePayAvailable"] = "true",
+            ["last4digits"] = "4444",
+            ["shippingaddress1"] = "123 Main St",
+            ["colormode"] = "LIGHT",
             ["billingzipcode"] = "07762",
-            ["confirmationref"] = "54321",
-            ["country"] = "US"
+            ["paymenttype"] = "ApplePay",
+            ["shippingcountry"] = "US",
+            ["sandbox"] = "true",
+            ["shippingaddress2"] = "Apt 4B",
+            ["confirmationref"] = "ORD-12345",
+            ["shippingcity"] = "New York",
+            ["newToApplePay"] = "false",
+            ["applePayCapabilities"] = "true",
+            ["lastname"] = "Smith",
+            ["email"] = "jenny.smith@example.com"
         };
 
         var callbacks = new RoktEventCallback
