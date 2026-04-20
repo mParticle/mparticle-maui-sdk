@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+This release upgrades the iOS binding to mParticle Apple SDK 9 and contains breaking changes. See [MIGRATING.md](./MIGRATING.md) for the full 4.x → 5.0 upgrade guide.
+
+### Changed
+
+- **BREAKING**: iOS minimum deployment target raised from `11.0` to `15.0`.
+- **BREAKING**: Updated iOS SPM dependency from `mparticle-apple-sdk` 8.40.0 to 9.0.0 in both the core SDK and Rokt kit.
+- **BREAKING**: Rokt kit now depends on the renamed `mp-apple-integration-rokt` 9.0.0 package (was `mparticle-apple-integration-rokt` 8.3.2).
+- **BREAKING**: `MParticleOptions.LocationTracking` is now Android-only; it is silently ignored on iOS because Apple SDK 9 removed `beginLocationTracking:` / `endLocationTracking`.
+- **BREAKING** (iOS binding surface): Renamed `iOSBinding.MPRoktEmbeddedView` to `iOSBinding.RoktEmbeddedView`; the factory `CreateMPRoktEmbeddedView()` was removed in favor of direct construction.
+- **BREAKING** (iOS binding surface): Removed `iOSBinding.MPProduct.UnitPrice`; use `iOSBinding.MPProduct.Price` (`NSNumber`) instead. The cross-platform `MParticle.Maui.Sdk.Product.UnitPrice` is unchanged.
+- iOS binding is now built as a static SPM product; `mParticle_Apple_SDK.xcframework` and `Rokt_Widget.xcframework` are no longer copied as separate resources.
+
+### Fixed
+
+- iOS `RoktPlacementClosed` now forwards the placement identifier to the `RoktEventCallback.OnUnLoad` handler instead of a hardcoded `"Unknown"`, matching the pattern used for `RoktEmbeddedSizeChanged` and the behavior of the sibling Flutter and React Native SDKs.
+
 ## [4.1.1] - 2026-03-20
 
 ### Fixed
