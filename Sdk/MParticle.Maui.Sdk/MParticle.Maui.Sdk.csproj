@@ -117,22 +117,20 @@
         <None Include="**\android\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
     </ItemGroup>
 
-    <!-- Copy mParticle_Apple_SDK.xcframework and mParticleBindingiOS.xcframework to resources after Build -->
+    <!-- Copy mParticleBindingiOS.xcframework to resources after Build -->
+    <!-- Note: mParticle-Apple-SDK v9 is source-based (not a binary target), so its symbols -->
+    <!-- are statically linked into mParticleBindingiOS.xcframework via mParticleSPM. -->
     <Target Name="CopymParticleAppleSDKFramework" AfterTargets="Build" Condition="$(TargetFramework.Contains('ios'))">
         <PropertyGroup>
             <_SdkResourcesPath>$(OutputPath)MParticle.Maui.Sdk.resources</_SdkResourcesPath>
             <_BindingXcFrameworkPath>$(MSBuildProjectDirectory)/obj/$(Configuration)/$(TargetFramework)/xcode/mParticleBinding-*/xcframeworks/mParticleBindingiOS.xcframework</_BindingXcFrameworkPath>
         </PropertyGroup>
         <MakeDir Directories="$(_SdkResourcesPath)" />
-        <!-- Copy mParticle_Apple_SDK.xcframework from SPM DerivedData -->
-        <Exec Command="cp -R $(HOME)/Library/Developer/Xcode/DerivedData/mParticleBinding-*/SourcePackages/artifacts/mparticle-apple-sdk/mParticle_Apple_SDK/mParticle_Apple_SDK.xcframework &quot;$(_SdkResourcesPath)/&quot;" ContinueOnError="true" />
-        <!-- Copy mParticleBindingiOS.xcframework (contains mParticleSPM) from Xcode build output -->
         <Exec Command="cp -R $(_BindingXcFrameworkPath) &quot;$(_SdkResourcesPath)/&quot;" ContinueOnError="true" />
-        <!-- Copy manifest when both frameworks exist -->
-        <Copy 
-            SourceFiles="$(MSBuildThisFileDirectory)manifest.template" 
+        <Copy
+            SourceFiles="$(MSBuildThisFileDirectory)manifest.template"
             DestinationFiles="$(_SdkResourcesPath)/manifest"
-            Condition="Exists('$(_SdkResourcesPath)/mParticle_Apple_SDK.xcframework') And Exists('$(_SdkResourcesPath)/mParticleBindingiOS.xcframework')"
+            Condition="Exists('$(_SdkResourcesPath)/mParticleBindingiOS.xcframework')"
             SkipUnchangedFiles="true" />
     </Target>
 

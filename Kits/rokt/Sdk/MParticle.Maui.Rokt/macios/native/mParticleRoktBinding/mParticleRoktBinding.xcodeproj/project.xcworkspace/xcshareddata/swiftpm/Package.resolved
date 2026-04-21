@@ -1,13 +1,22 @@
 {
-  "originHash" : "984067f045167c47dae622c44a6946459dde847c3d54b5b61193238c32b9ef3e",
+  "originHash" : "bc383cacdce12c953daa107fc621569c80e289569522f778fb697fe7ebf0f949",
   "pins" : [
     {
-      "identity" : "mparticle-apple-integration-rokt",
+      "identity" : "dcui-swift-schema",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mparticle-integrations/mparticle-apple-integration-rokt.git",
+      "location" : "https://github.com/ROKT/dcui-swift-schema.git",
       "state" : {
-        "revision" : "0a3b83fd60df0c272beaa8411fbf4c3418ff95b6",
-        "version" : "8.3.2"
+        "revision" : "ae2a6a8536acf641f1a3576fef5a6be730a3d5b0",
+        "version" : "2.4.0"
+      }
+    },
+    {
+      "identity" : "mp-apple-integration-rokt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mparticle-integrations/mp-apple-integration-rokt.git",
+      "state" : {
+        "revision" : "bcd5582584079c76171c1cbf5d767a230ab147a8",
+        "version" : "9.0.0"
       }
     },
     {
@@ -15,8 +24,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mParticle/mparticle-apple-sdk",
       "state" : {
-        "revision" : "dffa5b707b0b1523a54f9a4bbf1c5e3056bf5948",
-        "version" : "8.40.0"
+        "revision" : "0bed61c5588bedf5ec120717c3c54b5176c73b29",
+        "version" : "9.0.0"
+      }
+    },
+    {
+      "identity" : "rokt-contracts-apple",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ROKT/rokt-contracts-apple.git",
+      "state" : {
+        "revision" : "ca2ff1061f5d2fe8d611c7ac17e2af8c931734b0",
+        "version" : "0.1.3"
       }
     },
     {
@@ -24,8 +42,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ROKT/rokt-sdk-ios",
       "state" : {
-        "revision" : "0656a9b02cd17fa580c31c99f001ed2ffc080817",
-        "version" : "4.14.2"
+        "revision" : "dc52e950b24050dc9912988006bfb61ab4facdde",
+        "version" : "5.0.0"
+      }
+    },
+    {
+      "identity" : "rokt-ux-helper-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ROKT/rokt-ux-helper-ios.git",
+      "state" : {
+        "revision" : "2cc3b79527b9399dae5e596a33b3e750cc42ce86",
+        "version" : "0.9.1"
       }
     }
   ],

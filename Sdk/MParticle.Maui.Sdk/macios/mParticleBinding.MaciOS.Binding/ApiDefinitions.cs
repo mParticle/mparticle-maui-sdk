@@ -327,10 +327,6 @@ namespace mParticle.MAUI.iOSBinding {
         // @property (readwrite, nonatomic) double totalAmount __attribute__((deprecated("use MPTransactionAttributes.revenue instead")));
         [Export("totalAmount")]
         double TotalAmount { get; set; }
-
-        // @property (readwrite, nonatomic) double unitPrice __attribute__((deprecated("use the price property instead")));
-        [Export("unitPrice")]
-        double UnitPrice { get; set; }
     }
 
     // @interface MPCart : NSObject <NSCoding>
@@ -761,10 +757,6 @@ namespace mParticle.MAUI.iOSBinding {
         [Export("environment", ArgumentSemantic.Assign)]
         MPEnvironment Environment { get; set; }
 
-        // @property(nonatomic, unsafe_unretained, readwrite) BOOL proxyAppDelegate;
-        [Export("proxyAppDelegate", ArgumentSemantic.Assign)]
-        bool ProxyAppDelegate { get; set; }
-
         // @property(nonatomic, unsafe_unretained, readwrite) BOOL automaticSessionTracking;
         [Export("automaticSessionTracking", ArgumentSemantic.Assign)]
         bool AutomaticSessionTracking { get; set; }
@@ -1033,26 +1025,6 @@ namespace mParticle.MAUI.iOSBinding {
         [Export("kitInstance:completionHandler:")]
         void KitInstance(NSNumber kitCode, Action<NSObject> completionHandler);
 
-        // @property (nonatomic, unsafe_unretained) BOOL backgroundLocationTracking;
-        [Export("backgroundLocationTracking")]
-        bool BackgroundLocationTracking { get; set; }
-
-        // @property (nonatomic, strong) CLLocation * _Nullable location;
-        [NullAllowed, Export("location", ArgumentSemantic.Strong)]
-        CLLocation Location { get; set; }
-
-        // -(void)beginLocationTracking:(CLLocationAccuracy)accuracy minDistance:(CLLocationDistance)distanceFilter;
-        [Export("beginLocationTracking:minDistance:")]
-        void BeginLocationTracking(double accuracy, double distanceFilter);
-
-        // -(void)beginLocationTracking:(CLLocationAccuracy)accuracy minDistance:(CLLocationDistance)distanceFilter authorizationRequest:(MPLocationAuthorizationRequest)authorizationRequest;
-        [Export("beginLocationTracking:minDistance:authorizationRequest:")]
-        void BeginLocationTracking(double accuracy, double distanceFilter, MPLocationAuthorizationRequest authorizationRequest);
-
-        // -(void)endLocationTracking;
-        [Export("endLocationTracking")]
-        void EndLocationTracking();
-
         // -(void)excludeURLFromNetworkPerformanceMeasuring:(NSURL * _Nonnull)url;
         [Export("excludeURLFromNetworkPerformanceMeasuring:")]
         void ExcludeURLFromNetworkPerformanceMeasuring(NSUrl url);
@@ -1114,19 +1086,19 @@ namespace mParticle.MAUI.iOSBinding {
         MPRokt Rokt { get; }
     }
 
-    // typedef NS_ENUM(NSInteger, MPColorMode)
+    // typedef NS_ENUM(NSInteger, RoktColorMode)
     [Native]
-    public enum MPColorMode : long
+    public enum RoktColorMode : long
     {
         Light = 0,
         Dark = 1,
         System = 2
     }
 
-    // @interface MPRoktConfig : NSObject
+    // @interface RoktConfig : NSObject
     [BaseType(typeof(NSObject))]
     [Protocol]
-    interface MPRoktConfig
+    interface RoktConfig
     {
         // @property (nonatomic, copy, nullable) NSNumber *cacheDuration;
         [NullAllowed, Export("cacheDuration", ArgumentSemantic.Copy)]
@@ -1137,44 +1109,68 @@ namespace mParticle.MAUI.iOSBinding {
         NSDictionary<NSString, NSString> CacheAttributes { get; set; }
     }
 
-    // @interface MPRoktEmbeddedView : UIView
+    // @interface RoktEmbeddedView : UIView
     [BaseType(typeof(UIView))]
-    interface MPRoktEmbeddedView
+    interface RoktEmbeddedView
     {
         // @property (nonatomic, strong) NSString * _Nonnull identifier;
         [Export("identifier", ArgumentSemantic.Strong)]
         string Identifier { get; set; }
-
-        // +(MPRoktEmbeddedView * _Nonnull)createMPRoktEmbeddedView __attribute__((warn_unused_result("")));
-        [Static]
-        [Export("createMPRoktEmbeddedView")]
-        MPRoktEmbeddedView CreateMPRoktEmbeddedView();
     }
 
-    // @interface MPRoktEventCallback : NSObject
+    // @interface RoktEvent : NSObject
     [BaseType(typeof(NSObject))]
     [Protocol]
-    interface MPRoktEventCallback
+    interface RoktEvent
     {
-        // @property (nonatomic, copy, nullable) void (^onLoad)(void);
-        [NullAllowed, Export("onLoad", ArgumentSemantic.Copy)]
-        Action OnLoad { get; set; }
+    }
 
-        // @property (nonatomic, copy, nullable) void (^onUnLoad)(void);
-        [NullAllowed, Export("onUnLoad", ArgumentSemantic.Copy)]
-        Action OnUnLoad { get; set; }
+    // @interface RoktShowLoadingIndicator : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktShowLoadingIndicator
+    {
+    }
 
-        // @property (nonatomic, copy, nullable) void (^onShouldShowLoadingIndicator)(void);
-        [NullAllowed, Export("onShouldShowLoadingIndicator", ArgumentSemantic.Copy)]
-        Action OnShouldShowLoadingIndicator { get; set; }
+    // @interface RoktHideLoadingIndicator : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktHideLoadingIndicator
+    {
+    }
 
-        // @property (nonatomic, copy, nullable) void (^onShouldHideLoadingIndicator)(void);
-        [NullAllowed, Export("onShouldHideLoadingIndicator", ArgumentSemantic.Copy)]
-        Action OnShouldHideLoadingIndicator { get; set; }
+    // @interface RoktPlacementReady : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktPlacementReady
+    {
+        // @property (nonatomic, strong, nullable) NSString *identifier;
+        [NullAllowed, Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+    }
 
-        // @property (nonatomic, copy, nullable) void (^onEmbeddedSizeChange)(NSString * _Nonnull, CGFloat);
-        [NullAllowed, Export("onEmbeddedSizeChange", ArgumentSemantic.Copy)]
-        Action<NSString, nfloat> OnEmbeddedSizeChange { get; set; }
+    // @interface RoktPlacementClosed : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktPlacementClosed
+    {
+        // @property (nonatomic, strong, nullable) NSString *identifier;
+        [NullAllowed, Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+    }
+
+    // @interface RoktEmbeddedSizeChanged : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktEmbeddedSizeChanged
+    {
+        // @property (nonatomic, strong, nonnull) NSString *identifier;
+        [Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+
+        // @property (nonatomic, assign) CGFloat updatedHeight;
+        [Export("updatedHeight")]
+        nfloat UpdatedHeight { get; }
     }
 
     // @interface MPRokt : NSObject
@@ -1182,12 +1178,40 @@ namespace mParticle.MAUI.iOSBinding {
     [Protocol]
     interface MPRokt
     {
-        // -(void)selectPlacements:(NSString * _Nonnull)identifier attributes:(NSDictionary<NSString *, NSString *> * _Nullable)attributes embeddedViews:(NSDictionary<NSString *, MPRoktEmbeddedView *> * _Nullable)embeddedViews config:(MPRoktConfig * _Nullable)config callbacks:(MPRoktEventCallback * _Nullable)callbacks;
-        [Export("selectPlacements:attributes:embeddedViews:config:callbacks:")]
-        void SelectPlacements(string identifier, 
+        // -(void)selectPlacements:(NSString * _Nonnull)identifier attributes:(NSDictionary<NSString *, NSString *> * _Nullable)attributes;
+        [Export("selectPlacements:attributes:")]
+        void SelectPlacements(string identifier, [NullAllowed] NSDictionary<NSString, NSString> attributes);
+
+        // -(void)selectPlacements:(NSString * _Nonnull)identifier attributes:(NSDictionary<NSString *, NSString *> * _Nullable)attributes embeddedViews:(NSDictionary<NSString *, RoktEmbeddedView *> * _Nullable)embeddedViews config:(RoktConfig * _Nullable)config onEvent:(void (^ _Nullable)(RoktEvent * _Nonnull))onEvent;
+        [Export("selectPlacements:attributes:embeddedViews:config:onEvent:")]
+        void SelectPlacements(string identifier,
             [NullAllowed] NSDictionary<NSString, NSString> attributes,
             [NullAllowed] NSDictionary embeddedViews,
-            [NullAllowed] MPRoktConfig config,
-            [NullAllowed] MPRoktEventCallback callbacks);
+            [NullAllowed] RoktConfig config,
+            [NullAllowed] Action<RoktEvent> onEvent);
+
+        // -(void)purchaseFinalized:(NSString * _Nonnull)identifier catalogItemId:(NSString * _Nonnull)catalogItemId success:(BOOL)success;
+        [Export("purchaseFinalized:catalogItemId:success:")]
+        void PurchaseFinalized(string identifier, string catalogItemId, bool success);
+
+        // -(void)events:(NSString * _Nonnull)identifier onEvent:(void (^ _Nullable)(RoktEvent * _Nonnull))onEvent;
+        [Export("events:onEvent:")]
+        void Events(string identifier, [NullAllowed] Action<RoktEvent> onEvent);
+
+        // -(void)globalEvents:(void (^ _Nonnull)(RoktEvent * _Nonnull))onEvent;
+        [Export("globalEvents:")]
+        void GlobalEvents(Action<RoktEvent> onEvent);
+
+        // -(void)close;
+        [Export("close")]
+        void Close();
+
+        // -(void)setSessionId:(NSString * _Nonnull)sessionId;
+        [Export("setSessionId:")]
+        void SetSessionId(string sessionId);
+
+        // -(NSString * _Nullable)getSessionId;
+        [NullAllowed, Export("getSessionId")]
+        string GetSessionId();
     }
 }
