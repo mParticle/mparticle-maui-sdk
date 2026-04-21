@@ -1,0 +1,6 @@
+<BindingAssembly>
+  <NativeReference Name="mParticleRoktPaymentsBindingiOS.xcframework">
+    <Kind>Framework</Kind>
+    <SmartLink>false</SmartLink>
+  </NativeReference>
+</BindingAssembly>
