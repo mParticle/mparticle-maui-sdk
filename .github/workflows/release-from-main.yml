@@ -16,6 +16,8 @@ env:
   SDK_PROJECT: MParticle.Maui.Sdk
   ROKT_KIT_PATH: Kits/rokt/Sdk/MParticle.Maui.Rokt
   ROKT_KIT_PROJECT: mParticle.Maui.Kits.Rokt
+  PAYMENTS_KIT_PATH: Kits/rokt/Sdk/MParticle.Maui.Rokt.Payments
+  PAYMENTS_KIT_PROJECT: mParticle.Maui.Kits.Rokt.Payments
 
 jobs:
   setup-and-version:
@@ -107,6 +109,26 @@ jobs:
       - name: Publish Rokt Kit to NuGet Gallery
         run: dotnet nuget push ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
 
+      - name: Resolve SPM dependencies for Rokt Payments Kit iOS binding
+        run: |
+          cd ${{ env.PAYMENTS_KIT_PATH }}/macios/native/mParticleRoktPaymentsBinding
+          xcodebuild -resolvePackageDependencies -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding
+
+      - name: Build Xcode project for Rokt Payments Kit iOS
+        run: |
+          cd ${{ env.PAYMENTS_KIT_PATH }}/macios/native/mParticleRoktPaymentsBinding
+          xcodebuild -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding -configuration Release -sdk iphoneos build
+          xcodebuild -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding -configuration Release -sdk iphonesimulator build
+
+      - name: Build Rokt Payments Kit
+        run: dotnet build ${{ env.PAYMENTS_KIT_PATH }}/${{ env.PAYMENTS_KIT_PROJECT }}.csproj -c Release
+
+      - name: Pack Rokt Payments Kit
+        run: dotnet pack ${{ env.PAYMENTS_KIT_PATH }}/${{ env.PAYMENTS_KIT_PROJECT }}.csproj -c Release
+
+      - name: Publish Rokt Payments Kit to NuGet Gallery
+        run: dotnet nuget push ${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+
       - name: Upload Package Artifact for SDK
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -118,6 +140,12 @@ jobs:
         with:
           name: ${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
           path: ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+
+      - name: Upload Package Artifact for Rokt Payments Kit
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ env.PAYMENTS_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+          path: ${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
 
       - uses: ffurrer2/extract-release-notes@9989ccec43d726ef05aa1cd7b2854fb96b6df6ab # v2.2.0
         id: extract-release-notes
@@ -133,6 +161,7 @@ jobs:
           artifacts: |
             ${{ env.SDK_PATH }}/bin/Release/mParticle.MAUI.${{ needs.setup-and-version.outputs.final_version }}.nupkg
             ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
+            ${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
           makeLatest: true
           tag: ${{ needs.setup-and-version.outputs.final_version }}
           body: |

@@ -40,6 +40,7 @@ fi
 
 SDK_PATH="${SDK_ROOT}/Sdk/MParticle.Maui.Sdk"
 ROKT_KIT_PATH="${SDK_ROOT}/Kits/rokt/Sdk/MParticle.Maui.Rokt"
+PAYMENTS_KIT_PATH="${SDK_ROOT}/Kits/rokt/Sdk/MParticle.Maui.Rokt.Payments"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -73,6 +74,14 @@ log "Building mParticleRoktBinding for iphoneos and iphonesimulator..."
 xcodebuild -project mParticleRoktBinding.xcodeproj -scheme mParticleRoktBinding -configuration Release -sdk iphoneos build -quiet
 xcodebuild -project mParticleRoktBinding.xcodeproj -scheme mParticleRoktBinding -configuration Release -sdk iphonesimulator build -quiet
 
+log "Resolving SPM for mParticleRoktPaymentsBinding..."
+cd "${PAYMENTS_KIT_PATH}/macios/native/mParticleRoktPaymentsBinding"
+xcodebuild -resolvePackageDependencies -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding -quiet
+
+log "Building mParticleRoktPaymentsBinding for iphoneos and iphonesimulator..."
+xcodebuild -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding -configuration Release -sdk iphoneos build -quiet
+xcodebuild -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding -configuration Release -sdk iphonesimulator build -quiet
+
 # --- 2. Pack SDK to local feed ---
 log "Packing SDK to ${LOCAL_NUGET} (version ${VERSION})"
 cd "${SDK_ROOT}"
@@ -80,6 +89,7 @@ mkdir -p "${LOCAL_NUGET}"
 
 dotnet pack "${SDK_PATH}/MParticle.Maui.Sdk.csproj" -c Release -o "${LOCAL_NUGET}" -p:Version="${VERSION}"
 dotnet pack "${ROKT_KIT_PATH}/mParticle.Maui.Kits.Rokt.csproj" -c Release -o "${LOCAL_NUGET}" -p:Version="${VERSION}"
+dotnet pack "${PAYMENTS_KIT_PATH}/mParticle.Maui.Kits.Rokt.Payments.csproj" -c Release -o "${LOCAL_NUGET}" -p:Version="${VERSION}"
 
 # shellcheck disable=SC2312
 PKG_COUNT=$(find "${LOCAL_NUGET}" -maxdepth 1 -name "*.nupkg" -print 2>/dev/null | wc -l | tr -d ' ')

@@ -22,6 +22,8 @@ env:
   SDK_PROJECT: MParticle.Maui.Sdk
   ROKT_KIT_PATH: Kits/rokt/Sdk/MParticle.Maui.Rokt
   ROKT_KIT_PROJECT: mParticle.Maui.Kits.Rokt
+  PAYMENTS_KIT_PATH: Kits/rokt/Sdk/MParticle.Maui.Rokt.Payments
+  PAYMENTS_KIT_PROJECT: mParticle.Maui.Kits.Rokt.Payments
 
 jobs:
   trunk-check:
@@ -88,6 +90,20 @@ jobs:
       - name: Build Rokt Kit
         run: dotnet build ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj
 
+      - name: Resolve SPM dependencies for Rokt Payments Kit iOS binding
+        run: |
+          cd ${{ env.PAYMENTS_KIT_PATH }}/macios/native/mParticleRoktPaymentsBinding
+          xcodebuild -resolvePackageDependencies -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding
+
+      - name: Build Xcode project for Rokt Payments Kit iOS
+        run: |
+          cd ${{ env.PAYMENTS_KIT_PATH }}/macios/native/mParticleRoktPaymentsBinding
+          xcodebuild -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding -configuration Debug -sdk iphoneos build
+          xcodebuild -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding -configuration Debug -sdk iphonesimulator build
+
+      - name: Build Rokt Payments Kit
+        run: dotnet build ${{ env.PAYMENTS_KIT_PATH }}/${{ env.PAYMENTS_KIT_PROJECT }}.csproj
+
       - name: Build Rokt Kit SampleApp
         run: dotnet build Kits/rokt/SampleApp/SampleApp.csproj
 
@@ -96,6 +112,9 @@ jobs:
 
       - name: Pack Rokt Kit
         run: dotnet pack ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj
+
+      - name: Pack Rokt Payments Kit
+        run: dotnet pack ${{ env.PAYMENTS_KIT_PATH }}/${{ env.PAYMENTS_KIT_PROJECT }}.csproj
 
       - name: Find and rename SDK nupkg file
         run: |
@@ -138,6 +157,27 @@ jobs:
         with:
           name: ${{ env.ROKT_KIT_PROJECT }}.nupkg
           path: ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.nupkg
+
+      - name: Find and rename Rokt Payments Kit nupkg file
+        run: |
+          # Find the generated nupkg file
+          NUPKG_FILE=$(find ${{ env.PAYMENTS_KIT_PATH }}/bin/Release -name "*.nupkg" | head -1)
+          if [ -z "$NUPKG_FILE" ]; then
+            echo "No nupkg file found"
+            exit 1
+          fi
+          echo "Found nupkg file: $NUPKG_FILE"
+
+          # Rename to remove version number
+          RENAMED_FILE="${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.nupkg"
+          cp "$NUPKG_FILE" "$RENAMED_FILE"
+          echo "Renamed to: $RENAMED_FILE"
+
+      - name: Upload Rokt Payments Kit Package Artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ env.PAYMENTS_KIT_PROJECT }}.nupkg
+          path: ${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.nupkg
 
   pr-notify:
     if: >
