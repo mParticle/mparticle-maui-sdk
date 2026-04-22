@@ -28,6 +28,9 @@
     <ItemGroup>
         <None Include="LICENSE" Pack="true" PackagePath=""/>
         <None Include="README.md" Pack="true" PackagePath=""/>
+        <None Include="build/mParticle.Maui.Kits.Rokt.Payments.targets"
+              Pack="true"
+              PackagePath="build/mParticle.Maui.Kits.Rokt.Payments.targets" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,8 +1,9 @@
 namespace mParticle.MAUI.Rokt.Payments
 {
 #if __IOS__
-    using global::mParticle.MAUI.iOSBinding;
     using global::mParticle.MAUI.Rokt.Payments.iOSBinding;
+    using PaymentsBinding = global::mParticle.MAUI.Rokt.Payments.iOSBinding;
+    using CoreBinding = global::mParticle.MAUI.iOSBinding;
 #endif
 
     /// <summary>
@@ -24,13 +25,13 @@ namespace mParticle.MAUI.Rokt.Payments
         public static bool Register(string applePayMerchantId, string countryCode = "US")
         {
 #if __IOS__
-            var ext = MPRoktStripePaymentExtension.Create(applePayMerchantId, countryCode);
-            if (ext is null)
+            var ext = new PaymentsBinding.MPRoktStripePaymentExtension(applePayMerchantId, countryCode);
+            var rokt = CoreBinding.MParticle.SharedInstance?.Rokt;
+            if (rokt == null)
             {
                 return false;
             }
-
-            MParticle.SharedInstance.Rokt.RegisterPaymentExtension(ext);
+            rokt.RegisterPaymentExtension(ext);
             return true;
 #else
             return false;

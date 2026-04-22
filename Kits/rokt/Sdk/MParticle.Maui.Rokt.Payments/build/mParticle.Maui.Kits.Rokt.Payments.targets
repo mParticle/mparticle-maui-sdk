@@ -1,0 +1,41 @@
+<Project>
+
+    <!--
+        Remove transitive xcframeworks brought in by MParticle.Maui
+        and MParticle.Maui.Kits.Rokt from the final iOS app bundle.
+
+        The MParticle.Maui.Kits.Rokt.Payments kit ships a single "fat"
+        xcframework (mParticleRoktPaymentsBindingiOS.xcframework) that already
+        contains all symbols from the core mParticle Apple SDK and the Rokt
+        kit (via @_exported import in the Swift umbrella module). Leaving the
+        transitive xcframeworks in the bundle would cause duplicate
+        Objective-C class definitions at runtime (for example MPForwardRecord
+        and MPKitExecStatus would appear twice), leading to isKindOfClass:
+        assertion failures inside the core SDK.
+
+        The C# bindings from MParticle.Maui and MParticle.Maui.Kits.Rokt are
+        still referenced for compile-time type information; only their native
+        xcframeworks are stripped from the final app.
+
+        In the .NET iOS SDK, xcframeworks from transitive ProjectReferences
+        are resolved into the `_FrameworkNativeReference` item group by the
+        `_ComputeBundleLocation` target. We therefore hook just before
+        `_ComputeFrameworkFilesToPublish` (which turns that list into the
+        files actually copied into the .app bundle) and filter the
+        unwanted framework names out.
+    -->
+    <Target Name="ExcludeTransitiveMParticleXcframeworks"
+            BeforeTargets="_ComputeFrameworkFilesToPublish"
+            Condition="$(TargetFramework.Contains('ios'))">
+
+        <ItemGroup>
+            <_FrameworkNativeReference Remove="@(_FrameworkNativeReference)"
+                                       Condition="'%(Filename)' == 'mParticleBinding'
+                                               Or '%(Filename)' == 'mParticleRoktBinding'" />
+        </ItemGroup>
+
+        <Message Importance="high"
+                 Text="mParticle.Maui.Kits.Rokt.Payments: removed transitive mParticleBinding.framework and mParticleRoktBinding.framework from app bundle (kept only mParticleRoktPaymentsBinding.framework)." />
+    </Target>
+
+</Project>

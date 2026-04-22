@@ -1,24 +1,23 @@
 using System;
 using Foundation;
 using ObjCRuntime;
+using mParticle.MAUI.iOSBinding;
 
 namespace mParticle.MAUI.Rokt.Payments.iOSBinding
 {
-    // @interface MPRoktStripePaymentExtension : NSObject
+    // @interface MPRoktStripePaymentExtension : NSObject <RoktPaymentExtension>
     [BaseType(typeof(NSObject))]
     [DisableDefaultCtor]
     interface MPRoktStripePaymentExtension
     {
-        // +(id _Nullable)createWithApplePayMerchantId:(NSString * _Nonnull)applePayMerchantId countryCode:(NSString * _Nonnull)countryCode;
-        [Static]
-        [Export("createWithApplePayMerchantId:countryCode:")]
-        [return: NullAllowed]
-        NSObject Create(string applePayMerchantId, string countryCode);
+        // -(instancetype _Nullable)initWithApplePayMerchantId:(NSString * _Nonnull)applePayMerchantId countryCode:(NSString * _Nonnull)countryCode;
+        [Export("initWithApplePayMerchantId:countryCode:")]
+        NativeHandle Constructor(string applePayMerchantId, string countryCode);
     }
 
     // @interface MPRokt (Payments)
     [Category]
-    [BaseType(typeof(global::mParticle.MAUI.iOSBinding.MPRokt))]
+    [BaseType(typeof(MPRokt))]
     interface MPRokt_Payments
     {
         // -(void)registerPaymentExtension:(id<RoktPaymentExtension> _Nonnull)paymentExtension;
@@ -26,3 +25,4 @@ namespace mParticle.MAUI.Rokt.Payments.iOSBinding
         void RegisterPaymentExtension(NSObject paymentExtension);
     }
 }
+ 

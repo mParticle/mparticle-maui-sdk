@@ -1,4 +1,5 @@
 ﻿using mParticle.MAUI;
+using mParticle.MAUI.Rokt.Payments;
 using System.Collections.Generic;
 
 namespace SampleApp;
@@ -85,6 +86,11 @@ public partial class MainPage : ContentPage
         RoktKit.Register();
 
         MParticle.Instance.Initialize(options);
+
+        // Register the optional Rokt Stripe / Apple Pay payment extension (iOS only).
+        // Replace the merchant id with your own Apple Pay merchant identifier.
+        RoktStripePaymentExtension.Register("merchant.com.yourapp.rokt");
+
         InitializeBtn.Text = "mParticle Initialized!";
         InitializeBtn.IsEnabled = false; // Disable after initialization
 
