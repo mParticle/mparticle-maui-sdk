@@ -29,6 +29,8 @@ env:
   SDK_PROJECT: MParticle.Maui.Sdk
   ROKT_KIT_PATH: Kits/rokt/Sdk/MParticle.Maui.Rokt
   ROKT_KIT_PROJECT: mParticle.Maui.Kits.Rokt
+  PAYMENTS_KIT_PATH: Kits/rokt/Sdk/MParticle.Maui.Rokt.Payments
+  PAYMENTS_KIT_PROJECT: mParticle.Maui.Kits.Rokt.Payments
 
 jobs:
   publish-draft-release:
@@ -148,6 +150,26 @@ jobs:
       - name: Publish Rokt Kit to NuGet Test Gallery
         run: dotnet nuget push ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}}
 
+      - name: Resolve SPM dependencies for Rokt Payments Kit iOS binding
+        run: |
+          cd ${{ env.PAYMENTS_KIT_PATH }}/macios/native/mParticleRoktPaymentsBinding
+          xcodebuild -resolvePackageDependencies -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding
+
+      - name: Build Xcode project for Rokt Payments Kit iOS
+        run: |
+          cd ${{ env.PAYMENTS_KIT_PATH }}/macios/native/mParticleRoktPaymentsBinding
+          xcodebuild -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding -configuration Release -sdk iphoneos build
+          xcodebuild -project mParticleRoktPaymentsBinding.xcodeproj -scheme mParticleRoktPaymentsBinding -configuration Release -sdk iphonesimulator build
+
+      - name: Build Rokt Payments Kit
+        run: dotnet build ${{ env.PAYMENTS_KIT_PATH }}/${{ env.PAYMENTS_KIT_PROJECT }}.csproj -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}
+
+      - name: Pack Rokt Payments Kit
+        run: dotnet pack ${{ env.PAYMENTS_KIT_PATH }}/${{ env.PAYMENTS_KIT_PROJECT }}.csproj -c Release -p:Version=${{ steps.full-version.outputs.full-version-with-suffix }}
+
+      - name: Publish Rokt Payments Kit to NuGet Test Gallery
+        run: dotnet nuget push ${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg --source https://apiint.nugettest.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}}
+
       - name: Set .csproj version for SDK
         uses: vers-one/dotnet-project-version-updater@6d4de57b8f089d58a00b6ede1f3f05c77bb8e541 # v1.7
         with:
@@ -158,6 +180,12 @@ jobs:
         uses: vers-one/dotnet-project-version-updater@6d4de57b8f089d58a00b6ede1f3f05c77bb8e541 # v1.7
         with:
           file: ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj
+          version: ${{ steps.bump-version.outputs.new_version }}
+
+      - name: Set .csproj version for Rokt Payments Kit
+        uses: vers-one/dotnet-project-version-updater@6d4de57b8f089d58a00b6ede1f3f05c77bb8e541 # v1.7
+        with:
+          file: ${{ env.PAYMENTS_KIT_PATH }}/${{ env.PAYMENTS_KIT_PROJECT }}.csproj
           version: ${{ steps.bump-version.outputs.new_version }}
 
       - name: Upload Package Artifact for SDK
@@ -171,6 +199,12 @@ jobs:
         with:
           name: ${{ env.ROKT_KIT_PROJECT }}.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg
           path: ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg
+
+      - name: Upload Package Artifact for Rokt Payments Kit
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ env.PAYMENTS_KIT_PROJECT }}.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg
+          path: ${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.${{ steps.full-version.outputs.full-version-with-suffix }}.nupkg
 
       - name: Generate a token
         id: generate-token
@@ -189,7 +223,7 @@ jobs:
           commit-message: Create ${{ steps.bump-version.outputs.new_version }}
           branch: release/${{ steps.bump-version.outputs.new_version }}
           title: Prepare release ${{ steps.bump-version.outputs.new_version }}
-          add-paths: CHANGELOG.md, VERSION, ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}.csproj, ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj
+          add-paths: CHANGELOG.md, VERSION, ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}.csproj, ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj, ${{ env.PAYMENTS_KIT_PATH }}/${{ env.PAYMENTS_KIT_PROJECT }}.csproj
           base: main
           body: |
             Preparing for release ${{ steps.bump-version.outputs.new_version }}

@@ -1194,6 +1194,17 @@ namespace mParticle.MAUI.iOSBinding {
         [Export("purchaseFinalized:catalogItemId:success:")]
         void PurchaseFinalized(string identifier, string catalogItemId, bool success);
 
+        // -(void)selectShoppableAds:(NSString * _Nonnull)identifier attributes:(NSDictionary<NSString *, NSString *> * _Nonnull)attributes;
+        [Export("selectShoppableAds:attributes:")]
+        void SelectShoppableAds(string identifier, NSDictionary<NSString, NSString> attributes);
+
+        // -(void)selectShoppableAds:(NSString * _Nonnull)identifier attributes:(NSDictionary<NSString *, NSString *> * _Nonnull)attributes config:(RoktConfig * _Nullable)config onEvent:(void (^ _Nullable)(RoktEvent * _Nonnull))onEvent;
+        [Export("selectShoppableAds:attributes:config:onEvent:")]
+        void SelectShoppableAds(string identifier,
+            NSDictionary<NSString, NSString> attributes,
+            [NullAllowed] RoktConfig config,
+            [NullAllowed] Action<RoktEvent> onEvent);
+
         // -(void)events:(NSString * _Nonnull)identifier onEvent:(void (^ _Nullable)(RoktEvent * _Nonnull))onEvent;
         [Export("events:onEvent:")]
         void Events(string identifier, [NullAllowed] Action<RoktEvent> onEvent);

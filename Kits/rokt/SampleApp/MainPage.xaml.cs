@@ -1,4 +1,5 @@
 ﻿using mParticle.MAUI;
+using mParticle.MAUI.Rokt.Payments;
 using System.Collections.Generic;
 
 namespace SampleApp;
@@ -85,6 +86,11 @@ public partial class MainPage : ContentPage
         RoktKit.Register();
 
         MParticle.Instance.Initialize(options);
+
+        // Register the optional Rokt Stripe / Apple Pay payment extension (iOS only).
+        // Replace the merchant id with your own Apple Pay merchant identifier.
+        RoktStripePaymentExtension.Register("merchant.com.yourapp.rokt");
+
         InitializeBtn.Text = "mParticle Initialized!";
         InitializeBtn.IsEnabled = false; // Disable after initialization
 
@@ -313,6 +319,53 @@ public partial class MainPage : ContentPage
             {
                 {"Location1", Location1}
             },
+            config: null,
+            callbacks: callbacks
+        );
+    }
+
+    private void OnShowRoktShoppableAdsClicked(object sender, EventArgs e)
+    {
+        Console.WriteLine("Show Rokt Shoppable Ads Called");
+        var mparticle = MParticle.Instance;
+
+        var attributes = new Dictionary<string, string>
+        {
+            ["country"] = "US",
+            ["shippingstate"] = "NY",
+            ["shippingzipcode"] = "10001",
+            ["firstname"] = "Jenny",
+            ["stripeApplePayAvailable"] = "true",
+            ["last4digits"] = "4444",
+            ["shippingaddress1"] = "123 Main St",
+            ["colormode"] = "LIGHT",
+            ["billingzipcode"] = "07762",
+            ["paymenttype"] = "ApplePay",
+            ["shippingcountry"] = "US",
+            ["sandbox"] = "true",
+            ["shippingaddress2"] = "Apt 4B",
+            ["confirmationref"] = "ORD-12345",
+            ["shippingcity"] = "New York",
+            ["newToApplePay"] = "false",
+            ["applePayCapabilities"] = "true",
+            ["lastname"] = "Smith",
+            ["email"] = "jenny.smith@example.com"
+        };
+
+        var callbacks = new RoktEventCallback
+        {
+            OnLoad = () => Console.WriteLine("Rokt shoppable ads placement loaded"),
+            OnUnLoad = (reason) => Console.WriteLine($"Rokt shoppable ads placement unloaded with reason: {reason}"),
+            OnShouldShowLoadingIndicator = () => Console.WriteLine("Should show loading indicator"),
+            OnShouldHideLoadingIndicator = () => Console.WriteLine("Should hide loading indicator")
+        };
+
+        // Note: on iOS this requires a payment extension to be registered natively
+        // (see the Rokt kit docs for the one-time AppDelegate/Scene setup).
+        // On Android this call is a no-op until native support lands.
+        mparticle.Rokt.SelectShoppableAds(
+            identifier: "MSDKShoppableAdsLayout",
+            attributes: attributes,
             config: null,
             callbacks: callbacks
         );

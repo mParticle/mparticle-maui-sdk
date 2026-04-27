@@ -331,6 +331,20 @@ public class RoktApiWrapper : RoktApi
 
         _roktInstance.SelectPlacements(identifier, nsAttributes, nsEmbeddedViews, nsConfig, enhancedCallbacks);
     }
+
+    public override void SelectShoppableAds(
+        string identifier,
+        Dictionary<string, string> attributes = null,
+        RoktConfig config = null,
+        RoktEventCallback callbacks = null)
+    {
+        var nsAttributes = Utils.ConvertToNSDictionary<NSString, NSString>(attributes)
+            ?? new NSDictionary<NSString, NSString>();
+        var nsConfig = Utils.ConvertToMpRoktConfig(config);
+        var enhancedCallbacks = Utils.ConvertToMpRoktEventCallback(callbacks);
+
+        _roktInstance.SelectShoppableAds(identifier, nsAttributes, nsConfig, enhancedCallbacks);
+    }
 }
 
 public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, iOSBinding.RoktEmbeddedView>
@@ -607,6 +621,17 @@ public class RoktApiWrapper : RoktApi
             throw new InvalidOperationException("Rokt instance is not available. Make sure mParticle is properly initialized.");
         }
     }
+
+    public override void SelectShoppableAds(
+        string identifier,
+        Dictionary<string, string> attributes = null,
+        RoktConfig config = null,
+        RoktEventCallback callbacks = null)
+    {
+        // Parity with Flutter/React Native: Android exposes the API but does not
+        // have native Shoppable Ads support yet. Keep a no-op bridge with a warning log.
+        Console.WriteLine("[mParticle MAUI SDK] SelectShoppableAds is not yet supported on Android.");
+    }
 }
 
 public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, global::Android.Views.View>
@@ -633,6 +658,15 @@ public class NoOpRoktApiWrapper : RoktApi
         string identifier,
         Dictionary<string, string> attributes = null,
         Dictionary<string, RoktEmbeddedView> embeddedViews = null,
+        RoktConfig config = null,
+        RoktEventCallback callbacks = null)
+    {
+        Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
+    }
+
+    public override void SelectShoppableAds(
+        string identifier,
+        Dictionary<string, string> attributes = null,
         RoktConfig config = null,
         RoktEventCallback callbacks = null)
     {

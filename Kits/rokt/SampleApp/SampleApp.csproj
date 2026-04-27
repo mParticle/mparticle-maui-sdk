@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net10.0-ios;net10.0-android</TargetFrameworks>
@@ -60,9 +60,16 @@
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0"/>
-        <ProjectReference Include="../Sdk/MParticle.Maui.Rokt/MParticle.Maui.Kits.Rokt.csproj" />
-        <ProjectReference Include="../../../Sdk/mParticle.Maui.Sdk/mParticle.Maui.Sdk.csproj" />
+        <ProjectReference Include="../Sdk/MParticle.Maui.Rokt.Payments/mParticle.Maui.Kits.Rokt.Payments.csproj" />
     </ItemGroup>
+
+    <!--
+        Dev-build import of the Payments kit's build targets.
+        When consumed via NuGet this file is imported automatically;
+        here we import it explicitly because we use a ProjectReference.
+    -->
+    <Import Project="../Sdk/MParticle.Maui.Rokt.Payments/build/mParticle.Maui.Kits.Rokt.Payments.targets"
+            Condition="Exists('../Sdk/MParticle.Maui.Rokt.Payments/build/mParticle.Maui.Kits.Rokt.Payments.targets')" />
 
     <PropertyGroup>
         <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);../</RestoreAdditionalProjectSources>

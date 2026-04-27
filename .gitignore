@@ -37,6 +37,10 @@ Desktop.ini
 
 # Xcode
 build/
+# Keep MSBuild .targets files that live in a `build/` folder inside a NuGet package.
+# NuGet convention: `build/<PackageId>.targets` is auto-imported by consumers.
+!Kits/rokt/Sdk/MParticle.Maui.Rokt.Payments/build/
+!Kits/rokt/Sdk/MParticle.Maui.Rokt.Payments/build/**
 *.pbxuser
 !default.pbxuser
 *.mode1v3
