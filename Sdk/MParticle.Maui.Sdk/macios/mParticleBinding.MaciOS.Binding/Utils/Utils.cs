@@ -254,11 +254,6 @@ namespace mParticle.MAUI.iOS.Utils
             }
         }
 
-        internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(RoktEventCallback callbacks)
-        {
-            return ConvertToMpRoktEventCallback(callbacks, null);
-        }
-
         internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(Action<RoktEvent> onEvent)
         {
             if (onEvent == null)
@@ -272,45 +267,6 @@ namespace mParticle.MAUI.iOS.Utils
                 if (crossPlatformEvent != null)
                 {
                     onEvent.Invoke(crossPlatformEvent);
-                }
-            };
-        }
-
-        internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(
-            RoktEventCallback callbacks, 
-            Action<string, double> heightCallback)
-        {
-            if (callbacks == null && heightCallback == null)
-            {
-                return null;
-            }
-
-            return roktEvent =>
-            {
-                var crossPlatformEvent = ConvertToCrossPlatformRoktEvent(roktEvent);
-                if (crossPlatformEvent != null)
-                {
-                    callbacks?.OnEvent?.Invoke(crossPlatformEvent);
-                }
-
-                switch (roktEvent)
-                {
-                    case iOSBinding.RoktShowLoadingIndicator:
-                        callbacks?.OnShouldShowLoadingIndicator?.Invoke();
-                        break;
-                    case iOSBinding.RoktHideLoadingIndicator:
-                        callbacks?.OnShouldHideLoadingIndicator?.Invoke();
-                        break;
-                    case iOSBinding.RoktPlacementReady:
-                        callbacks?.OnLoad?.Invoke();
-                        break;
-                    case iOSBinding.RoktPlacementClosed closed:
-                        callbacks?.OnUnLoad?.Invoke(closed.Identifier ?? "Unknown");
-                        break;
-                    case iOSBinding.RoktEmbeddedSizeChanged sizeChanged:
-                        callbacks?.OnEmbeddedSizeChange?.Invoke(sizeChanged.Identifier, (float)sizeChanged.UpdatedHeight);
-                        heightCallback?.Invoke(sizeChanged.Identifier, (double)sizeChanged.UpdatedHeight);
-                        break;
                 }
             };
         }

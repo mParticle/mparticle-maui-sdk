@@ -659,20 +659,6 @@ public sealed class RoktCartItemDevicePay : RoktEvent
     }
 }
 
-public sealed class RoktEventCallback
-{
-    public Action OnLoad { get; set; }
-    public Action<string> OnUnLoad { get; set; }
-    public Action OnShouldShowLoadingIndicator { get; set; }
-    public Action OnShouldHideLoadingIndicator { get; set; }
-    public Action<string, float> OnEmbeddedSizeChange { get; set; }
-    public Action<RoktEvent> OnEvent { get; set; }
-    
-    public RoktEventCallback()
-    {
-    }
-}
-
 public abstract class RoktApi
 {
     /// <summary>

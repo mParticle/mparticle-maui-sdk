@@ -319,15 +319,15 @@ public class RoktApiWrapper : RoktApi
         var nsEmbeddedViews = Utils.ConvertEmbeddedViewsToNSDictionary(embeddedViews);
         var nsConfig = Utils.ConvertToMpRoktConfig(config);
         
-        // Create enhanced callbacks that include height management
-        var enhancedCallbacks = Utils.ConvertToMpRoktEventCallback((RoktEventCallback)null, (identifier, height) =>
+        // Keep embedded view heights in sync with native iOS size events.
+        Action<iOSBinding.RoktEvent> enhancedCallbacks = roktEvent =>
         {
-            // Update the MAUI view's HeightRequest when native view size changes
-            if (EmbeddedViews.TryGetValue(identifier, out var view))
+            if (roktEvent is iOSBinding.RoktEmbeddedSizeChanged sizeChanged &&
+                EmbeddedViews.TryGetValue(sizeChanged.Identifier, out var view))
             {
-                view.HeightRequest = height;
+                view.HeightRequest = sizeChanged.UpdatedHeight;
             }
-        });
+        };
 
         _roktInstance.SelectPlacements(identifier, nsAttributes, nsEmbeddedViews, nsConfig, enhancedCallbacks);
     }

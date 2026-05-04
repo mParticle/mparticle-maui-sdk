@@ -300,67 +300,9 @@ internal static class Utils
         return builder.Build();
     }
 
-    internal static AndroidBinding.IMpRoktEventCallback ConvertToRoktEventCallback(RoktEventCallback callbacks)
-    {
-        return ConvertToRoktEventCallback(callbacks, null);
-    }
-
-    internal static AndroidBinding.IMpRoktEventCallback ConvertToRoktEventCallback(
-        RoktEventCallback callbacks, 
-        Action<string, double> heightCallback)
-    {
-        return new RoktEventCallbackWrapper(callbacks, heightCallback);
-    }
-
     internal static Com.Mparticle.Mparticlebinding.IRoktFlowEventListener ConvertToRoktFlowEventListener(Action<RoktEvent> onEvent)
     {
         return new RoktFlowEventListenerWrapper(onEvent);
-    }
-
-    public class RoktEventCallbackWrapper : Java.Lang.Object, AndroidBinding.IMpRoktEventCallback
-    {
-        private readonly RoktEventCallback _callbacks;
-        private readonly Action<string, double> _heightCallback;
-
-        public RoktEventCallbackWrapper(RoktEventCallback callbacks, Action<string, double> heightCallback = null)
-        {
-            _callbacks = callbacks;
-            _heightCallback = heightCallback;
-        }
-
-        public void OnLoad()
-        {
-            _callbacks?.OnLoad?.Invoke();
-            _callbacks?.OnEvent?.Invoke(new RoktPlacementReady(null));
-        }
-
-        public void OnUnload(AndroidBinding.UnloadReasons reason)
-        {
-            _callbacks?.OnUnLoad?.Invoke(reason?.ToString() ?? "Unknown");
-            _callbacks?.OnEvent?.Invoke(new RoktPlacementClosed(null));
-        }
-
-        public void OnShouldShowLoadingIndicator()
-        {
-            _callbacks?.OnShouldShowLoadingIndicator?.Invoke();
-            _callbacks?.OnEvent?.Invoke(new RoktShowLoadingIndicator());
-        }
-
-        public void OnShouldHideLoadingIndicator()
-        {
-            _callbacks?.OnShouldHideLoadingIndicator?.Invoke();
-            _callbacks?.OnEvent?.Invoke(new RoktHideLoadingIndicator());
-        }
-
-        public void OnEmbeddedSizeChange(string identifier, int height)
-        {
-            // Call user's callback if provided
-            _callbacks?.OnEmbeddedSizeChange?.Invoke(identifier, (float)height);
-            _callbacks?.OnEvent?.Invoke(new RoktEmbeddedSizeChanged(identifier, height));
-            
-            // Call internal height management callback
-            _heightCallback?.Invoke(identifier, height);
-        }
     }
 
     public class RoktFlowEventListenerWrapper : Java.Lang.Object, Com.Mparticle.Mparticlebinding.IRoktFlowEventListener
