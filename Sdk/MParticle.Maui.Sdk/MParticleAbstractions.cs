@@ -682,13 +682,11 @@ public abstract class RoktApi
     /// <param name="attributes">Optional attributes dictionary</param>
     /// <param name="embeddedViews">Optional embedded views dictionary</param>
     /// <param name="config">Optional Rokt configuration</param>
-    /// <param name="callbacks">Optional event callbacks</param>
     public abstract void SelectPlacements(
         string identifier, 
         Dictionary<string, string> attributes = null,
         Dictionary<string, RoktEmbeddedView> embeddedViews = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null);
+        RoktConfig config = null);
 
     /// <summary>
     /// Displays a Shoppable Ads overlay placement.
@@ -701,12 +699,10 @@ public abstract class RoktApi
     /// <param name="identifier">The view name / placement identifier.</param>
     /// <param name="attributes">Optional attributes for targeting.</param>
     /// <param name="config">Optional display configuration (color mode, caching).</param>
-    /// <param name="callbacks">Optional event callbacks.</param>
     public abstract void SelectShoppableAds(
         string identifier,
         Dictionary<string, string> attributes = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null);
+        RoktConfig config = null);
 
     /// <summary>
     /// Subscribes to events for a specific placement identifier.

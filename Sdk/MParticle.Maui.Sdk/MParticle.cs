@@ -303,8 +303,7 @@ public class RoktApiWrapper : RoktApi
     public override void SelectPlacements(string identifier, 
         Dictionary<string, string> attributes = null,
         Dictionary<string, RoktEmbeddedView> embeddedViews = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         
         // Store embedded views for height updates
@@ -321,7 +320,7 @@ public class RoktApiWrapper : RoktApi
         var nsConfig = Utils.ConvertToMpRoktConfig(config);
         
         // Create enhanced callbacks that include height management
-        var enhancedCallbacks = Utils.ConvertToMpRoktEventCallback(callbacks, (identifier, height) =>
+        var enhancedCallbacks = Utils.ConvertToMpRoktEventCallback((RoktEventCallback)null, (identifier, height) =>
         {
             // Update the MAUI view's HeightRequest when native view size changes
             if (EmbeddedViews.TryGetValue(identifier, out var view))
@@ -336,15 +335,13 @@ public class RoktApiWrapper : RoktApi
     public override void SelectShoppableAds(
         string identifier,
         Dictionary<string, string> attributes = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         var nsAttributes = Utils.ConvertToNSDictionary<NSString, NSString>(attributes)
             ?? new NSDictionary<NSString, NSString>();
         var nsConfig = Utils.ConvertToMpRoktConfig(config);
-        var enhancedCallbacks = Utils.ConvertToMpRoktEventCallback(callbacks);
 
-        _roktInstance.SelectShoppableAds(identifier, nsAttributes, nsConfig, enhancedCallbacks);
+        _roktInstance.SelectShoppableAds(identifier, nsAttributes, nsConfig, null);
     }
 
     public override void Events(string identifier, Action<RoktEvent> onEvent)
@@ -609,8 +606,7 @@ public class RoktApiWrapper : RoktApi
         string identifier,
         Dictionary<string, string> attributes = null,
         Dictionary<string, RoktEmbeddedView> embeddedViews = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         if (_mparticleInstance == null)
         {
@@ -620,13 +616,11 @@ public class RoktApiWrapper : RoktApi
         var javaAttributes = Utils.ConvertToDictionary(attributes);
         var javaEmbeddedViews = Utils.ConvertEmbeddedViewsToWeakReferenceDictionary(embeddedViews);
         var javaConfig = Utils.ConvertToRoktConfig(config);
-        var javaCallbacks = Utils.ConvertToRoktEventCallback(callbacks);
-
         var roktInstance = _mparticleInstance.Rokt();
         if (roktInstance != null)
         {
             // Android Rokt API: selectPlacements(identifier, attributes, callbacks, embeddedViews, fontTypefaces, config)
-            roktInstance.SelectPlacements(identifier, javaAttributes, javaCallbacks, javaEmbeddedViews, null, javaConfig);
+            roktInstance.SelectPlacements(identifier, javaAttributes, null, javaEmbeddedViews, null, javaConfig);
         }
         else
         {
@@ -637,8 +631,7 @@ public class RoktApiWrapper : RoktApi
     public override void SelectShoppableAds(
         string identifier,
         Dictionary<string, string> attributes = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         // Parity with Flutter/React Native: Android exposes the API but does not
         // have native Shoppable Ads support yet. Keep a no-op bridge with a warning log.
@@ -709,8 +702,7 @@ public class NoOpRoktApiWrapper : RoktApi
         string identifier,
         Dictionary<string, string> attributes = null,
         Dictionary<string, RoktEmbeddedView> embeddedViews = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
     }
@@ -718,8 +710,7 @@ public class NoOpRoktApiWrapper : RoktApi
     public override void SelectShoppableAds(
         string identifier,
         Dictionary<string, string> attributes = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
     }
