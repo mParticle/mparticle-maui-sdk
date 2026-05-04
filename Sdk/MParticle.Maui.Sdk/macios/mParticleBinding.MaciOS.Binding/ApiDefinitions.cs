@@ -1086,27 +1086,52 @@ namespace mParticle.MAUI.iOSBinding {
         MPRokt Rokt { get; }
     }
 
-    // typedef NS_ENUM(NSInteger, RoktColorMode)
-    [Native]
-    public enum RoktColorMode : long
+    // @interface RoktCacheConfig : NSObject
+    [BaseType(typeof(NSObject))]
+    interface RoktCacheConfig
     {
-        Light = 0,
-        Dark = 1,
-        System = 2
+        // + (double)maxCacheDuration;
+        [Static]
+        [Export("maxCacheDuration")]
+        double MaxCacheDuration { get; }
+
+        // - (nonnull instancetype)initWithCacheDuration:(double)cacheDuration cacheAttributes:(NSDictionary<NSString *,NSString *> * _Nullable)cacheAttributes;
+        [Export("initWithCacheDuration:cacheAttributes:")]
+        NativeHandle Constructor(double cacheDuration, [NullAllowed] NSDictionary<NSString, NSString> cacheAttributes);
+    }
+
+    // @interface RoktConfigBuilder : NSObject
+    [BaseType(typeof(NSObject))]
+    interface RoktConfigBuilder
+    {
+        // - (nonnull RoktConfigBuilder *)colorMode:(RoktColorMode)colorMode;
+        [Export("colorMode:")]
+        RoktConfigBuilder ColorMode(RoktColorMode colorMode);
+
+        // - (nonnull RoktConfigBuilder *)cacheConfig:(RoktCacheConfig * _Nonnull)cacheConfig;
+        [Export("cacheConfig:")]
+        RoktConfigBuilder CacheConfig(RoktCacheConfig cacheConfig);
+
+        // - (nonnull RoktConfig *)build;
+        [Export("build")]
+        RoktConfig Build();
     }
 
     // @interface RoktConfig : NSObject
     [BaseType(typeof(NSObject))]
-    [Protocol]
     interface RoktConfig
     {
-        // @property (nonatomic, copy, nullable) NSNumber *cacheDuration;
-        [NullAllowed, Export("cacheDuration", ArgumentSemantic.Copy)]
-        NSNumber CacheDuration { get; set; }
+        // - (nonnull instancetype)initWithColorMode:(RoktColorMode)colorMode cacheConfig:(RoktCacheConfig * _Nonnull)cacheConfig;
+        [Export("initWithColorMode:cacheConfig:")]
+        NativeHandle Constructor(RoktColorMode colorMode, RoktCacheConfig cacheConfig);
 
-        // @property (nonatomic, copy, nullable) NSDictionary<NSString *, NSString *> *cacheAttributes;
-        [NullAllowed, Export("cacheAttributes", ArgumentSemantic.Copy)]
-        NSDictionary<NSString, NSString> CacheAttributes { get; set; }
+        // @property (nonatomic, readonly) RoktColorMode colorMode;
+        [Export("colorMode", ArgumentSemantic.Assign)]
+        RoktColorMode ColorMode { get; }
+
+        // @property (nonatomic, strong, readonly, nonnull) RoktCacheConfig *cacheConfig;
+        [Export("cacheConfig", ArgumentSemantic.Strong)]
+        RoktCacheConfig CacheConfig { get; }
     }
 
     // @interface RoktEmbeddedView : UIView

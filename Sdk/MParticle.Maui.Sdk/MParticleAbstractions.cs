@@ -414,13 +414,22 @@ public sealed class Error
     public String Code;
 }
 
+public enum RoktColorMode
+{
+    Light = 0,
+    Dark = 1,
+    System = 2
+}
+
 public sealed class RoktConfig
 {
+    public RoktColorMode ColorMode { get; set; }
     public int? CacheDuration { get; set; }
     public Dictionary<string, string> CacheAttributes { get; set; }
     
     public RoktConfig()
     {
+        ColorMode = RoktColorMode.System;
         CacheAttributes = new Dictionary<string, string>();
     }
 }

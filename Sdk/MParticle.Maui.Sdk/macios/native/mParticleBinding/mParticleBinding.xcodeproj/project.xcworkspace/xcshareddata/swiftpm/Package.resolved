@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mParticle/mparticle-apple-sdk",
       "state" : {
-        "revision" : "0bed61c5588bedf5ec120717c3c54b5176c73b29",
-        "version" : "9.0.0"
+        "revision" : "765a405eef554bc36541da08b735575a7924d05d",
+        "version" : "9.1.0"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ROKT/rokt-contracts-apple.git",
       "state" : {
-        "revision" : "ca2ff1061f5d2fe8d611c7ac17e2af8c931734b0",
-        "version" : "0.1.3"
+        "revision" : "f504822a77a7c7127bac74805e5858a14f25118d",
+        "version" : "2.0.1"
       }
     }
   ],

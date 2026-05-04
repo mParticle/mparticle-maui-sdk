@@ -224,14 +224,34 @@ namespace mParticle.MAUI.iOS.Utils
             if (config == null)
                 return null;
 
-            var mpConfig = new iOSBinding.RoktConfig();
-            
-            if (config.CacheDuration.HasValue)
-                mpConfig.CacheDuration = NSNumber.FromInt32(config.CacheDuration.Value);
-                
-            mpConfig.CacheAttributes = ConvertToNSDictionary<NSString, NSString>(config.CacheAttributes);
-            
-            return mpConfig;
+            var builder = new iOSBinding.RoktConfigBuilder()
+                .ColorMode(ConvertToMpRoktColorMode(config.ColorMode));
+
+            if (config.CacheDuration.HasValue || (config.CacheAttributes != null && config.CacheAttributes.Any()))
+            {
+                var cacheDuration = config.CacheDuration.HasValue
+                    ? config.CacheDuration.Value
+                    : iOSBinding.RoktCacheConfig.MaxCacheDuration;
+                var cacheAttributes = ConvertToNSDictionary<NSString, NSString>(config.CacheAttributes);
+                var cacheConfig = new iOSBinding.RoktCacheConfig(cacheDuration, cacheAttributes);
+                builder = builder.CacheConfig(cacheConfig);
+            }
+
+            return builder.Build();
+        }
+
+        internal static iOSBinding.RoktColorMode ConvertToMpRoktColorMode(RoktColorMode colorMode)
+        {
+            switch (colorMode)
+            {
+                case RoktColorMode.Light:
+                    return iOSBinding.RoktColorMode.Light;
+                case RoktColorMode.Dark:
+                    return iOSBinding.RoktColorMode.Dark;
+                case RoktColorMode.System:
+                default:
+                    return iOSBinding.RoktColorMode.System;
+            }
         }
 
         internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(RoktEventCallback callbacks)
