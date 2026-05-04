@@ -326,30 +326,81 @@ internal static class Utils
         public void OnLoad()
         {
             _callbacks?.OnLoad?.Invoke();
+            _callbacks?.OnEvent?.Invoke(new RoktPlacementReady(null));
         }
 
         public void OnUnload(AndroidBinding.UnloadReasons reason)
         {
             _callbacks?.OnUnLoad?.Invoke(reason?.ToString() ?? "Unknown");
+            _callbacks?.OnEvent?.Invoke(new RoktPlacementClosed(null));
         }
 
         public void OnShouldShowLoadingIndicator()
         {
             _callbacks?.OnShouldShowLoadingIndicator?.Invoke();
+            _callbacks?.OnEvent?.Invoke(new RoktShowLoadingIndicator());
         }
 
         public void OnShouldHideLoadingIndicator()
         {
             _callbacks?.OnShouldHideLoadingIndicator?.Invoke();
+            _callbacks?.OnEvent?.Invoke(new RoktHideLoadingIndicator());
         }
 
         public void OnEmbeddedSizeChange(string identifier, int height)
         {
             // Call user's callback if provided
             _callbacks?.OnEmbeddedSizeChange?.Invoke(identifier, (float)height);
+            _callbacks?.OnEvent?.Invoke(new RoktEmbeddedSizeChanged(identifier, height));
             
             // Call internal height management callback
             _heightCallback?.Invoke(identifier, height);
+        }
+    }
+
+    internal static RoktEvent ConvertToCrossPlatformRoktEvent(AndroidBinding.IRoktEvent roktEvent)
+    {
+        switch (roktEvent)
+        {
+            case AndroidBinding.IRoktEvent.InitComplete e:
+                return new RoktInitComplete(e.Success);
+            case AndroidBinding.IRoktEvent.ShowLoadingIndicator:
+                return new RoktShowLoadingIndicator();
+            case AndroidBinding.IRoktEvent.HideLoadingIndicator:
+                return new RoktHideLoadingIndicator();
+            case AndroidBinding.IRoktEvent.PlacementReady e:
+                return new RoktPlacementReady(e.PlacementId);
+            case AndroidBinding.IRoktEvent.PlacementInteractive e:
+                return new RoktPlacementInteractive(e.PlacementId);
+            case AndroidBinding.IRoktEvent.PlacementClosed e:
+                return new RoktPlacementClosed(e.PlacementId);
+            case AndroidBinding.IRoktEvent.PlacementCompleted e:
+                return new RoktPlacementCompleted(e.PlacementId);
+            case AndroidBinding.IRoktEvent.PlacementFailure e:
+                return new RoktPlacementFailure(e.PlacementId);
+            case AndroidBinding.IRoktEvent.OfferEngagement e:
+                return new RoktOfferEngagement(e.PlacementId);
+            case AndroidBinding.IRoktEvent.PositiveEngagement e:
+                return new RoktPositiveEngagement(e.PlacementId);
+            case AndroidBinding.IRoktEvent.FirstPositiveEngagement e:
+                return new RoktFirstPositiveEngagement(e.PlacementId, null);
+            case AndroidBinding.IRoktEvent.OpenUrl e:
+                return new RoktOpenUrl(e.PlacementId, e.Url);
+            case AndroidBinding.IRoktEvent.CartItemInstantPurchase e:
+                return new RoktCartItemInstantPurchase(
+                    e.PlacementId,
+                    null,
+                    e.CartItemId,
+                    e.CatalogItemId,
+                    e.Currency,
+                    e.Description,
+                    e.LinkedProductId,
+                    string.Empty,
+                        (decimal)e.Quantity,
+                        (decimal)e.TotalPrice,
+                        (decimal)e.UnitPrice);
+            default:
+                return null;
         }
     }
 
