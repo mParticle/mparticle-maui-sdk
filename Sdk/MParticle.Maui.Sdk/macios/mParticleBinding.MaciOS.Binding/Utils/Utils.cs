@@ -270,6 +270,12 @@ namespace mParticle.MAUI.iOS.Utils
 
             return roktEvent =>
             {
+                var crossPlatformEvent = ConvertToCrossPlatformRoktEvent(roktEvent);
+                if (crossPlatformEvent != null)
+                {
+                    callbacks?.OnEvent?.Invoke(crossPlatformEvent);
+                }
+
                 switch (roktEvent)
                 {
                     case iOSBinding.RoktShowLoadingIndicator:
@@ -290,6 +296,74 @@ namespace mParticle.MAUI.iOS.Utils
                         break;
                 }
             };
+        }
+
+        internal static RoktEvent ConvertToCrossPlatformRoktEvent(iOSBinding.RoktEvent roktEvent)
+        {
+            switch (roktEvent)
+            {
+                case iOSBinding.RoktInitComplete e:
+                    return new RoktInitComplete(e.Success);
+                case iOSBinding.RoktShowLoadingIndicator:
+                    return new RoktShowLoadingIndicator();
+                case iOSBinding.RoktHideLoadingIndicator:
+                    return new RoktHideLoadingIndicator();
+                case iOSBinding.RoktPlacementReady e:
+                    return new RoktPlacementReady(e.Identifier);
+                case iOSBinding.RoktPlacementInteractive e:
+                    return new RoktPlacementInteractive(e.Identifier);
+                case iOSBinding.RoktPlacementClosed e:
+                    return new RoktPlacementClosed(e.Identifier);
+                case iOSBinding.RoktPlacementCompleted e:
+                    return new RoktPlacementCompleted(e.Identifier);
+                case iOSBinding.RoktPlacementFailure e:
+                    return new RoktPlacementFailure(e.Identifier);
+                case iOSBinding.RoktOfferEngagement e:
+                    return new RoktOfferEngagement(e.Identifier);
+                case iOSBinding.RoktPositiveEngagement e:
+                    return new RoktPositiveEngagement(e.Identifier);
+                case iOSBinding.RoktFirstPositiveEngagement e:
+                    return new RoktFirstPositiveEngagement(
+                        e.Identifier,
+                        attributes => e.SetFulfillmentAttributes?.Invoke(ConvertToNSDictionary<NSString, NSString>(attributes)));
+                case iOSBinding.RoktOpenUrl e:
+                    return new RoktOpenUrl(e.Identifier, e.Url);
+                case iOSBinding.RoktEmbeddedSizeChanged e:
+                    return new RoktEmbeddedSizeChanged(e.Identifier, (double)e.UpdatedHeight);
+                case iOSBinding.RoktCartItemInstantPurchaseInitiated e:
+                    return new RoktCartItemInstantPurchaseInitiated(e.Identifier, e.CatalogItemId, e.CartItemId);
+                case iOSBinding.RoktCartItemInstantPurchase e:
+                    return new RoktCartItemInstantPurchase(
+                        e.Identifier,
+                        e.Name,
+                        e.CartItemId,
+                        e.CatalogItemId,
+                        e.Currency,
+                        e.Description,
+                        e.LinkedProductId,
+                        e.ProviderData,
+                        ConvertToNullableDecimal(e.Quantity),
+                        ConvertToNullableDecimal(e.TotalPrice),
+                        ConvertToNullableDecimal(e.UnitPrice));
+                case iOSBinding.RoktCartItemInstantPurchaseFailure e:
+                    return new RoktCartItemInstantPurchaseFailure(e.Identifier, e.CatalogItemId, e.CartItemId, e.Error);
+                case iOSBinding.RoktInstantPurchaseDismissal e:
+                    return new RoktInstantPurchaseDismissal(e.Identifier);
+                case iOSBinding.RoktCartItemDevicePay e:
+                    return new RoktCartItemDevicePay(e.Identifier, e.CatalogItemId, e.CartItemId, e.PaymentProvider);
+                default:
+                    return null;
+            }
+        }
+
+        internal static decimal? ConvertToNullableDecimal(NSDecimalNumber value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return value.DecimalValue;
         }
 
         internal static NSDictionary<NSString, NSString> ConvertToNSDictionary<T, V>(Dictionary<string, string> dictionary) where T : NSString where V : NSString
