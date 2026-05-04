@@ -259,6 +259,23 @@ namespace mParticle.MAUI.iOS.Utils
             return ConvertToMpRoktEventCallback(callbacks, null);
         }
 
+        internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(Action<RoktEvent> onEvent)
+        {
+            if (onEvent == null)
+            {
+                return null;
+            }
+
+            return roktEvent =>
+            {
+                var crossPlatformEvent = ConvertToCrossPlatformRoktEvent(roktEvent);
+                if (crossPlatformEvent != null)
+                {
+                    onEvent.Invoke(crossPlatformEvent);
+                }
+            };
+        }
+
         internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(
             RoktEventCallback callbacks, 
             Action<string, double> heightCallback)

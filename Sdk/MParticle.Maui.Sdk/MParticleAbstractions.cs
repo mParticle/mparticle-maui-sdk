@@ -707,6 +707,19 @@ public abstract class RoktApi
         Dictionary<string, string> attributes = null,
         RoktConfig config = null,
         RoktEventCallback callbacks = null);
+
+    /// <summary>
+    /// Subscribes to events for a specific placement identifier.
+    /// </summary>
+    /// <param name="identifier">Placement identifier.</param>
+    /// <param name="onEvent">Event callback.</param>
+    public abstract void Events(string identifier, Action<RoktEvent> onEvent);
+
+    /// <summary>
+    /// Subscribes to global Rokt events.
+    /// </summary>
+    /// <param name="onEvent">Event callback.</param>
+    public abstract void GlobalEvents(Action<RoktEvent> onEvent);
 }
 
 public abstract class MParticleSDK

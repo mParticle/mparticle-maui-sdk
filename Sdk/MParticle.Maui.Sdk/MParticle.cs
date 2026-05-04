@@ -345,6 +345,16 @@ public class RoktApiWrapper : RoktApi
 
         _roktInstance.SelectShoppableAds(identifier, nsAttributes, nsConfig, enhancedCallbacks);
     }
+
+    public override void Events(string identifier, Action<RoktEvent> onEvent)
+    {
+        _roktInstance.Events(identifier, Utils.ConvertToMpRoktEventCallback(onEvent));
+    }
+
+    public override void GlobalEvents(Action<RoktEvent> onEvent)
+    {
+        _roktInstance.GlobalEvents(Utils.ConvertToMpRoktEventCallback(onEvent));
+    }
 }
 
 public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, iOSBinding.RoktEmbeddedView>
@@ -632,6 +642,16 @@ public class RoktApiWrapper : RoktApi
         // have native Shoppable Ads support yet. Keep a no-op bridge with a warning log.
         Console.WriteLine("[mParticle MAUI SDK] SelectShoppableAds is not yet supported on Android.");
     }
+
+    public override void Events(string identifier, Action<RoktEvent> onEvent)
+    {
+        Console.WriteLine("[mParticle MAUI SDK] Rokt events subscription is not yet supported on Android.");
+    }
+
+    public override void GlobalEvents(Action<RoktEvent> onEvent)
+    {
+        Console.WriteLine("[mParticle MAUI SDK] Rokt global events subscription is not yet supported on Android.");
+    }
 }
 
 public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, global::Android.Views.View>
@@ -669,6 +689,16 @@ public class NoOpRoktApiWrapper : RoktApi
         Dictionary<string, string> attributes = null,
         RoktConfig config = null,
         RoktEventCallback callbacks = null)
+    {
+        Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
+    }
+
+    public override void Events(string identifier, Action<RoktEvent> onEvent)
+    {
+        Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
+    }
+
+    public override void GlobalEvents(Action<RoktEvent> onEvent)
     {
         Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
     }
