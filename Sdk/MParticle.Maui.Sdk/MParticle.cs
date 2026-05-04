@@ -9,6 +9,7 @@ using mParticle.MAUI.Android.Wrappers;
 using mParticle.MAUI.Android;
 using Android.Util;
 using Android.Views;
+using Com.Mparticle.Mparticlebinding;
 using Object = Java.Lang.Object;
 using Java.Util;
 using Kotlin.Jvm.Functions;
@@ -597,6 +598,7 @@ public class MParticleSDKImpl : MParticleSDK
 public class RoktApiWrapper : RoktApi
 {
     private readonly mParticle.MAUI.AndroidBinding.MParticle _mparticleInstance;
+    private readonly List<object> _eventSubscriptions = new List<object>();
 
     internal RoktApiWrapper(mParticle.MAUI.AndroidBinding.MParticle mparticleInstance)
     {
@@ -645,7 +647,36 @@ public class RoktApiWrapper : RoktApi
 
     public override void Events(string identifier, Action<RoktEvent> onEvent)
     {
-        Console.WriteLine("[mParticle MAUI SDK] Rokt events subscription is not yet supported on Android.");
+        if (_mparticleInstance == null)
+        {
+            Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(identifier))
+        {
+            throw new ArgumentException("identifier cannot be null or empty.", nameof(identifier));
+        }
+
+        if (onEvent == null)
+        {
+            throw new ArgumentNullException(nameof(onEvent));
+        }
+
+        var roktInstance = _mparticleInstance.Rokt();
+        if (roktInstance == null)
+        {
+            throw new InvalidOperationException("Rokt instance is not available. Make sure mParticle is properly initialized.");
+        }
+
+        var listener = Utils.ConvertToRoktFlowEventListener(onEvent);
+        var subscription = MParticleSdkBinding.SubscribeToEvents(roktInstance, identifier, listener);
+
+        lock (_eventSubscriptions)
+        {
+            _eventSubscriptions.Add(listener);
+            _eventSubscriptions.Add(subscription);
+        }
     }
 
     public override void GlobalEvents(Action<RoktEvent> onEvent)

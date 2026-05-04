@@ -312,6 +312,11 @@ internal static class Utils
         return new RoktEventCallbackWrapper(callbacks, heightCallback);
     }
 
+    internal static Com.Mparticle.Mparticlebinding.IRoktFlowEventListener ConvertToRoktFlowEventListener(Action<RoktEvent> onEvent)
+    {
+        return new RoktFlowEventListenerWrapper(onEvent);
+    }
+
     public class RoktEventCallbackWrapper : Java.Lang.Object, AndroidBinding.IMpRoktEventCallback
     {
         private readonly RoktEventCallback _callbacks;
@@ -355,6 +360,25 @@ internal static class Utils
             
             // Call internal height management callback
             _heightCallback?.Invoke(identifier, height);
+        }
+    }
+
+    public class RoktFlowEventListenerWrapper : Java.Lang.Object, Com.Mparticle.Mparticlebinding.IRoktFlowEventListener
+    {
+        private readonly Action<RoktEvent> _onEvent;
+
+        public RoktFlowEventListenerWrapper(Action<RoktEvent> onEvent)
+        {
+            _onEvent = onEvent;
+        }
+
+        public void OnEvent(AndroidBinding.IRoktEvent e)
+        {
+            var crossPlatformEvent = ConvertToCrossPlatformRoktEvent(e);
+            if (crossPlatformEvent != null)
+            {
+                _onEvent?.Invoke(crossPlatformEvent);
+            }
         }
     }
 
