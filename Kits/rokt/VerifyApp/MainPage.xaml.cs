@@ -6,6 +6,7 @@ namespace VerifyApp;
 public partial class MainPage : ContentPage
 {
     private const string ConstantUserAttribute = "Test Attribute Key";
+    private readonly HashSet<string> _roktEventSubscriptions = new();
 
     public MainPage()
     {
@@ -253,6 +254,7 @@ public partial class MainPage : ContentPage
     {
         Console.WriteLine("Show Rokt Embedded Called");
         var mparticle = MParticle.Instance;
+        SubscribeToPlacementEvents("MSDKEmbeddedLayout", "embedded");
 
         var attributes = new Dictionary<string, string>
         {
@@ -262,15 +264,6 @@ public partial class MainPage : ContentPage
             ["billingzipcode"] = "07762",
             ["confirmationref"] = "54321",
             ["country"] = "US"
-        };
-
-        var callbacks = new RoktEventCallback
-        {
-            OnLoad = () => Console.WriteLine("Rokt placement loaded"),
-            OnUnLoad = (reason) => Console.WriteLine($"Rokt placement unloaded with reason: {reason}"),
-            OnShouldShowLoadingIndicator = () => Console.WriteLine("Should show loading indicator"),
-            OnShouldHideLoadingIndicator = () => Console.WriteLine("Should hide loading indicator"),
-            OnEmbeddedSizeChange = (identifier, size) => Console.WriteLine($"Embedded view '{identifier}' size changed to {size}")
         };
 
         mparticle.Rokt.SelectPlacements(
@@ -280,8 +273,7 @@ public partial class MainPage : ContentPage
             {
                 {"Location1", Location1}
             },
-            config: null,
-            callbacks: callbacks
+            config: null
         );
     }
 
@@ -289,6 +281,7 @@ public partial class MainPage : ContentPage
     {
         Console.WriteLine("Show Rokt Overlay Called");
         var mparticle = MParticle.Instance;
+        SubscribeToPlacementEvents("MSDKOverlayLayout", "overlay");
 
         var attributes = new Dictionary<string, string>
         {
@@ -300,15 +293,6 @@ public partial class MainPage : ContentPage
             ["country"] = "US"
         };
 
-        var callbacks = new RoktEventCallback
-        {
-            OnLoad = () => Console.WriteLine("Rokt placement loaded"),
-            OnUnLoad = (reason) => Console.WriteLine($"Rokt placement unloaded with reason: {reason}"),
-            OnShouldShowLoadingIndicator = () => Console.WriteLine("Should show loading indicator"),
-            OnShouldHideLoadingIndicator = () => Console.WriteLine("Should hide loading indicator"),
-            OnEmbeddedSizeChange = (identifier, size) => Console.WriteLine($"Embedded view '{identifier}' size changed to {size}")
-        };
-
         mparticle.Rokt.SelectPlacements(
             identifier: "MSDKOverlayLayout",
             attributes: attributes,
@@ -316,8 +300,42 @@ public partial class MainPage : ContentPage
             {
                 {"Location1", Location1}
             },
-            config: null,
-            callbacks: callbacks
+            config: null
         );
+    }
+
+    private void SubscribeToPlacementEvents(string identifier, string placementName)
+    {
+        if (!_roktEventSubscriptions.Add(identifier))
+        {
+            return;
+        }
+
+        MParticle.Instance.Rokt.Events(identifier, roktEvent => LogRoktEvent(placementName, roktEvent));
+    }
+
+    private static void LogRoktEvent(string placementName, RoktEvent roktEvent)
+    {
+        switch (roktEvent)
+        {
+            case RoktPlacementReady e:
+                Console.WriteLine($"Rokt {placementName} placement loaded: {e.Identifier}");
+                break;
+            case RoktPlacementClosed e:
+                Console.WriteLine($"Rokt {placementName} placement unloaded: {e.Identifier}");
+                break;
+            case RoktShowLoadingIndicator:
+                Console.WriteLine($"Rokt {placementName}: should show loading indicator");
+                break;
+            case RoktHideLoadingIndicator:
+                Console.WriteLine($"Rokt {placementName}: should hide loading indicator");
+                break;
+            case RoktEmbeddedSizeChanged e:
+                Console.WriteLine($"Rokt {placementName} embedded view '{e.Identifier}' size changed to {e.UpdatedHeight}");
+                break;
+            default:
+                Console.WriteLine($"Rokt {placementName} event: {roktEvent.GetType().Name}");
+                break;
+        }
     }
 }
