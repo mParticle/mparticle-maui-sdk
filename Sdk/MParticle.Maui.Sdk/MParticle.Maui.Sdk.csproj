@@ -66,7 +66,7 @@
     
     <ItemGroup Condition="$(TargetFramework.Contains('android'))">
         <!--mParticle Android Core SDK-->
-        <AndroidLibrary Include=".\android\native\MParticleBinding\MParticleBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-core-5.74.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleBinding\MParticleBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-core-5.78.5.aar">
             <Bind>true</Bind>
             <Link>false</Link>
             <Pack>true</Pack>
