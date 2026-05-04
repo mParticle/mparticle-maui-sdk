@@ -1164,10 +1164,30 @@ namespace mParticle.MAUI.iOSBinding {
     {
     }
 
+    // @interface RoktInitComplete : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktInitComplete
+    {
+        // @property (nonatomic, assign) BOOL success;
+        [Export("success")]
+        bool Success { get; }
+    }
+
     // @interface RoktPlacementReady : RoktEvent
     [BaseType(typeof(RoktEvent))]
     [Protocol]
     interface RoktPlacementReady
+    {
+        // @property (nonatomic, strong, nullable) NSString *identifier;
+        [NullAllowed, Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+    }
+
+    // @interface RoktPlacementInteractive : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktPlacementInteractive
     {
         // @property (nonatomic, strong, nullable) NSString *identifier;
         [NullAllowed, Export("identifier", ArgumentSemantic.Strong)]
@@ -1184,6 +1204,74 @@ namespace mParticle.MAUI.iOSBinding {
         string Identifier { get; }
     }
 
+    // @interface RoktPlacementCompleted : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktPlacementCompleted
+    {
+        // @property (nonatomic, strong, nullable) NSString *identifier;
+        [NullAllowed, Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+    }
+
+    // @interface RoktPlacementFailure : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktPlacementFailure
+    {
+        // @property (nonatomic, strong, nullable) NSString *identifier;
+        [NullAllowed, Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+    }
+
+    // @interface RoktOfferEngagement : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktOfferEngagement
+    {
+        // @property (nonatomic, strong, nullable) NSString *identifier;
+        [NullAllowed, Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+    }
+
+    // @interface RoktPositiveEngagement : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktPositiveEngagement
+    {
+        // @property (nonatomic, strong, nullable) NSString *identifier;
+        [NullAllowed, Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+    }
+
+    // @interface RoktFirstPositiveEngagement : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktFirstPositiveEngagement
+    {
+        // @property (nonatomic, strong, nullable) NSString *identifier;
+        [NullAllowed, Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+
+        // @property (nonatomic, copy, nullable) void (^setFulfillmentAttributes)(NSDictionary<NSString *, NSString *> *);
+        [NullAllowed, Export("setFulfillmentAttributes", ArgumentSemantic.Copy)]
+        Action<NSDictionary<NSString, NSString>> SetFulfillmentAttributes { get; set; }
+    }
+
+    // @interface RoktOpenUrl : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktOpenUrl
+    {
+        // @property (nonatomic, strong, nullable) NSString *identifier;
+        [NullAllowed, Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *url;
+        [Export("url", ArgumentSemantic.Strong)]
+        string Url { get; }
+    }
+
     // @interface RoktEmbeddedSizeChanged : RoktEvent
     [BaseType(typeof(RoktEvent))]
     [Protocol]
@@ -1196,6 +1284,124 @@ namespace mParticle.MAUI.iOSBinding {
         // @property (nonatomic, assign) CGFloat updatedHeight;
         [Export("updatedHeight")]
         nfloat UpdatedHeight { get; }
+    }
+
+    // @interface RoktCartItemInstantPurchaseInitiated : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktCartItemInstantPurchaseInitiated
+    {
+        // @property (nonatomic, strong, nonnull) NSString *identifier;
+        [Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *catalogItemId;
+        [Export("catalogItemId", ArgumentSemantic.Strong)]
+        string CatalogItemId { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *cartItemId;
+        [Export("cartItemId", ArgumentSemantic.Strong)]
+        string CartItemId { get; }
+    }
+
+    // @interface RoktCartItemInstantPurchase : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktCartItemInstantPurchase
+    {
+        // @property (nonatomic, strong, nonnull) NSString *identifier;
+        [Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+
+        // @property (nonatomic, strong, nullable) NSString *name;
+        [NullAllowed, Export("name", ArgumentSemantic.Strong)]
+        string Name { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *cartItemId;
+        [Export("cartItemId", ArgumentSemantic.Strong)]
+        string CartItemId { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *catalogItemId;
+        [Export("catalogItemId", ArgumentSemantic.Strong)]
+        string CatalogItemId { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *currency;
+        [Export("currency", ArgumentSemantic.Strong)]
+        string Currency { get; }
+
+        // @property (nonatomic, strong, nullable) NSString *linkedProductId;
+        [NullAllowed, Export("linkedProductId", ArgumentSemantic.Strong)]
+        string LinkedProductId { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *providerData;
+        [Export("providerData", ArgumentSemantic.Strong)]
+        string ProviderData { get; }
+
+        // @property (nonatomic, strong, nullable) NSDecimalNumber *quantity;
+        [NullAllowed, Export("quantity", ArgumentSemantic.Strong)]
+        NSDecimalNumber Quantity { get; }
+
+        // @property (nonatomic, strong, nullable) NSDecimalNumber *totalPrice;
+        [NullAllowed, Export("totalPrice", ArgumentSemantic.Strong)]
+        NSDecimalNumber TotalPrice { get; }
+
+        // @property (nonatomic, strong, nullable) NSDecimalNumber *unitPrice;
+        [NullAllowed, Export("unitPrice", ArgumentSemantic.Strong)]
+        NSDecimalNumber UnitPrice { get; }
+    }
+
+    // @interface RoktCartItemInstantPurchaseFailure : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktCartItemInstantPurchaseFailure
+    {
+        // @property (nonatomic, strong, nonnull) NSString *identifier;
+        [Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *catalogItemId;
+        [Export("catalogItemId", ArgumentSemantic.Strong)]
+        string CatalogItemId { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *cartItemId;
+        [Export("cartItemId", ArgumentSemantic.Strong)]
+        string CartItemId { get; }
+
+        // @property (nonatomic, strong, nullable) NSString *error;
+        [NullAllowed, Export("error", ArgumentSemantic.Strong)]
+        string Error { get; }
+    }
+
+    // @interface RoktInstantPurchaseDismissal : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktInstantPurchaseDismissal
+    {
+        // @property (nonatomic, strong, nonnull) NSString *identifier;
+        [Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+    }
+
+    // @interface RoktCartItemDevicePay : RoktEvent
+    [BaseType(typeof(RoktEvent))]
+    [Protocol]
+    interface RoktCartItemDevicePay
+    {
+        // @property (nonatomic, strong, nonnull) NSString *identifier;
+        [Export("identifier", ArgumentSemantic.Strong)]
+        string Identifier { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *catalogItemId;
+        [Export("catalogItemId", ArgumentSemantic.Strong)]
+        string CatalogItemId { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *cartItemId;
+        [Export("cartItemId", ArgumentSemantic.Strong)]
+        string CartItemId { get; }
+
+        // @property (nonatomic, strong, nonnull) NSString *paymentProvider;
+        [Export("paymentProvider", ArgumentSemantic.Strong)]
+        string PaymentProvider { get; }
     }
 
     // @interface MPRokt : NSObject
