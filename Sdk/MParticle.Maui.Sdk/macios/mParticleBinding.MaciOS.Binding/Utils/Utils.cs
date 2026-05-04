@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Foundation;
 using mParticle.MAUI.iOSBinding;
@@ -336,7 +337,18 @@ namespace mParticle.MAUI.iOS.Utils
                 return null;
             }
 
-            return value.DecimalValue;
+            var stringValue = value.StringValue;
+            if (decimal.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedInvariant))
+            {
+                return parsedInvariant;
+            }
+
+            if (decimal.TryParse(stringValue, NumberStyles.Any, CultureInfo.CurrentCulture, out var parsedCurrent))
+            {
+                return parsedCurrent;
+            }
+
+            return null;
         }
 
         internal static NSDictionary<NSString, NSString> ConvertToNSDictionary<T, V>(Dictionary<string, string> dictionary) where T : NSString where V : NSString
