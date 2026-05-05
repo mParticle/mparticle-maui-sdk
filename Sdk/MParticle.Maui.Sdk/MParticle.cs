@@ -9,6 +9,7 @@ using mParticle.MAUI.Android.Wrappers;
 using mParticle.MAUI.Android;
 using Android.Util;
 using Android.Views;
+using Com.Mparticle.Mparticlebinding;
 using Object = Java.Lang.Object;
 using Java.Util;
 using Kotlin.Jvm.Functions;
@@ -302,8 +303,7 @@ public class RoktApiWrapper : RoktApi
     public override void SelectPlacements(string identifier, 
         Dictionary<string, string> attributes = null,
         Dictionary<string, RoktEmbeddedView> embeddedViews = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         
         // Store embedded views for height updates
@@ -319,15 +319,15 @@ public class RoktApiWrapper : RoktApi
         var nsEmbeddedViews = Utils.ConvertEmbeddedViewsToNSDictionary(embeddedViews);
         var nsConfig = Utils.ConvertToMpRoktConfig(config);
         
-        // Create enhanced callbacks that include height management
-        var enhancedCallbacks = Utils.ConvertToMpRoktEventCallback(callbacks, (identifier, height) =>
+        // Keep embedded view heights in sync with native iOS size events.
+        Action<iOSBinding.RoktEvent> enhancedCallbacks = roktEvent =>
         {
-            // Update the MAUI view's HeightRequest when native view size changes
-            if (EmbeddedViews.TryGetValue(identifier, out var view))
+            if (roktEvent is iOSBinding.RoktEmbeddedSizeChanged sizeChanged &&
+                EmbeddedViews.TryGetValue(sizeChanged.Identifier, out var view))
             {
-                view.HeightRequest = height;
+                view.HeightRequest = sizeChanged.UpdatedHeight;
             }
-        });
+        };
 
         _roktInstance.SelectPlacements(identifier, nsAttributes, nsEmbeddedViews, nsConfig, enhancedCallbacks);
     }
@@ -335,15 +335,23 @@ public class RoktApiWrapper : RoktApi
     public override void SelectShoppableAds(
         string identifier,
         Dictionary<string, string> attributes = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         var nsAttributes = Utils.ConvertToNSDictionary<NSString, NSString>(attributes)
             ?? new NSDictionary<NSString, NSString>();
         var nsConfig = Utils.ConvertToMpRoktConfig(config);
-        var enhancedCallbacks = Utils.ConvertToMpRoktEventCallback(callbacks);
 
-        _roktInstance.SelectShoppableAds(identifier, nsAttributes, nsConfig, enhancedCallbacks);
+        _roktInstance.SelectShoppableAds(identifier, nsAttributes, nsConfig, null);
+    }
+
+    public override void Events(string identifier, Action<RoktEvent> onEvent)
+    {
+        _roktInstance.Events(identifier, Utils.ConvertToMpRoktEventCallback(onEvent));
+    }
+
+    public override void GlobalEvents(Action<RoktEvent> onEvent)
+    {
+        _roktInstance.GlobalEvents(Utils.ConvertToMpRoktEventCallback(onEvent));
     }
 }
 
@@ -587,6 +595,7 @@ public class MParticleSDKImpl : MParticleSDK
 public class RoktApiWrapper : RoktApi
 {
     private readonly mParticle.MAUI.AndroidBinding.MParticle _mparticleInstance;
+    private static readonly List<object> EventSubscriptions = new List<object>();
 
     internal RoktApiWrapper(mParticle.MAUI.AndroidBinding.MParticle mparticleInstance)
     {
@@ -597,8 +606,7 @@ public class RoktApiWrapper : RoktApi
         string identifier,
         Dictionary<string, string> attributes = null,
         Dictionary<string, RoktEmbeddedView> embeddedViews = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         if (_mparticleInstance == null)
         {
@@ -608,13 +616,11 @@ public class RoktApiWrapper : RoktApi
         var javaAttributes = Utils.ConvertToDictionary(attributes);
         var javaEmbeddedViews = Utils.ConvertEmbeddedViewsToWeakReferenceDictionary(embeddedViews);
         var javaConfig = Utils.ConvertToRoktConfig(config);
-        var javaCallbacks = Utils.ConvertToRoktEventCallback(callbacks);
-
         var roktInstance = _mparticleInstance.Rokt();
         if (roktInstance != null)
         {
             // Android Rokt API: selectPlacements(identifier, attributes, callbacks, embeddedViews, fontTypefaces, config)
-            roktInstance.SelectPlacements(identifier, javaAttributes, javaCallbacks, javaEmbeddedViews, null, javaConfig);
+            roktInstance.SelectPlacements(identifier, javaAttributes, null, javaEmbeddedViews, null, javaConfig);
         }
         else
         {
@@ -625,12 +631,50 @@ public class RoktApiWrapper : RoktApi
     public override void SelectShoppableAds(
         string identifier,
         Dictionary<string, string> attributes = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         // Parity with Flutter/React Native: Android exposes the API but does not
         // have native Shoppable Ads support yet. Keep a no-op bridge with a warning log.
         Console.WriteLine("[mParticle MAUI SDK] SelectShoppableAds is not yet supported on Android.");
+    }
+
+    public override void Events(string identifier, Action<RoktEvent> onEvent)
+    {
+        if (_mparticleInstance == null)
+        {
+            Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(identifier))
+        {
+            throw new ArgumentException("identifier cannot be null or empty.", nameof(identifier));
+        }
+
+        if (onEvent == null)
+        {
+            throw new ArgumentNullException(nameof(onEvent));
+        }
+
+        var roktInstance = _mparticleInstance.Rokt();
+        if (roktInstance == null)
+        {
+            throw new InvalidOperationException("Rokt instance is not available. Make sure mParticle is properly initialized.");
+        }
+
+        var listener = Utils.ConvertToRoktFlowEventListener(onEvent);
+        var subscription = MParticleSdkBinding.SubscribeToEvents(roktInstance, identifier, listener);
+
+        lock (EventSubscriptions)
+        {
+            EventSubscriptions.Add(listener);
+            EventSubscriptions.Add(subscription);
+        }
+    }
+
+    public override void GlobalEvents(Action<RoktEvent> onEvent)
+    {
+        Console.WriteLine("[mParticle MAUI SDK] Rokt global events subscription is not yet supported on Android.");
     }
 }
 
@@ -658,8 +702,7 @@ public class NoOpRoktApiWrapper : RoktApi
         string identifier,
         Dictionary<string, string> attributes = null,
         Dictionary<string, RoktEmbeddedView> embeddedViews = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
     {
         Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
     }
@@ -667,8 +710,17 @@ public class NoOpRoktApiWrapper : RoktApi
     public override void SelectShoppableAds(
         string identifier,
         Dictionary<string, string> attributes = null,
-        RoktConfig config = null,
-        RoktEventCallback callbacks = null)
+        RoktConfig config = null)
+    {
+        Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
+    }
+
+    public override void Events(string identifier, Action<RoktEvent> onEvent)
+    {
+        Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
+    }
+
+    public override void GlobalEvents(Action<RoktEvent> onEvent)
     {
         Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
     }

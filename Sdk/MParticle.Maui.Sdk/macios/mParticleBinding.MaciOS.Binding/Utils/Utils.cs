@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Foundation;
 using mParticle.MAUI.iOSBinding;
@@ -224,52 +225,130 @@ namespace mParticle.MAUI.iOS.Utils
             if (config == null)
                 return null;
 
-            var mpConfig = new iOSBinding.RoktConfig();
-            
-            if (config.CacheDuration.HasValue)
-                mpConfig.CacheDuration = NSNumber.FromInt32(config.CacheDuration.Value);
-                
-            mpConfig.CacheAttributes = ConvertToNSDictionary<NSString, NSString>(config.CacheAttributes);
-            
-            return mpConfig;
+            var builder = new iOSBinding.RoktConfigBuilder()
+                .ColorMode(ConvertToMpRoktColorMode(config.ColorMode));
+
+            if (config.CacheDuration.HasValue || (config.CacheAttributes != null && config.CacheAttributes.Any()))
+            {
+                var cacheDuration = config.CacheDuration.HasValue
+                    ? config.CacheDuration.Value
+                    : iOSBinding.RoktCacheConfig.MaxCacheDuration;
+                var cacheAttributes = ConvertToNSDictionary<NSString, NSString>(config.CacheAttributes);
+                var cacheConfig = new iOSBinding.RoktCacheConfig(cacheDuration, cacheAttributes);
+                builder = builder.CacheConfig(cacheConfig);
+            }
+
+            return builder.Build();
         }
 
-        internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(RoktEventCallback callbacks)
+        internal static iOSBinding.RoktColorMode ConvertToMpRoktColorMode(RoktColorMode colorMode)
         {
-            return ConvertToMpRoktEventCallback(callbacks, null);
+            switch (colorMode)
+            {
+                case RoktColorMode.Light:
+                    return iOSBinding.RoktColorMode.Light;
+                case RoktColorMode.Dark:
+                    return iOSBinding.RoktColorMode.Dark;
+                case RoktColorMode.System:
+                default:
+                    return iOSBinding.RoktColorMode.System;
+            }
         }
 
-        internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(
-            RoktEventCallback callbacks, 
-            Action<string, double> heightCallback)
+        internal static Action<iOSBinding.RoktEvent> ConvertToMpRoktEventCallback(Action<RoktEvent> onEvent)
         {
-            if (callbacks == null && heightCallback == null)
+            if (onEvent == null)
             {
                 return null;
             }
 
             return roktEvent =>
             {
-                switch (roktEvent)
+                var crossPlatformEvent = ConvertToCrossPlatformRoktEvent(roktEvent);
+                if (crossPlatformEvent != null)
                 {
-                    case iOSBinding.RoktShowLoadingIndicator:
-                        callbacks?.OnShouldShowLoadingIndicator?.Invoke();
-                        break;
-                    case iOSBinding.RoktHideLoadingIndicator:
-                        callbacks?.OnShouldHideLoadingIndicator?.Invoke();
-                        break;
-                    case iOSBinding.RoktPlacementReady:
-                        callbacks?.OnLoad?.Invoke();
-                        break;
-                    case iOSBinding.RoktPlacementClosed closed:
-                        callbacks?.OnUnLoad?.Invoke(closed.Identifier ?? "Unknown");
-                        break;
-                    case iOSBinding.RoktEmbeddedSizeChanged sizeChanged:
-                        callbacks?.OnEmbeddedSizeChange?.Invoke(sizeChanged.Identifier, (float)sizeChanged.UpdatedHeight);
-                        heightCallback?.Invoke(sizeChanged.Identifier, (double)sizeChanged.UpdatedHeight);
-                        break;
+                    onEvent.Invoke(crossPlatformEvent);
                 }
             };
+        }
+
+        internal static RoktEvent ConvertToCrossPlatformRoktEvent(iOSBinding.RoktEvent roktEvent)
+        {
+            switch (roktEvent)
+            {
+                case iOSBinding.RoktInitComplete e:
+                    return new RoktInitComplete(e.Success);
+                case iOSBinding.RoktShowLoadingIndicator:
+                    return new RoktShowLoadingIndicator();
+                case iOSBinding.RoktHideLoadingIndicator:
+                    return new RoktHideLoadingIndicator();
+                case iOSBinding.RoktPlacementReady e:
+                    return new RoktPlacementReady(e.Identifier);
+                case iOSBinding.RoktPlacementInteractive e:
+                    return new RoktPlacementInteractive(e.Identifier);
+                case iOSBinding.RoktPlacementClosed e:
+                    return new RoktPlacementClosed(e.Identifier);
+                case iOSBinding.RoktPlacementCompleted e:
+                    return new RoktPlacementCompleted(e.Identifier);
+                case iOSBinding.RoktPlacementFailure e:
+                    return new RoktPlacementFailure(e.Identifier);
+                case iOSBinding.RoktOfferEngagement e:
+                    return new RoktOfferEngagement(e.Identifier);
+                case iOSBinding.RoktPositiveEngagement e:
+                    return new RoktPositiveEngagement(e.Identifier);
+                case iOSBinding.RoktFirstPositiveEngagement e:
+                    return new RoktFirstPositiveEngagement(
+                        e.Identifier,
+                        attributes => e.SetFulfillmentAttributes?.Invoke(ConvertToNSDictionary<NSString, NSString>(attributes)));
+                case iOSBinding.RoktOpenUrl e:
+                    return new RoktOpenUrl(e.Identifier, e.Url);
+                case iOSBinding.RoktEmbeddedSizeChanged e:
+                    return new RoktEmbeddedSizeChanged(e.Identifier, (double)e.UpdatedHeight);
+                case iOSBinding.RoktCartItemInstantPurchaseInitiated e:
+                    return new RoktCartItemInstantPurchaseInitiated(e.Identifier, e.CatalogItemId, e.CartItemId);
+                case iOSBinding.RoktCartItemInstantPurchase e:
+                    return new RoktCartItemInstantPurchase(
+                        e.Identifier,
+                        e.Name,
+                        e.CartItemId,
+                        e.CatalogItemId,
+                        e.Currency,
+                        e.ItemDescription,
+                        e.LinkedProductId,
+                        e.ProviderData,
+                        ConvertToNullableDecimal(e.Quantity),
+                        ConvertToNullableDecimal(e.TotalPrice),
+                        ConvertToNullableDecimal(e.UnitPrice));
+                case iOSBinding.RoktCartItemInstantPurchaseFailure e:
+                    return new RoktCartItemInstantPurchaseFailure(e.Identifier, e.CatalogItemId, e.CartItemId, e.Error);
+                case iOSBinding.RoktInstantPurchaseDismissal e:
+                    return new RoktInstantPurchaseDismissal(e.Identifier);
+                case iOSBinding.RoktCartItemDevicePay e:
+                    return new RoktCartItemDevicePay(e.Identifier, e.CatalogItemId, e.CartItemId, e.PaymentProvider);
+                default:
+                    return null;
+            }
+        }
+
+        internal static decimal? ConvertToNullableDecimal(NSDecimalNumber value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            var stringValue = value.StringValue;
+            if (decimal.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedInvariant))
+            {
+                return parsedInvariant;
+            }
+
+            if (decimal.TryParse(stringValue, NumberStyles.Any, CultureInfo.CurrentCulture, out var parsedCurrent))
+            {
+                return parsedCurrent;
+            }
+
+            return null;
         }
 
         internal static NSDictionary<NSString, NSString> ConvertToNSDictionary<T, V>(Dictionary<string, string> dictionary) where T : NSString where V : NSString

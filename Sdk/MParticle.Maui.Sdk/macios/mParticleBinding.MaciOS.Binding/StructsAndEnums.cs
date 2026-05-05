@@ -242,4 +242,12 @@ namespace mParticle.MAUI.iOSBinding {
         MPSegmentMembershipActionDrop
     }
 
+    [Native]
+    public enum RoktColorMode : long
+    {
+        Light = 0,
+        Dark = 1,
+        System = 2
+    }
+
 }

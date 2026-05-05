@@ -289,6 +289,7 @@ internal static class Utils
             return null;
 
         var builder = new Com.Mparticle.Rokt.RoktConfig.Builder();
+        builder.ColorMode(ConvertToRoktColorMode(config.ColorMode));
 
         if (config.CacheDuration.HasValue || (config.CacheAttributes != null && config.CacheAttributes.Count > 0))
         {
@@ -300,56 +301,89 @@ internal static class Utils
         return builder.Build();
     }
 
-    internal static AndroidBinding.IMpRoktEventCallback ConvertToRoktEventCallback(RoktEventCallback callbacks)
+    internal static Com.Mparticle.Rokt.RoktConfig.ColorMode ConvertToRoktColorMode(RoktColorMode colorMode)
     {
-        return ConvertToRoktEventCallback(callbacks, null);
+        switch (colorMode)
+        {
+            case RoktColorMode.Light:
+                return Com.Mparticle.Rokt.RoktConfig.ColorMode.Light!;
+            case RoktColorMode.Dark:
+                return Com.Mparticle.Rokt.RoktConfig.ColorMode.Dark!;
+            case RoktColorMode.System:
+            default:
+                return Com.Mparticle.Rokt.RoktConfig.ColorMode.System!;
+        }
     }
 
-    internal static AndroidBinding.IMpRoktEventCallback ConvertToRoktEventCallback(
-        RoktEventCallback callbacks, 
-        Action<string, double> heightCallback)
+    internal static Com.Mparticle.Mparticlebinding.IRoktFlowEventListener ConvertToRoktFlowEventListener(Action<RoktEvent> onEvent)
     {
-        return new RoktEventCallbackWrapper(callbacks, heightCallback);
+        return new RoktFlowEventListenerWrapper(onEvent);
     }
 
-    public class RoktEventCallbackWrapper : Java.Lang.Object, AndroidBinding.IMpRoktEventCallback
+    public class RoktFlowEventListenerWrapper : Java.Lang.Object, Com.Mparticle.Mparticlebinding.IRoktFlowEventListener
     {
-        private readonly RoktEventCallback _callbacks;
-        private readonly Action<string, double> _heightCallback;
+        private readonly Action<RoktEvent> _onEvent;
 
-        public RoktEventCallbackWrapper(RoktEventCallback callbacks, Action<string, double> heightCallback = null)
+        public RoktFlowEventListenerWrapper(Action<RoktEvent> onEvent)
         {
-            _callbacks = callbacks;
-            _heightCallback = heightCallback;
+            _onEvent = onEvent;
         }
 
-        public void OnLoad()
+        public void OnEvent(AndroidBinding.IRoktEvent e)
         {
-            _callbacks?.OnLoad?.Invoke();
+            var crossPlatformEvent = ConvertToCrossPlatformRoktEvent(e);
+            if (crossPlatformEvent != null)
+            {
+                _onEvent?.Invoke(crossPlatformEvent);
+            }
         }
+    }
 
-        public void OnUnload(AndroidBinding.UnloadReasons reason)
+    internal static RoktEvent ConvertToCrossPlatformRoktEvent(AndroidBinding.IRoktEvent roktEvent)
+    {
+        switch (roktEvent)
         {
-            _callbacks?.OnUnLoad?.Invoke(reason?.ToString() ?? "Unknown");
-        }
-
-        public void OnShouldShowLoadingIndicator()
-        {
-            _callbacks?.OnShouldShowLoadingIndicator?.Invoke();
-        }
-
-        public void OnShouldHideLoadingIndicator()
-        {
-            _callbacks?.OnShouldHideLoadingIndicator?.Invoke();
-        }
-
-        public void OnEmbeddedSizeChange(string identifier, int height)
-        {
-            // Call user's callback if provided
-            _callbacks?.OnEmbeddedSizeChange?.Invoke(identifier, (float)height);
-            
-            // Call internal height management callback
-            _heightCallback?.Invoke(identifier, height);
+            case AndroidBinding.IRoktEvent.InitComplete e:
+                return new RoktInitComplete(e.Success);
+            case AndroidBinding.IRoktEvent.ShowLoadingIndicator:
+                return new RoktShowLoadingIndicator();
+            case AndroidBinding.IRoktEvent.HideLoadingIndicator:
+                return new RoktHideLoadingIndicator();
+            case AndroidBinding.IRoktEvent.PlacementReady e:
+                return new RoktPlacementReady(e.PlacementId);
+            case AndroidBinding.IRoktEvent.PlacementInteractive e:
+                return new RoktPlacementInteractive(e.PlacementId);
+            case AndroidBinding.IRoktEvent.PlacementClosed e:
+                return new RoktPlacementClosed(e.PlacementId);
+            case AndroidBinding.IRoktEvent.PlacementCompleted e:
+                return new RoktPlacementCompleted(e.PlacementId);
+            case AndroidBinding.IRoktEvent.PlacementFailure e:
+                return new RoktPlacementFailure(e.PlacementId);
+            case AndroidBinding.IRoktEvent.OfferEngagement e:
+                return new RoktOfferEngagement(e.PlacementId);
+            case AndroidBinding.IRoktEvent.PositiveEngagement e:
+                return new RoktPositiveEngagement(e.PlacementId);
+            case AndroidBinding.IRoktEvent.FirstPositiveEngagement e:
+                return new RoktFirstPositiveEngagement(
+                    e.PlacementId,
+                    _ => Console.WriteLine("[mParticle MAUI SDK] SetFulfillmentAttributes is not supported on Android."));
+            case AndroidBinding.IRoktEvent.OpenUrl e:
+                return new RoktOpenUrl(e.PlacementId, e.Url);
+            case AndroidBinding.IRoktEvent.CartItemInstantPurchase e:
+                return new RoktCartItemInstantPurchase(
+                    e.PlacementId,
+                    null,
+                    e.CartItemId,
+                    e.CatalogItemId,
+                    e.Currency,
+                    e.Description,
+                    e.LinkedProductId,
+                    null,
+                        (decimal)e.Quantity,
+                        (decimal)e.TotalPrice,
+                        (decimal)e.UnitPrice);
+            default:
+                return null;
         }
     }
 
