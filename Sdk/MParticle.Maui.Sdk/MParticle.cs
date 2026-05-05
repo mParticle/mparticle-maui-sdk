@@ -595,7 +595,7 @@ public class MParticleSDKImpl : MParticleSDK
 public class RoktApiWrapper : RoktApi
 {
     private readonly mParticle.MAUI.AndroidBinding.MParticle _mparticleInstance;
-    private readonly List<object> _eventSubscriptions = new List<object>();
+    private static readonly List<object> EventSubscriptions = new List<object>();
 
     internal RoktApiWrapper(mParticle.MAUI.AndroidBinding.MParticle mparticleInstance)
     {
@@ -665,10 +665,10 @@ public class RoktApiWrapper : RoktApi
         var listener = Utils.ConvertToRoktFlowEventListener(onEvent);
         var subscription = MParticleSdkBinding.SubscribeToEvents(roktInstance, identifier, listener);
 
-        lock (_eventSubscriptions)
+        lock (EventSubscriptions)
         {
-            _eventSubscriptions.Add(listener);
-            _eventSubscriptions.Add(subscription);
+            EventSubscriptions.Add(listener);
+            EventSubscriptions.Add(subscription);
         }
     }
 
