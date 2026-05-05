@@ -364,7 +364,9 @@ internal static class Utils
             case AndroidBinding.IRoktEvent.PositiveEngagement e:
                 return new RoktPositiveEngagement(e.PlacementId);
             case AndroidBinding.IRoktEvent.FirstPositiveEngagement e:
-                return new RoktFirstPositiveEngagement(e.PlacementId, null);
+                return new RoktFirstPositiveEngagement(
+                    e.PlacementId,
+                    _ => Console.WriteLine("[mParticle MAUI SDK] SetFulfillmentAttributes is not supported on Android."));
             case AndroidBinding.IRoktEvent.OpenUrl e:
                 return new RoktOpenUrl(e.PlacementId, e.Url);
             case AndroidBinding.IRoktEvent.CartItemInstantPurchase e:
