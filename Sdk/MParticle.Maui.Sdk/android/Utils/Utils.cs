@@ -289,6 +289,7 @@ internal static class Utils
             return null;
 
         var builder = new Com.Mparticle.Rokt.RoktConfig.Builder();
+        builder.ColorMode(ConvertToRoktColorMode(config.ColorMode));
 
         if (config.CacheDuration.HasValue || (config.CacheAttributes != null && config.CacheAttributes.Count > 0))
         {
@@ -298,6 +299,20 @@ internal static class Utils
         }
 
         return builder.Build();
+    }
+
+    internal static Com.Mparticle.Rokt.RoktConfig.ColorMode ConvertToRoktColorMode(RoktColorMode colorMode)
+    {
+        switch (colorMode)
+        {
+            case RoktColorMode.Light:
+                return Com.Mparticle.Rokt.RoktConfig.ColorMode.Light!;
+            case RoktColorMode.Dark:
+                return Com.Mparticle.Rokt.RoktConfig.ColorMode.Dark!;
+            case RoktColorMode.System:
+            default:
+                return Com.Mparticle.Rokt.RoktConfig.ColorMode.System!;
+        }
     }
 
     internal static Com.Mparticle.Mparticlebinding.IRoktFlowEventListener ConvertToRoktFlowEventListener(Action<RoktEvent> onEvent)
