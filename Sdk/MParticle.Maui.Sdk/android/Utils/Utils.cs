@@ -378,7 +378,7 @@ internal static class Utils
                     e.Currency,
                     e.Description,
                     e.LinkedProductId,
-                    string.Empty,
+                    null,
                         (decimal)e.Quantity,
                         (decimal)e.TotalPrice,
                         (decimal)e.UnitPrice);
