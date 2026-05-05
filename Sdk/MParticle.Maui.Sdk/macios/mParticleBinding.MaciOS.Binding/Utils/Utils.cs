@@ -313,7 +313,7 @@ namespace mParticle.MAUI.iOS.Utils
                         e.CartItemId,
                         e.CatalogItemId,
                         e.Currency,
-                        e.Description,
+                        e.ItemDescription,
                         e.LinkedProductId,
                         e.ProviderData,
                         ConvertToNullableDecimal(e.Quantity),

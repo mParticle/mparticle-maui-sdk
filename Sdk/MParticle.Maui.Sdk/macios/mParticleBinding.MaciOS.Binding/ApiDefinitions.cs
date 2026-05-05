@@ -1329,6 +1329,10 @@ namespace mParticle.MAUI.iOSBinding {
         [Export("currency", ArgumentSemantic.Strong)]
         string Currency { get; }
 
+        // @property (nonatomic, strong, nonnull) NSString *description;
+        [Export("description", ArgumentSemantic.Strong)]
+        string ItemDescription { get; }
+
         // @property (nonatomic, strong, nullable) NSString *linkedProductId;
         [NullAllowed, Export("linkedProductId", ArgumentSemantic.Strong)]
         string LinkedProductId { get; }
