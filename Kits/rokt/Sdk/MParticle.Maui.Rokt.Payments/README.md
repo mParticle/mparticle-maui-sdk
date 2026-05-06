@@ -15,7 +15,7 @@ using mParticle.MAUI;
 using mParticle.MAUI.Rokt.Payments;
 
 // Call once after MParticle.Instance.Initialize(options)
-RoktStripePaymentExtension.Register("merchant.com.yourapp.rokt");
+RoktPaymentExtension.Register("merchant.com.yourapp.rokt");
 ```
 
 ## Rokt API (included via dependency)
