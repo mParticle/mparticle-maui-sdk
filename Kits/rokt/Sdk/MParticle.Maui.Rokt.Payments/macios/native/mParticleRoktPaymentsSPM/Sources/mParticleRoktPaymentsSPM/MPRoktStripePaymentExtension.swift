@@ -10,11 +10,11 @@
 
 import Foundation
 import RoktContracts
-import RoktStripePaymentExtension
+import RoktPaymentExtension
 import UIKit
 
 /// `@objc NSObject` wrapper around the pure-Swift
-/// `RoktStripePaymentExtension`, conforming to the `@objc(RoktPaymentExtension)`
+/// `RoktPaymentExtension`, conforming to the `@objc(RoktPaymentExtension)`
 /// protocol (`PaymentExtension`).
 ///
 /// The wrapper exists so a concrete instance can safely cross the Xamarin.iOS
@@ -23,7 +23,7 @@ import UIKit
 @objc(MPRoktStripePaymentExtension)
 public final class MPRoktStripePaymentExtension: NSObject, PaymentExtension {
 
-    private let inner: RoktStripePaymentExtension
+    private let inner: RoktPaymentExtension
 
     /// Creates a new Stripe payment extension.
     ///
@@ -32,9 +32,10 @@ public final class MPRoktStripePaymentExtension: NSObject, PaymentExtension {
     ///   - countryCode: ISO 3166-1 alpha-2 country code (e.g. `"US"`).
     @objc(initWithApplePayMerchantId:countryCode:)
     public init?(applePayMerchantId: String, countryCode: String) {
-        guard let inner = RoktStripePaymentExtension(
+        guard let inner = RoktPaymentExtension(
             applePayMerchantId: applePayMerchantId,
-            countryCode: countryCode
+            countryCode: countryCode,
+            urlScheme: nil
         ) else {
             return nil
         }
@@ -56,9 +57,12 @@ public final class MPRoktStripePaymentExtension: NSObject, PaymentExtension {
         inner.onUnregister()
     }
 
+    // Required by PaymentExtension protocol signature.
+    // swiftlint:disable:next function_parameter_count
     public func presentPaymentSheet(
         item: PaymentItem,
         method: PaymentMethodType,
+        context: PaymentContext,
         from viewController: UIViewController,
         preparePayment: @escaping (
             _ address: ContactAddress,
@@ -69,6 +73,7 @@ public final class MPRoktStripePaymentExtension: NSObject, PaymentExtension {
         inner.presentPaymentSheet(
             item: item,
             method: method,
+            context: context,
             from: viewController,
             preparePayment: preparePayment,
             completion: completion

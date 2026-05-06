@@ -14,6 +14,62 @@ to create the bindings. These bindings are used by the Rokt SDK wrapper APIs to 
 
 Read the docs here: <https://docs.rokt.com/developers/integration-guides/maui/overview>
 
+## Rokt API
+
+After `MParticle.Instance.Initialize(options)`, the Rokt API is available via
+`MParticle.Instance.Rokt`.
+
+Available methods:
+
+- `SelectPlacements(identifier, attributes, embeddedViews, config)`
+- `SelectShoppableAds(identifier, attributes, config)`
+- `Events(identifier, onEvent)` for placement-specific event subscription
+- `GlobalEvents(onEvent)` for all Rokt events
+
+Example placement selection:
+
+```csharp
+var attributes = new Dictionary<string, string>
+{
+    ["country"] = "US",
+    ["email"] = "jenny.smith@example.com"
+};
+
+MParticle.Instance.Rokt.SelectPlacements(
+    identifier: "StgRoktShoppableAds",
+    attributes: attributes,
+    embeddedViews: new Dictionary<string, RoktEmbeddedView>
+    {
+        ["Location1"] = myEmbeddedView
+    },
+    config: null
+);
+```
+
+Example shoppable ads selection:
+
+```csharp
+MParticle.Instance.Rokt.SelectShoppableAds(
+    identifier: "StgRoktShoppableAds",
+    attributes: attributes,
+    config: null
+);
+```
+
+Example event subscriptions:
+
+```csharp
+MParticle.Instance.Rokt.Events("StgRoktShoppableAds", roktEvent =>
+{
+    Console.WriteLine($"Rokt event: {roktEvent.GetType().Name}");
+});
+
+MParticle.Instance.Rokt.GlobalEvents(roktEvent =>
+{
+    Console.WriteLine($"Global Rokt event: {roktEvent.GetType().Name}");
+});
+```
+
 ## Supported Targets
 
 - .NET iOS

@@ -69,14 +69,14 @@
     
     <ItemGroup Condition="$(TargetFramework.Contains('android'))">
         <!--mParticle Android Core SDK-->
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-rokt-kit-5.74.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-rokt-kit-5.78.5.aar">
             <Bind>true</Bind>
             <Link>false</Link>
             <Pack>true</Pack>
             <Visible>true</Visible>
         </AndroidLibrary>
 
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-kit-base-5.74.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-kit-base-5.78.5.aar">
             <Bind>false</Bind>
             <Link>false</Link>
             <Pack>true</Pack>
@@ -84,53 +84,45 @@
         </AndroidLibrary>
 
          <!--Rokt SDK-->
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktsdk-4.11.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktsdk-4.14.2.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
         
         <!--Rokt Sdk Internal Modules-->
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.core.common-api-4.11.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.core.common-api-4.14.2.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core-network-4.11.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core-network-4.14.2.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core-model-4.11.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core-model-4.14.2.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core.data-impl-4.11.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core.data-impl-4.14.2.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.core.common-impl-4.11.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.core.common-impl-4.14.2.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.network.types-dcui-schema-2.2.0.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.network.types-dcui-schema-2.3.0.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.legacy-roktsdk-4.11.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.legacy-roktsdk-4.14.2.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core.data-api-4.11.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core.data-api-4.14.2.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-core-0.7.1.aar">
-            <Bind>false</Bind>
-            <Visible>false</Visible>
-        </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-modelmapper-0.7.1.aar">
-            <Bind>false</Bind>
-            <Visible>false</Visible>
-        </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktux-0.7.1.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktux-0.9.2.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>

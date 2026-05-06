@@ -15,7 +15,7 @@ import Foundation
 @_exported import mParticle_Apple_SDK
 @_exported import mParticle_Rokt_Swift
 @_exported import RoktContracts
-@_exported import RoktStripePaymentExtension
+@_exported import RoktPaymentExtension
 
 /// SPM wrapper for the Rokt Payments kit.
 ///
@@ -27,7 +27,7 @@ import Foundation
 ///   MPKitExecStatus, MPForwardRecord, ...).
 /// - `mParticle-Rokt` — Rokt kit implementation (MPKitRokt, MPRokt).
 /// - `RoktContracts` — shared Rokt payment/DCUI contracts.
-/// - `RoktStripePaymentExtension` — Stripe / Apple Pay payment extension.
+/// - `RoktPaymentExtension` — Stripe / Apple Pay payment extension.
 ///
 /// Bundling everything under one umbrella lets the consuming application
 /// ship a single xcframework (while still letting NuGet resolve the

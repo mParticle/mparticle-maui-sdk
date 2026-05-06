@@ -7,12 +7,12 @@ namespace mParticle.MAUI.Rokt.Payments
 #endif
 
     /// <summary>
-    /// Registers the Rokt Stripe / Apple Pay payment extension with the mParticle Rokt kit.
+    /// Registers the Rokt Apple Pay payment extension with the mParticle Rokt kit.
     /// Requires the core <c>mParticle.Maui.Kits.Rokt</c> package and the
     /// <c>com.apple.developer.in-app-payments</c> entitlement (with your Apple Pay
     /// merchant identifier) on iOS.
     /// </summary>
-    public static class RoktStripePaymentExtension
+    public static class RoktPaymentExtension
     {
         /// <summary>
         /// Creates a native Rokt Stripe payment extension and registers it with the
