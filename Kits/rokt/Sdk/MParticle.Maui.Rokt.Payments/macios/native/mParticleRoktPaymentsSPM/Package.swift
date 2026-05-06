@@ -23,7 +23,7 @@ let package = Package(
             name: "mParticleRoktPaymentsSPM",
             dependencies: [
                 .product(name: "mParticle-Rokt", package: "mp-apple-integration-rokt"),
-                .product(name: "RoktStripePaymentExtension", package: "rokt-stripe-payment-extension-ios")
+                .product(name: "RoktPaymentExtension", package: "rokt-stripe-payment-extension-ios")
             ]
         )
     ]
