@@ -649,6 +649,16 @@ namespace mParticle.MAUI.iOSBinding {
         NSString KitName { get; }
     }
 
+    // @interface MPNetworkOptions : NSObject
+    [BaseType(typeof(NSObject))]
+    [Protocol]
+    interface MPNetworkOptions
+    {
+        // @property (nonatomic, nullable) NSURL *customBaseURL;
+        [NullAllowed, Export("customBaseURL", ArgumentSemantic.Strong)]
+        NSUrl CustomBaseURL { get; set; }
+    }
+
     //@interface MParticleUser : NSObject
     [BaseType(typeof(NSObject))]
     [Protocol]
@@ -772,6 +782,10 @@ namespace mParticle.MAUI.iOSBinding {
         // @property (nonatomic, strong, readwrite, nullable) NSNumber *configMaxAgeSeconds;
         [NullAllowed, Export("configMaxAgeSeconds", ArgumentSemantic.Strong)]
         NSNumber ConfigMaxAgeSeconds { get; set; }
+
+        // @property (nonatomic, strong, readwrite, nullable) MPNetworkOptions *networkOptions;
+        [NullAllowed, Export("networkOptions", ArgumentSemantic.Strong)]
+        MPNetworkOptions NetworkOptions { get; set; }
 
         // @property(nonatomic, copy) void (^onIdentifyComplete)(MPIdentityApiResult* _Nullable apiResult, NSError *_Nullable error);
         [Export("onIdentifyComplete")]
