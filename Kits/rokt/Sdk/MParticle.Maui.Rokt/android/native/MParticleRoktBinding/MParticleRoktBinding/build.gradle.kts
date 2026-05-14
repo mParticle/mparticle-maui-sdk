@@ -50,7 +50,7 @@ project.afterEvaluate {
             if (this.name.contains(".aar")) {
                 // Rename mparticle AAR to the expected name
                 if (this.name.contains("android-rokt-kit")) {
-                    this.name = "com.mparticle-android-rokt-kit-5.78.5.aar"
+                    this.name = "com.mparticle-android-rokt-kit-5.79.0.aar"
                 } else {
                     val groupName = this.file.parentFile.parentFile.parentFile.parentFile.name
                     this.name = groupName + "-" + this.name

@@ -216,6 +216,11 @@ internal static class Utils
         {
             builder.ConfigMaxAgeSeconds(options.ConfigMaxAgeSeconds.Value);
         }
+        if (options.NetworkOptions != null && !String.IsNullOrWhiteSpace(options.NetworkOptions.CustomBaseUrl))
+        {
+            var networkOptions = Com.Mparticle.Networking.NetworkOptions.WithNetworkOptions(options.NetworkOptions.CustomBaseUrl);
+            builder.NetworkOptions(networkOptions);
+        }
         return builder.Build();
     }
 
