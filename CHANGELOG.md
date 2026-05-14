@@ -16,6 +16,7 @@ This release upgrades the iOS binding to mParticle Apple SDK 9 and contains brea
 - iOS-only `RoktApi.SelectShoppableAds` C# API, wrapping the `selectShoppableAds:attributes:config:onEvent:` selector from mParticle Apple SDK 9. Android exposes a no-op bridge for API compatibility until native support lands, matching the Flutter and React Native SDKs. Requires a payment extension to be registered on the native iOS side.
 - `Show Rokt Shoppable Ads (iOS)` demo button in the Rokt sample app.
 - iOS CNAME routing support via `MParticleOptions.NetworkOptions.CustomBaseUrl`, mapped to Apple SDK `MPNetworkOptions.customBaseURL`.
+- Android CNAME routing support via `MParticleOptions.NetworkOptions.CustomBaseUrl`, mapped to Android `com.mparticle.networking.NetworkOptions`.
 
 ### Changed
 
@@ -26,7 +27,9 @@ This release upgrades the iOS binding to mParticle Apple SDK 9 and contains brea
 - **BREAKING**: `MParticleOptions.LocationTracking` is now Android-only; it is silently ignored on iOS because Apple SDK 9 removed `beginLocationTracking:` / `endLocationTracking`.
 - **BREAKING** (iOS binding surface): Renamed `iOSBinding.MPRoktEmbeddedView` to `iOSBinding.RoktEmbeddedView`; the factory `CreateMPRoktEmbeddedView()` was removed in favor of direct construction.
 - **BREAKING** (iOS binding surface): Removed `iOSBinding.MPProduct.UnitPrice`; use `iOSBinding.MPProduct.Price` (`NSNumber`) instead. The cross-platform `MParticle.Maui.Sdk.Product.UnitPrice` is unchanged.
+- **BREAKING**: Renamed MAUI payments helper from `RoktStripePaymentExtension` to `RoktPaymentExtension`.
 - iOS binding is now built as a static SPM product; `mParticle_Apple_SDK.xcframework` and `Rokt_Widget.xcframework` are no longer copied as separate resources.
+- Updated Android dependencies to `android-core`/`android-rokt-kit`/`android-kit-base` `5.79.0` and aligned Rokt transitive AAR versions (`4.14.3` / `0.9.3`).
 
 ### Fixed
 
