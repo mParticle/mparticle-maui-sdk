@@ -79,6 +79,17 @@ namespace mParticle.MAUI.iOS.Utils
             {
                 mpOptions.ConfigMaxAgeSeconds = options.ConfigMaxAgeSeconds.Value;
             }
+            if (options.NetworkOptions != null && !String.IsNullOrWhiteSpace(options.NetworkOptions.CustomBaseUrl))
+            {
+                var customBaseUrl = new NSUrl(options.NetworkOptions.CustomBaseUrl);
+                if (customBaseUrl != null)
+                {
+                    mpOptions.NetworkOptions = new iOSBinding.MPNetworkOptions
+                    {
+                        CustomBaseURL = customBaseUrl
+                    };
+                }
+            }
             if (options.IdentifyRequest != null)
             {
                 mpOptions.IdentifyRequest = ConvertToMpIdentityRequest(options.IdentifyRequest);

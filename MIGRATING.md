@@ -6,6 +6,22 @@ This document describes upgrade steps for breaking changes in the mParticle MAUI
 
 For changes in the underlying native iOS SDK (database migration, deprecated `UIApplicationDelegate` methods, removed `AppDelegateProxy`, regional routing / ATS, Rokt Swift/Objective-C type renames, etc.), refer to the [mParticle Apple SDK 9 migration guide](https://github.com/mParticle/mparticle-apple-sdk/blob/main/MIGRATING.md#migrating-from-versions--900).
 
+## Unreleased migration notes
+
+### MAUI payments helper rename
+
+The public MAUI payments helper was renamed:
+
+| Before                                     | After                                |
+| ------------------------------------------ | ------------------------------------ |
+| `RoktStripePaymentExtension.Register(...)` | `RoktPaymentExtension.Register(...)` |
+
+If you register the iOS payment extension from MAUI code, update your call sites to the new type name.
+
+### Android CNAME support
+
+`MParticleOptions.NetworkOptions.CustomBaseUrl` is now honored on Android as well as iOS. No source changes are required if you already set this option.
+
 ## Migrating from versions < 5.0.0
 
 Version 5.0.0 wraps the mParticle Apple SDK 9 on iOS and the matching `mp-apple-integration-rokt` 9.0.0 Rokt integration. Android behavior is unchanged. No C# source changes are required for most apps, but the iOS build configuration and one MAUI option (`LocationTracking`) behave differently.

@@ -142,6 +142,7 @@ public sealed class MParticleOptions
     public int UploadInterval = 600;  //seconds
     public int SessionTimeout = 60; //seconds
     public int? ConfigMaxAgeSeconds; // defaults to unlimited
+    public NetworkOptions NetworkOptions;
     public Boolean UnCaughtExceptionLogging = false; // Android only
     public LogLevel LogLevel = LogLevel.VERBOSE;
     public LocationTracking LocationTracking;
@@ -170,6 +171,11 @@ public sealed class IdentityApiRequest
 }
 
 public delegate void OnUserAlias(MParticleUser previousUser, MParticleUser newUser);
+
+public sealed class NetworkOptions
+{
+    public String CustomBaseUrl;
+}
 
 public sealed class AttributionResult
 {
