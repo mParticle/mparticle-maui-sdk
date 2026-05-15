@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0] - 2026-05-15
+
 This release upgrades the iOS binding to mParticle Apple SDK 9 and contains breaking changes. See [MIGRATING.md](./MIGRATING.md) for the full 4.x → 5.0 upgrade guide.
 
 ### Added
@@ -71,7 +73,8 @@ This release upgrades the iOS binding to mParticle Apple SDK 9 and contains brea
 
 - First release of the new MAUI only package: mParticle.MAUI
 
-[unreleased]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.1.1...HEAD
+[unreleased]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.2.0...HEAD
+[4.2.0]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.1.1...4.2.0
 [4.1.1]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.0.0...4.0.1
