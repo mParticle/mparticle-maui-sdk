@@ -16,7 +16,7 @@
 
     <PropertyGroup>
         <PackageId>mParticle.Maui.Kits.Rokt.Payments</PackageId>
-        <Version>4.1.1</Version>
+        <Version>4.2.0</Version>
         <Authors>mParticle</Authors>
         <Description>Optional Apple Pay / Stripe payment extension for the mParticle Rokt MAUI kit. Enables payment flows in Rokt Shoppable Ads.</Description>
         <Copyright>Copyright (c) mParticle Inc. 2024</Copyright>
