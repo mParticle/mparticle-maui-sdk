@@ -9,24 +9,6 @@ updates:
       - dependabot
     commit-message:
       prefix: chore
-  - package-ecosystem: gradle
-    directory: /Sdk/MParticle.Maui.Sdk/android/native/MParticleBinding
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 4
-    labels:
-      - dependabot
-    commit-message:
-      prefix: chore
-  - package-ecosystem: gradle
-    directory: /Kits/rokt/Sdk/MParticle.Maui.Rokt/android/native/MParticleRoktBinding
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 4
-    labels:
-      - dependabot
-    commit-message:
-      prefix: chore
   - package-ecosystem: swift
     directory: /Sdk/MParticle.Maui.Sdk/macios/native/mParticleSPM
     schedule:
