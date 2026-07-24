@@ -9,7 +9,6 @@ using mParticle.MAUI.Android.Wrappers;
 using mParticle.MAUI.Android;
 using Android.Util;
 using Android.Views;
-using Com.Mparticle.Mparticlebinding;
 using Object = Java.Lang.Object;
 using Java.Util;
 using Kotlin.Jvm.Functions;
@@ -568,11 +567,12 @@ public class MParticleSDKImpl : MParticleSDK
     {
         get
         {
-            if (!_isInitialized)
-            {
-                return new NoOpRoktApiWrapper();
-            }
-            return new RoktApiWrapper(mParticle.MAUI.AndroidBinding.MParticle.Instance);
+            // Rokt moved out of android-core into the optional android-rokt-kit in
+            // mParticle Android SDK 6. The Android Rokt implementation now lives in the
+            // MParticle.Maui.Kits.Rokt package, which injects itself through
+            // AndroidRoktHooks.RoktApiProvider when the app calls RoktKit.Register().
+            // When the kit is not present, core falls back to a no-op bridge.
+            return AndroidRoktHooks.RoktApiProvider?.Invoke() ?? new NoOpRoktApiWrapper();
         }
     }
 
@@ -592,92 +592,6 @@ public class MParticleSDKImpl : MParticleSDK
     }
 }
 
-public class RoktApiWrapper : RoktApi
-{
-    private readonly mParticle.MAUI.AndroidBinding.MParticle _mparticleInstance;
-    private static readonly List<object> EventSubscriptions = new List<object>();
-
-    internal RoktApiWrapper(mParticle.MAUI.AndroidBinding.MParticle mparticleInstance)
-    {
-        _mparticleInstance = mparticleInstance;
-    }
-
-    public override void SelectPlacements(
-        string identifier,
-        Dictionary<string, string> attributes = null,
-        Dictionary<string, RoktEmbeddedView> embeddedViews = null,
-        RoktConfig config = null)
-    {
-        if (_mparticleInstance == null)
-        {
-            Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
-            return;
-        }
-        var javaAttributes = Utils.ConvertToDictionary(attributes);
-        var javaEmbeddedViews = Utils.ConvertEmbeddedViewsToWeakReferenceDictionary(embeddedViews);
-        var javaConfig = Utils.ConvertToRoktConfig(config);
-        var roktInstance = _mparticleInstance.Rokt();
-        if (roktInstance != null)
-        {
-            // Android Rokt API: selectPlacements(identifier, attributes, callbacks, embeddedViews, fontTypefaces, config)
-            roktInstance.SelectPlacements(identifier, javaAttributes, null, javaEmbeddedViews, null, javaConfig);
-        }
-        else
-        {
-            throw new InvalidOperationException("Rokt instance is not available. Make sure mParticle is properly initialized.");
-        }
-    }
-
-    public override void SelectShoppableAds(
-        string identifier,
-        Dictionary<string, string> attributes = null,
-        RoktConfig config = null)
-    {
-        // Parity with Flutter/React Native: Android exposes the API but does not
-        // have native Shoppable Ads support yet. Keep a no-op bridge with a warning log.
-        Console.WriteLine("[mParticle MAUI SDK] SelectShoppableAds is not yet supported on Android.");
-    }
-
-    public override void Events(string identifier, Action<RoktEvent> onEvent)
-    {
-        if (_mparticleInstance == null)
-        {
-            Console.WriteLine(MParticleSDK.SdkNotInitializedWarning);
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(identifier))
-        {
-            throw new ArgumentException("identifier cannot be null or empty.", nameof(identifier));
-        }
-
-        if (onEvent == null)
-        {
-            throw new ArgumentNullException(nameof(onEvent));
-        }
-
-        var roktInstance = _mparticleInstance.Rokt();
-        if (roktInstance == null)
-        {
-            throw new InvalidOperationException("Rokt instance is not available. Make sure mParticle is properly initialized.");
-        }
-
-        var listener = Utils.ConvertToRoktFlowEventListener(onEvent);
-        var subscription = MParticleSdkBinding.SubscribeToEvents(roktInstance, identifier, listener);
-
-        lock (EventSubscriptions)
-        {
-            EventSubscriptions.Add(listener);
-            EventSubscriptions.Add(subscription);
-        }
-    }
-
-    public override void GlobalEvents(Action<RoktEvent> onEvent)
-    {
-        Console.WriteLine("[mParticle MAUI SDK] Rokt global events subscription is not yet supported on Android.");
-    }
-}
-
 public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, global::Android.Views.View>
 {
     public static IPropertyMapper<RoktEmbeddedView, RoktEmbeddedViewHandler> PropertyMapper = new PropertyMapper<RoktEmbeddedView, RoktEmbeddedViewHandler>(ViewHandler.ViewMapper)
@@ -690,8 +604,28 @@ public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, global::And
 
     protected override global::Android.Views.View CreatePlatformView()
     {
-        return new Com.Mparticle.Rokt.RoktEmbeddedView(Platform.CurrentActivity);
+        // The concrete Rokt embedded view ships in the android-rokt-kit and is supplied by
+        // the MParticle.Maui.Kits.Rokt package via AndroidRoktHooks.EmbeddedViewFactory.
+        // Without the kit, core provides a neutral placeholder so the control still renders.
+        var context = Platform.CurrentActivity ?? (global::Android.Content.Context)global::Android.App.Application.Context;
+        return AndroidRoktHooks.EmbeddedViewFactory?.Invoke(context)
+               ?? new global::Android.Widget.FrameLayout(context);
     }
+}
+
+/// <summary>
+/// Injection hooks that let the optional MParticle.Maui.Kits.Rokt package provide the
+/// Android Rokt implementation without core taking a compile-time dependency on the kit.
+/// The kit populates these from <c>RoktKit.Register()</c>; when it is absent, core Rokt
+/// APIs are no-ops and the embedded view is a neutral placeholder.
+/// </summary>
+public static class AndroidRoktHooks
+{
+    /// <summary>Factory that produces the Android <see cref="RoktApi"/> implementation.</summary>
+    public static Func<RoktApi> RoktApiProvider { get; set; }
+
+    /// <summary>Factory that produces the native Rokt embedded platform view.</summary>
+    public static Func<global::Android.Content.Context, global::Android.Views.View> EmbeddedViewFactory { get; set; }
 }
 #endif
 

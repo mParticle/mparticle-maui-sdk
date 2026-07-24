@@ -18,7 +18,12 @@ namespace mParticle.MAUI
                 mParticle.MAUI.iOSBinding.MParticle.RegisterExtension(kitRegister);
                 System.Console.WriteLine("MPKitRokt registered as extension with mParticle");
             #elif __ANDROID__
-                // On Android, kit registration happens automatically
+                // On Android the Rokt API moved out of android-core into the optional
+                // android-rokt-kit (mParticle Android SDK 6). Inject the kit-backed Rokt
+                // implementation and embedded-view factory into core's hooks so that
+                // MParticle.Instance.Rokt and the RoktEmbeddedView handler route to the kit.
+                AndroidRoktHooks.RoktApiProvider = () => new mParticle.MAUI.Rokt.Android.AndroidRoktApiWrapper();
+                AndroidRoktHooks.EmbeddedViewFactory = context => new Com.Mparticle.Kits.RoktEmbeddedView(context);
                 System.Console.WriteLine("MPKitRokt registered as extension with mParticle");
             #endif
         }
