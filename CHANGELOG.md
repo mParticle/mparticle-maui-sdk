@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING**: Updated Android bindings to mParticle Android SDK `6.0.0` (`android-core` / `android-rokt-kit` / `android-kit-base`), bumping the Rokt SDK from `4.14.3` to `6.0.1` (`roktsdk` + new `roktsdk-contracts`), `roktux` `0.9.3` → `1.0.0`, and the image loader from coil2 `2.3.0` to coil3 `3.2.0`. The binding Kotlin toolchain was raised to `2.1.20`.
+- **BREAKING**: In mParticle Android SDK 6 the Rokt API moved out of `android-core` into the optional `android-rokt-kit`. The MAUI public C# API is unchanged. The Android Rokt implementation now lives in the `MParticle.Maui.Kits.Rokt` package and injects itself into the core SDK through `RoktKit.Register()`; when the kit is not referenced, core Rokt APIs are safe no-ops. Rokt events (a Kotlin `Flow`) are bridged to the C# `RoktApi.Events` callback via a small native helper in the Rokt kit binding.
+- On Android, `IdentityApiRequest.UserAliasHandler` is now a no-op: mParticle Android SDK 6 removed the request-scoped alias callback (`IdentityApiRequest.Builder.userAliasHandler`). The public API is retained for compatibility; use explicit aliasing (`IdentityApi.aliasUsers`) instead.
+- On Android, `MParticleOptions.IdDisabled` is now mapped to the renamed native `androidIdEnabled(bool)` option (inverted). No public API change.
+- Updated iOS SPM dependencies to mParticle Apple SDK `9.3.1`, `mp-apple-integration-rokt` `9.3.1`, and `rokt-stripe-payment-extension-ios` `2.0.3`.
+
 ## [4.2.0] - 2026-05-15
 
 This release upgrades the iOS binding to mParticle Apple SDK 9 and contains breaking changes. See [MIGRATING.md](./MIGRATING.md) for the full 4.x → 5.0 upgrade guide.

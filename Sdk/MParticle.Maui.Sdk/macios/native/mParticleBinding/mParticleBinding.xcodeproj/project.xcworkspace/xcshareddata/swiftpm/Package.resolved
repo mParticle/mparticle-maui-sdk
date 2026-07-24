@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mParticle/mparticle-apple-sdk",
       "state" : {
-        "revision" : "125689b15750301cafa0193d927767de4e5f60ad",
-        "version" : "9.2.0"
+        "revision" : "eadf9d9c2489c62ba262fda6d0faf78a10e9df32",
+        "version" : "9.3.1"
       }
     },
     {

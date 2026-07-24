@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ROKT/dcui-swift-schema.git",
       "state" : {
-        "revision" : "94e2913c91af7c9c49da0e86424f1e4d260a1b6c",
-        "version" : "2.7.0"
+        "revision" : "1e69ee148840e67e658c57f001d8fa0017278f06",
+        "version" : "2.8.1"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mparticle-integrations/mp-apple-integration-rokt.git",
       "state" : {
-        "revision" : "2d334edb6bd910adbf7a48898cb4e0d3e4a12a1c",
-        "version" : "9.2.0"
+        "revision" : "eb828d32bc8d3deeaf4d84e1836e7ab57761fa28",
+        "version" : "9.3.1"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ROKT/rokt-contracts-apple.git",
       "state" : {
-        "revision" : "f504822a77a7c7127bac74805e5858a14f25118d",
-        "version" : "2.0.1"
+        "revision" : "4c450be00085eba6a16d846a66f44b96f1fc59c8",
+        "version" : "2.0.2"
       }
     },
     {
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ROKT/rokt-sdk-ios",
       "state" : {
-        "revision" : "83b3afc0bb5eae2ccb774746f63489d0dd881abd",
-        "version" : "5.2.1"
+        "revision" : "d02f99894a4eb071e0173a2cf116d2820c14ad22",
+        "version" : "5.3.0"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ROKT/rokt-ux-helper-ios.git",
       "state" : {
-        "revision" : "c5909344392529329003badea06d488b73acfb66",
-        "version" : "0.10.8"
+        "revision" : "6102d1a5638f65ae9d96093582b06f97ca74f66e",
+        "version" : "1.0.0"
       }
     }
   ],

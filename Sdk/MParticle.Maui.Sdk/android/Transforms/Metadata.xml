@@ -103,9 +103,6 @@
   <!-- Rename some Interface parameters -->
   <attr path="/api/package[@name='com.mparticle']/interface[@name='AttributionListener']/method[@name='onError']/parameter[@type='com.mparticle.AttributionError']" name="name">attributionError</attr>   
   <attr path="/api/package[@name='com.mparticle']/interface[@name='AttributionListener']/method[@name='onResult']/parameter[@type='com.mparticle.AttributionResult']" name="name">attributionResult</attr>   
-  <attr path="/api/package[@name='com.mparticle.identity']/interface[@name='UserAliasHandler']/method[@name='onUserAlias']/parameter[@name='p0']" name="name">previousUser</attr>
-  <attr path="/api/package[@name='com.mparticle.identity']/interface[@name='UserAliasHandler']/method[@name='onUserAlias']/parameter[@name='p1']" name="name">newUser</attr>
-
     
     <!-- Resolve mismatches between Java Generics and C# -->
   <attr path="/api/package[@name='com.mparticle.identity']/class[@name='BaseIdentityTask']/method[@name='addFailureListener']" name="return">com.mparticle.MParticleTask&lt;com.mparticle.identity.IdentityApiResult&gt;</attr>
@@ -119,20 +116,9 @@
   <attr path="/api/package[@name='com.mparticle.audience']/class[@name='AudienceTask']/method[@name='addFailureListener']" name="return">com.mparticle.audience.BaseAudienceTask</attr>
   <attr path="/api/package[@name='com.mparticle.audience']/class[@name='AudienceTask']/method[@name='getResult']" name="return">com.mparticle.audience.AudienceResponse</attr>
 
-  <!-- Force include the obfuscated Rokt class (o0) -->
-  <attr path="/api/package[@name='com.mparticle']/class[@name='o0']" name="visibility">public</attr>
-  <attr path="/api/package[@name='com.mparticle']/class[@name='o0']" name="managedName">Rokt</attr>
-  
-  <!-- Make the constructor public -->
-  <attr path="/api/package[@name='com.mparticle']/class[@name='o0']/constructor[@name='o0']" name="visibility">public</attr>
-  
-  <!-- Expose the selectPlacements methods -->
-  <attr path="/api/package[@name='com.mparticle']/class[@name='o0']/method[@name='selectPlacements']" name="visibility">public</attr>
-  
-  <!-- Ensure the MParticle.Rokt() method is bound correctly -->
-  <attr path="/api/package[@name='com.mparticle']/class[@name='MParticle']/method[@name='Rokt']" name="visibility">public</attr>
-  
-  <!-- Expose the rokt field as well -->
-  <attr path="/api/package[@name='com.mparticle']/class[@name='MParticle']/field[@name='rokt']" name="visibility">public</attr>
-  <attr path="/api/package[@name='com.mparticle']/class[@name='MParticle']/field[@name='rokt']" name="managedName">Rokt</attr>
+  <!--
+    Rokt was extracted from android-core into the optional android-rokt-kit in
+    mParticle Android SDK 6. The core binding no longer surfaces Rokt; the Rokt
+    API is bound and exposed by the MParticle.Maui.Kits.Rokt package instead.
+  -->
 </metadata>
