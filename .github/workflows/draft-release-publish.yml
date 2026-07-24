@@ -67,7 +67,7 @@ jobs:
           xcode-version: "26.2"
 
       - name: Install .NET MAUI
-        run: dotnet workload install maui --skip-manifest-update
+        run: dotnet workload install maui --version 10.0.103
 
       - name: Get current version
         id: version-file
