@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `MParticleOptions.LogLevel` is now forwarded to the native SDKs on both platforms. Previously it was ignored (Android never called `MParticleOptions.Builder.logLevel`, and iOS never assigned `MParticleOptions.logLevel`), so the native SDKs stayed at their default log level and `VERBOSE` diagnostics (including batch upload logs) were never emitted.
+
 ## [4.2.0] - 2026-05-15
 
 This release upgrades the iOS binding to mParticle Apple SDK 9 and contains breaking changes. See [MIGRATING.md](./MIGRATING.md) for the full 4.x → 5.0 upgrade guide.

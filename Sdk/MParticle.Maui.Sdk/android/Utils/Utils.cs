@@ -141,6 +141,27 @@ internal static class Utils
         }
     }
 
+    internal static AndroidBinding.MParticle.LogLevel ConvertToMpLogLevel(LogLevel logLevel)
+    {
+        switch (logLevel)
+        {
+            case LogLevel.NONE:
+                return AndroidBinding.MParticle.LogLevel.None;
+            case LogLevel.ERROR:
+                return AndroidBinding.MParticle.LogLevel.Error;
+            case LogLevel.WARNING:
+                return AndroidBinding.MParticle.LogLevel.Warning;
+            case LogLevel.DEBUG:
+                return AndroidBinding.MParticle.LogLevel.Debug;
+            case LogLevel.VERBOSE:
+                return AndroidBinding.MParticle.LogLevel.Verbose;
+            case LogLevel.INFO:
+                return AndroidBinding.MParticle.LogLevel.Info;
+            default:
+                return AndroidBinding.MParticle.LogLevel.Debug;
+        }
+    }
+
     internal static AndroidBinding.IAttributionListener ConvertToMpAttributionListener(AttributionListener attributionListener)
     {
         return new AttributionListenerWrapper(attributionListener);
@@ -191,6 +212,7 @@ internal static class Utils
         }
         builder.InstallType(ConvertToMpInstallType(options.InstallType));
         builder.Environment(ConvertToMpEnvironment(options.Environment));
+        builder.LogLevel(ConvertToMpLogLevel(options.LogLevel));
         builder.Credentials(options.ApiKey, options.ApiSecret);
         if (options.IdentifyRequest != null)
         {

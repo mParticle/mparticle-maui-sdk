@@ -73,6 +73,7 @@ namespace mParticle.MAUI.iOS.Utils
 
             mpOptions.InstallType = ConvertToMpInstallType(options.InstallType);
             mpOptions.Environment = ConvertToMpEnvironment(options.Environment);
+            mpOptions.LogLevel = ConvertToMpLogLevel(options.LogLevel);
             mpOptions.ApiKey = options.ApiKey;
             mpOptions.ApiSecret = options.ApiSecret;
             if (options.ConfigMaxAgeSeconds != null)
