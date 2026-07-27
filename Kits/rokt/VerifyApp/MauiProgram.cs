@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using mParticle.MAUI;
+using mParticle.MAUI.Rokt;
 
 namespace VerifyApp;
 
