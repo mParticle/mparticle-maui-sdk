@@ -20,6 +20,8 @@ internal sealed class IosRoktApi : RoktApi
         _roktInstance = roktInstance;
     }
 
+    internal override object NativeHandle => _roktInstance;
+
     public override void SelectPlacements(
         string identifier,
         Dictionary<string, string> attributes = null,

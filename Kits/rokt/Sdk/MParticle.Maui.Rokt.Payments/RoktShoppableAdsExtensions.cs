@@ -34,10 +34,18 @@ public static class RoktShoppableAdsExtensions
         Dictionary<string, string> attributes = null,
         RoktConfig config = null)
     {
-#if __IOS__
-        var native = CoreBinding.MParticle.SharedInstance?.Rokt;
-        if (native == null)
+        // Route through the receiver's native handle so behavior matches the sibling
+        // RoktApi methods: a null handle means the SDK is not initialized (NoOp receiver).
+        var handle = rokt?.NativeHandle;
+        if (handle == null)
         {
+            Console.WriteLine(RoktApi.SdkNotInitializedWarning);
+            return;
+        }
+#if __IOS__
+        if (handle is not CoreBinding.MPRokt native)
+        {
+            Console.WriteLine(RoktApi.SdkNotInitializedWarning);
             return;
         }
 

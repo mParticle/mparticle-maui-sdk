@@ -9,9 +9,6 @@ namespace mParticle.MAUI.Rokt;
 
 internal sealed class AndroidRoktApi : RoktApi
 {
-    private const string SdkNotInitializedWarning =
-        "[mParticle MAUI SDK] Warning: SDK has not been initialized. Please call Initialize() before utilizing mParticle SDK.";
-
     private readonly AndroidBinding.MParticle _mparticleInstance;
     private static readonly List<object> EventSubscriptions = new List<object>();
 
@@ -19,6 +16,8 @@ internal sealed class AndroidRoktApi : RoktApi
     {
         _mparticleInstance = mparticleInstance;
     }
+
+    internal override object NativeHandle => _mparticleInstance;
 
     public override void SelectPlacements(
         string identifier,

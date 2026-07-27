@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("mParticle.Maui.Kits.Rokt.Payments")]
 
 namespace mParticle.MAUI.Rokt;
 
@@ -250,6 +253,9 @@ public sealed class RoktCartItemDevicePay : RoktEvent
 
 public abstract class RoktApi
 {
+    internal const string SdkNotInitializedWarning =
+        "[mParticle MAUI SDK] Warning: SDK has not been initialized. Please call Initialize() before utilizing mParticle SDK.";
+
     /// <summary>
     /// Select placements for Rokt integration
     /// </summary>
@@ -275,6 +281,13 @@ public abstract class RoktApi
     /// </summary>
     /// <param name="onEvent">Event callback.</param>
     public abstract void GlobalEvents(Action<RoktEvent> onEvent);
+
+    /// <summary>
+    /// Platform-native Rokt handle for optional kits (e.g. Payments) to route calls
+    /// through this receiver instead of the global singleton. Returns <c>null</c> when
+    /// the underlying native Rokt is unavailable (e.g. SDK not initialized).
+    /// </summary>
+    internal virtual object NativeHandle => null;
 }
 
 public sealed class RoktEmbeddedView : Microsoft.Maui.Controls.View
@@ -283,9 +296,6 @@ public sealed class RoktEmbeddedView : Microsoft.Maui.Controls.View
 
 internal sealed class NoOpRoktApi : RoktApi
 {
-    private const string SdkNotInitializedWarning =
-        "[mParticle MAUI SDK] Warning: SDK has not been initialized. Please call Initialize() before utilizing mParticle SDK.";
-
     public override void SelectPlacements(
         string identifier,
         Dictionary<string, string> attributes = null,
