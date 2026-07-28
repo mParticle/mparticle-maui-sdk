@@ -1,15 +1,24 @@
 using System;
 using System.Collections.Generic;
-using Android.Views;
+using System.Globalization;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Handlers;
 using AndroidBinding = mParticle.MAUI.AndroidBinding;
+using NativeRokt = Com.Mparticle.Mparticleroktbinding.MParticleRoktBinding;
 
 namespace mParticle.MAUI.Rokt;
 
+/// <summary>
+/// Android implementation of the cross-platform <see cref="RoktApi"/>. It bridges to the
+/// mParticle Android Rokt kit (mParticle Android SDK 6, <c>com.mparticle.kits</c>) through the
+/// <c>com.mparticle.mparticleroktbinding</c> helper, keeping the Kotlin Flow / roktsdk types
+/// out of the managed binding surface.
+/// </summary>
 internal sealed class AndroidRoktApi : RoktApi
 {
     private readonly AndroidBinding.MParticle _mparticleInstance;
+
+    // Hold event subscriptions/listeners so they are not garbage collected while active.
     private static readonly List<object> EventSubscriptions = new List<object>();
 
     internal AndroidRoktApi(AndroidBinding.MParticle mparticleInstance)
@@ -30,19 +39,14 @@ internal sealed class AndroidRoktApi : RoktApi
             Console.WriteLine(SdkNotInitializedWarning);
             return;
         }
-        var javaAttributes = RoktInterop.ConvertToDictionary(attributes);
-        var javaEmbeddedViews = RoktInterop.ConvertEmbeddedViewsToWeakReferenceDictionary(embeddedViews);
-        var javaConfig = RoktInterop.ConvertToRoktConfig(config);
-        var roktInstance = _mparticleInstance.Rokt();
-        if (roktInstance != null)
+
+        if (config != null)
         {
-            // Android Rokt API: selectPlacements(identifier, attributes, callbacks, embeddedViews, fontTypefaces, config)
-            roktInstance.SelectPlacements(identifier, javaAttributes, null, javaEmbeddedViews, null, javaConfig);
+            Console.WriteLine("[mParticle MAUI SDK] RoktConfig is not yet supported on Android; ignoring config.");
         }
-        else
-        {
-            throw new InvalidOperationException("Rokt instance is not available. Make sure mParticle is properly initialized.");
-        }
+
+        var nativeViews = ConvertEmbeddedViews(embeddedViews);
+        NativeRokt.SelectPlacements(identifier, attributes, nativeViews);
     }
 
     public override void Events(string identifier, Action<RoktEvent> onEvent)
@@ -63,25 +67,42 @@ internal sealed class AndroidRoktApi : RoktApi
             throw new ArgumentNullException(nameof(onEvent));
         }
 
-        var roktInstance = _mparticleInstance.Rokt();
-        if (roktInstance == null)
-        {
-            throw new InvalidOperationException("Rokt instance is not available. Make sure mParticle is properly initialized.");
-        }
-
-        var listener = RoktInterop.ConvertToRoktFlowEventListener(onEvent);
-        var subscription = Com.Mparticle.Mparticlebinding.MParticleSdkBinding.SubscribeToEvents(roktInstance, identifier, listener);
+        var listener = new RoktEventCallbackWrapper(onEvent);
+        var subscription = NativeRokt.SubscribeToEvents(identifier, listener);
 
         lock (EventSubscriptions)
         {
             EventSubscriptions.Add(listener);
-            EventSubscriptions.Add(subscription);
+            if (subscription != null)
+            {
+                EventSubscriptions.Add(subscription);
+            }
         }
     }
 
     public override void GlobalEvents(Action<RoktEvent> onEvent)
     {
         Console.WriteLine("[mParticle MAUI SDK] Rokt global events subscription is not yet supported on Android.");
+    }
+
+    private static IDictionary<string, Com.Mparticle.Kits.RoktEmbeddedView> ConvertEmbeddedViews(
+        Dictionary<string, RoktEmbeddedView> embeddedViews)
+    {
+        if (embeddedViews == null || embeddedViews.Count == 0)
+        {
+            return null;
+        }
+
+        var result = new Dictionary<string, Com.Mparticle.Kits.RoktEmbeddedView>();
+        foreach (var kvp in embeddedViews)
+        {
+            if (kvp.Value?.Handler?.PlatformView is Com.Mparticle.Kits.RoktEmbeddedView nativeView)
+            {
+                result[kvp.Key] = nativeView;
+            }
+        }
+
+        return result.Count > 0 ? result : null;
     }
 }
 
@@ -98,146 +119,93 @@ public class RoktEmbeddedViewHandler : ViewHandler<RoktEmbeddedView, global::And
 
     protected override global::Android.Views.View CreatePlatformView()
     {
-        return new Com.Mparticle.Rokt.RoktEmbeddedView(Platform.CurrentActivity);
+        return new Com.Mparticle.Kits.RoktEmbeddedView(Platform.CurrentActivity);
     }
 }
 
-internal static class RoktInterop
+/// <summary>
+/// Wraps the managed <see cref="RoktEvent"/> callback and converts the primitive parameter map
+/// emitted by the Kotlin bridge back into strongly-typed cross-platform Rokt events.
+/// </summary>
+internal sealed class RoktEventCallbackWrapper : Java.Lang.Object, Com.Mparticle.Mparticleroktbinding.IRoktEventCallback
 {
-    internal static IDictionary<string, string> ConvertToDictionary(Dictionary<string, string> dictionary)
-    {
-        if (dictionary == null || dictionary.Count == 0)
-            return null;
+    private readonly Action<RoktEvent> _onEvent;
 
-        return new Dictionary<string, string>(dictionary);
+    public RoktEventCallbackWrapper(Action<RoktEvent> onEvent)
+    {
+        _onEvent = onEvent;
     }
 
-    internal static IDictionary<string, Java.Lang.Ref.WeakReference> ConvertEmbeddedViewsToWeakReferenceDictionary(Dictionary<string, RoktEmbeddedView> embeddedViews)
+    public void OnEvent(IDictionary<string, string> parameters)
     {
-        if (embeddedViews == null || embeddedViews.Count == 0)
-            return null;
-
-        var dictionary = new Dictionary<string, Java.Lang.Ref.WeakReference>();
-        foreach (var kvp in embeddedViews)
+        var roktEvent = Convert(parameters);
+        if (roktEvent != null)
         {
-            Com.Mparticle.Rokt.RoktEmbeddedView androidEmbeddedView;
-
-            if (kvp.Value?.Handler?.PlatformView is Com.Mparticle.Rokt.RoktEmbeddedView platformView)
-            {
-                androidEmbeddedView = platformView;
-            }
-            else
-            {
-                androidEmbeddedView = new Com.Mparticle.Rokt.RoktEmbeddedView(Platform.CurrentActivity);
-            }
-
-            var weakRef = new Java.Lang.Ref.WeakReference(androidEmbeddedView);
-            dictionary[kvp.Key] = weakRef;
-        }
-        return dictionary;
-    }
-
-    internal static Com.Mparticle.Rokt.RoktConfig ConvertToRoktConfig(RoktConfig config)
-    {
-        if (config == null)
-            return null;
-
-        var builder = new Com.Mparticle.Rokt.RoktConfig.Builder();
-        builder.ColorMode(ConvertToRoktColorMode(config.ColorMode));
-
-        if (config.CacheDuration.HasValue || (config.CacheAttributes != null && config.CacheAttributes.Count > 0))
-        {
-            var cacheDuration = config.CacheDuration ?? Com.Mparticle.Rokt.CacheConfig.DefaultCacheDurationSecs;
-            var cacheConfig = new Com.Mparticle.Rokt.CacheConfig(cacheDuration, config.CacheAttributes);
-            builder.CacheConfig(cacheConfig);
-        }
-
-        return builder.Build();
-    }
-
-    internal static Com.Mparticle.Rokt.RoktConfig.ColorMode ConvertToRoktColorMode(RoktColorMode colorMode)
-    {
-        switch (colorMode)
-        {
-            case RoktColorMode.Light:
-                return Com.Mparticle.Rokt.RoktConfig.ColorMode.Light!;
-            case RoktColorMode.Dark:
-                return Com.Mparticle.Rokt.RoktConfig.ColorMode.Dark!;
-            case RoktColorMode.System:
-            default:
-                return Com.Mparticle.Rokt.RoktConfig.ColorMode.System!;
+            _onEvent?.Invoke(roktEvent);
         }
     }
 
-    internal static Com.Mparticle.Mparticlebinding.IRoktFlowEventListener ConvertToRoktFlowEventListener(Action<RoktEvent> onEvent)
+    private static RoktEvent Convert(IDictionary<string, string> p)
     {
-        return new RoktFlowEventListenerWrapper(onEvent);
-    }
-
-    internal static RoktEvent ConvertToCrossPlatformRoktEvent(AndroidBinding.IRoktEvent roktEvent)
-    {
-        switch (roktEvent)
+        if (p == null)
         {
-            case AndroidBinding.IRoktEvent.InitComplete e:
-                return new RoktInitComplete(e.Success);
-            case AndroidBinding.IRoktEvent.ShowLoadingIndicator:
+            return null;
+        }
+
+        var name = p.TryGetValue("event", out var e) ? e : null;
+        var identifier = p.TryGetValue("placementId", out var id) ? id : null;
+
+        switch (name)
+        {
+            case "InitComplete":
+                return new RoktInitComplete(ParseBool(p, "status"));
+            case "ShowLoadingIndicator":
                 return new RoktShowLoadingIndicator();
-            case AndroidBinding.IRoktEvent.HideLoadingIndicator:
+            case "HideLoadingIndicator":
                 return new RoktHideLoadingIndicator();
-            case AndroidBinding.IRoktEvent.PlacementReady e:
-                return new RoktPlacementReady(e.PlacementId);
-            case AndroidBinding.IRoktEvent.PlacementInteractive e:
-                return new RoktPlacementInteractive(e.PlacementId);
-            case AndroidBinding.IRoktEvent.PlacementClosed e:
-                return new RoktPlacementClosed(e.PlacementId);
-            case AndroidBinding.IRoktEvent.PlacementCompleted e:
-                return new RoktPlacementCompleted(e.PlacementId);
-            case AndroidBinding.IRoktEvent.PlacementFailure e:
-                return new RoktPlacementFailure(e.PlacementId);
-            case AndroidBinding.IRoktEvent.OfferEngagement e:
-                return new RoktOfferEngagement(e.PlacementId);
-            case AndroidBinding.IRoktEvent.PositiveEngagement e:
-                return new RoktPositiveEngagement(e.PlacementId);
-            case AndroidBinding.IRoktEvent.FirstPositiveEngagement e:
+            case "PlacementReady":
+                return new RoktPlacementReady(identifier);
+            case "PlacementInteractive":
+                return new RoktPlacementInteractive(identifier);
+            case "PlacementClosed":
+                return new RoktPlacementClosed(identifier);
+            case "PlacementCompleted":
+                return new RoktPlacementCompleted(identifier);
+            case "PlacementFailure":
+                return new RoktPlacementFailure(identifier);
+            case "OfferEngagement":
+                return new RoktOfferEngagement(identifier);
+            case "PositiveEngagement":
+                return new RoktPositiveEngagement(identifier);
+            case "FirstPositiveEngagement":
                 return new RoktFirstPositiveEngagement(
-                    e.PlacementId,
+                    identifier,
                     _ => Console.WriteLine("[mParticle MAUI SDK] SetFulfillmentAttributes is not supported on Android."));
-            case AndroidBinding.IRoktEvent.OpenUrl e:
-                return new RoktOpenUrl(e.PlacementId, e.Url);
-            case AndroidBinding.IRoktEvent.CartItemInstantPurchase e:
+            case "OpenUrl":
+                return new RoktOpenUrl(identifier, p.TryGetValue("url", out var url) ? url : null);
+            case "CartItemInstantPurchase":
                 return new RoktCartItemInstantPurchase(
-                    e.PlacementId,
+                    identifier,
                     null,
-                    e.CartItemId,
-                    e.CatalogItemId,
-                    e.Currency,
-                    e.Description,
-                    e.LinkedProductId,
+                    p.TryGetValue("cartItemId", out var cartItemId) ? cartItemId : null,
+                    p.TryGetValue("catalogItemId", out var catalogItemId) ? catalogItemId : null,
+                    p.TryGetValue("currency", out var currency) ? currency : null,
+                    p.TryGetValue("description", out var description) ? description : null,
+                    p.TryGetValue("linkedProductId", out var linkedProductId) ? linkedProductId : null,
                     null,
-                    (decimal)e.Quantity,
-                    (decimal)e.TotalPrice,
-                    (decimal)e.UnitPrice);
+                    ParseDecimal(p, "quantity"),
+                    ParseDecimal(p, "totalPrice"),
+                    ParseDecimal(p, "unitPrice"));
             default:
                 return null;
         }
     }
 
-    private sealed class RoktFlowEventListenerWrapper : Java.Lang.Object, Com.Mparticle.Mparticlebinding.IRoktFlowEventListener
-    {
-        private readonly Action<RoktEvent> _onEvent;
+    private static bool ParseBool(IDictionary<string, string> p, string key) =>
+        p.TryGetValue(key, out var v) && bool.TryParse(v, out var b) && b;
 
-        public RoktFlowEventListenerWrapper(Action<RoktEvent> onEvent)
-        {
-            _onEvent = onEvent;
-        }
-
-        public void OnEvent(AndroidBinding.IRoktEvent e)
-        {
-            var crossPlatformEvent = ConvertToCrossPlatformRoktEvent(e);
-            if (crossPlatformEvent != null)
-            {
-                _onEvent?.Invoke(crossPlatformEvent);
-            }
-        }
-    }
+    private static decimal? ParseDecimal(IDictionary<string, string> p, string key) =>
+        p.TryGetValue(key, out var v) && decimal.TryParse(v, NumberStyles.Any, CultureInfo.InvariantCulture, out var d)
+            ? d
+            : (decimal?)null;
 }

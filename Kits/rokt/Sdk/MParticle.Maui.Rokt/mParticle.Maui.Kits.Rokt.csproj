@@ -16,7 +16,7 @@
     
     <PropertyGroup>
         <PackageId>mParticle.Maui.Kits.Rokt</PackageId>
-        <Version>4.2.0</Version>
+        <Version>5.0.0</Version>
         <Authors>mParticle</Authors>
         <Description>
             The mParticle .NET MAUI SDK enables you to integrate Rokt and mParticle into your .NET MAUI mobile apps.
@@ -68,61 +68,35 @@
     </ItemGroup>
     
     <ItemGroup Condition="$(TargetFramework.Contains('android'))">
-        <!--mParticle Android Core SDK-->
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-rokt-kit-5.79.0.aar">
+        <!--mParticle Android Rokt kit-->
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-rokt-kit-6.0.0.aar">
             <Bind>true</Bind>
             <Link>false</Link>
             <Pack>true</Pack>
             <Visible>true</Visible>
         </AndroidLibrary>
 
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-kit-base-5.79.0.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.mparticle-android-kit-base-6.0.0.aar">
             <Bind>false</Bind>
             <Link>false</Link>
             <Pack>true</Pack>
             <Visible>true</Visible>
         </AndroidLibrary>
 
-         <!--Rokt SDK-->
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktsdk-4.14.3.aar">
+         <!--Rokt SDK (6.x)-->
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktsdk-6.0.1.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        
-        <!--Rokt Sdk Internal Modules-->
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.core.common-api-4.14.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktsdk-contracts-6.0.1.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core-network-4.14.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktux-1.0.0.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core-model-4.14.3.aar">
-            <Bind>false</Bind>
-            <Visible>false</Visible>
-        </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core.data-impl-4.14.3.aar">
-            <Bind>false</Bind>
-            <Visible>false</Visible>
-        </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.core.common-impl-4.14.3.aar">
-            <Bind>false</Bind>
-            <Visible>false</Visible>
-        </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.network.types-dcui-schema-2.3.0.aar">
-            <Bind>false</Bind>
-            <Visible>false</Visible>
-        </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.legacy-roktsdk-4.14.3.aar">
-            <Bind>false</Bind>
-            <Visible>false</Visible>
-        </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.core.data-api-4.14.3.aar">
-            <Bind>false</Bind>
-            <Visible>false</Visible>
-        </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt-roktux-0.9.3.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.rokt.internal.network.types-dcui-schema-2.4.0.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
@@ -159,27 +133,40 @@
         <PackageReference Include="Xamarin.Kotlin.StdLib" Version="2.2.0.1" />
         
     <!--Rokt SDK Dependencies Without Bindings-->
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\retrofit2-kotlinx-serialization-converter-0.8.0.jar">
+        <!-- coil3 (Kotlin Multiplatform) replaces coil2 in Rokt SDK 6.x; release-variant AARs -->
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt.coil3-coil-release.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt-coil-compose-2.3.0.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt.coil3-coil-core-release.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt-coil-2.3.0.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt.coil3-coil-compose-release.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt-coil-base-2.3.0.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt.coil3-coil-compose-core-release.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt-coil-svg-2.3.0.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt.coil3-coil-svg-release.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
-        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt-coil-compose-base-2.3.0.aar">
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\io.coil-kt.coil3-coil-network-core-release.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\coil-network-okhttp-jvm-3.2.0.jar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.caverock-androidsvg-aar-1.4.aar">
+            <Bind>false</Bind>
+            <Visible>false</Visible>
+        </AndroidLibrary>
+        <AndroidLibrary Include=".\android\native\MParticleRoktBinding\MParticleRoktBinding\bin\Release\$(TargetFramework)\outputs\deps\com.google.accompanist-accompanist-drawablepainter-0.37.3.aar">
             <Bind>false</Bind>
             <Visible>false</Visible>
         </AndroidLibrary>
