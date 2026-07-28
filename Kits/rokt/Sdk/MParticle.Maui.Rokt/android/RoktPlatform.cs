@@ -40,13 +40,33 @@ internal sealed class AndroidRoktApi : RoktApi
             return;
         }
 
+        var nativeViews = ConvertEmbeddedViews(embeddedViews);
+
+        string colorMode = null;
+        long cacheDurationSeconds = 0;
+        IDictionary<string, string> cacheAttributes = null;
         if (config != null)
         {
-            Console.WriteLine("[mParticle MAUI SDK] RoktConfig is not yet supported on Android; ignoring config.");
+            colorMode = ConvertColorMode(config.ColorMode);
+            cacheDurationSeconds = config.CacheDuration ?? 0;
+            cacheAttributes = config.CacheAttributes;
         }
 
-        var nativeViews = ConvertEmbeddedViews(embeddedViews);
-        NativeRokt.SelectPlacements(identifier, attributes, nativeViews);
+        NativeRokt.SelectPlacements(identifier, attributes, nativeViews, colorMode, cacheDurationSeconds, cacheAttributes);
+    }
+
+    private static string ConvertColorMode(RoktColorMode colorMode)
+    {
+        switch (colorMode)
+        {
+            case RoktColorMode.Light:
+                return "LIGHT";
+            case RoktColorMode.Dark:
+                return "DARK";
+            case RoktColorMode.System:
+            default:
+                return "SYSTEM";
+        }
     }
 
     public override void Events(string identifier, Action<RoktEvent> onEvent)

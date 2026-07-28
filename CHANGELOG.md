@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgraded the native Android bindings to mParticle Android SDK `6.0.0` (Kotlin `2.1.20`, Rokt SDK `6.0.1` / RoktUX `1.0.0`, coil3). The public MAUI C# API is unchanged.
 - Upgraded the native iOS bindings to mParticle Apple SDK `9.3.1`, Rokt integration `9.3.1`, and the Rokt Stripe payment extension `2.0.3`.
-- Android Rokt integration is now bound through the `android-rokt-kit` package (`com.mparticle.kits`) instead of `android-core`. In mParticle Android SDK 6 the Rokt API was extracted from the core SDK into the optional Rokt kit; the managed Rokt kit now bridges to it via a thin `com.mparticle.mparticleroktbinding` helper. The core binding no longer surfaces any Rokt types.
+- Android Rokt integration is now bound through the `android-rokt-kit` package (`com.mparticle.kits`) instead of `android-core`. In mParticle Android SDK 6 the Rokt API was extracted from the core SDK into the optional Rokt kit; the managed Rokt kit now bridges to it via a thin `com.mparticle.mparticleroktbinding` helper. The core binding no longer surfaces any Rokt types. `RoktConfig` (color mode and cache configuration) continues to be forwarded to the native Android Rokt kit through the helper (built from the now-relocated `com.rokt.roktsdk.RoktConfig`), preserving the behavior from SDK 5.x.
 - `MParticleOptions.IdDisabled` now maps to the native Android `androidIdEnabled(bool)` builder (inverted internally); Android SDK 6 removed `androidIdDisabled(bool)`. The public option is unchanged.
 
 ### Fixed
