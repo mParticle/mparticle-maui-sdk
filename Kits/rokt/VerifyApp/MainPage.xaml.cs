@@ -1,4 +1,5 @@
 using mParticle.MAUI;
+using mParticle.MAUI.Rokt;
 using System.Collections.Generic;
 
 namespace VerifyApp;

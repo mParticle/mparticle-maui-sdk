@@ -22,9 +22,11 @@ After `MParticle.Instance.Initialize(options)`, the Rokt API is available via
 Available methods:
 
 - `SelectPlacements(identifier, attributes, embeddedViews, config)`
-- `SelectShoppableAds(identifier, attributes, config)`
 - `Events(identifier, onEvent)` for placement-specific event subscription
 - `GlobalEvents(onEvent)` for all Rokt events
+
+> `SelectShoppableAds(...)` is not part of this package. It ships as an extension in
+> `mParticle.Maui.Kits.Rokt.Payments`, which registers the native payment extension it requires.
 
 Example placement selection:
 
@@ -42,16 +44,6 @@ MParticle.Instance.Rokt.SelectPlacements(
     {
         ["Location1"] = myEmbeddedView
     },
-    config: null
-);
-```
-
-Example shoppable ads selection:
-
-```csharp
-MParticle.Instance.Rokt.SelectShoppableAds(
-    identifier: "StgRoktShoppableAds",
-    attributes: attributes,
     config: null
 );
 ```

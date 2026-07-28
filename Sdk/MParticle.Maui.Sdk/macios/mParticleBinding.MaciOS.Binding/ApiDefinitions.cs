@@ -767,6 +767,10 @@ namespace mParticle.MAUI.iOSBinding {
         [Export("environment", ArgumentSemantic.Assign)]
         MPEnvironment Environment { get; set; }
 
+        // @property (nonatomic, readwrite) MPILogLevel logLevel;
+        [Export("logLevel", ArgumentSemantic.Assign)]
+        MPILogLevel LogLevel { get; set; }
+
         // @property(nonatomic, unsafe_unretained, readwrite) BOOL automaticSessionTracking;
         [Export("automaticSessionTracking", ArgumentSemantic.Assign)]
         bool AutomaticSessionTracking { get; set; }

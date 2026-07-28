@@ -141,6 +141,27 @@ internal static class Utils
         }
     }
 
+    internal static AndroidBinding.MParticle.LogLevel ConvertToMpLogLevel(LogLevel logLevel)
+    {
+        switch (logLevel)
+        {
+            case LogLevel.NONE:
+                return AndroidBinding.MParticle.LogLevel.None;
+            case LogLevel.ERROR:
+                return AndroidBinding.MParticle.LogLevel.Error;
+            case LogLevel.WARNING:
+                return AndroidBinding.MParticle.LogLevel.Warning;
+            case LogLevel.DEBUG:
+                return AndroidBinding.MParticle.LogLevel.Debug;
+            case LogLevel.VERBOSE:
+                return AndroidBinding.MParticle.LogLevel.Verbose;
+            case LogLevel.INFO:
+                return AndroidBinding.MParticle.LogLevel.Info;
+            default:
+                return AndroidBinding.MParticle.LogLevel.Debug;
+        }
+    }
+
     internal static AndroidBinding.IAttributionListener ConvertToMpAttributionListener(AttributionListener attributionListener)
     {
         return new AttributionListenerWrapper(attributionListener);
@@ -191,6 +212,7 @@ internal static class Utils
         }
         builder.InstallType(ConvertToMpInstallType(options.InstallType));
         builder.Environment(ConvertToMpEnvironment(options.Environment));
+        builder.LogLevel(ConvertToMpLogLevel(options.LogLevel));
         builder.Credentials(options.ApiKey, options.ApiSecret);
         if (options.IdentifyRequest != null)
         {
@@ -261,135 +283,6 @@ internal static class Utils
             return null;
 
         return new Dictionary<string, string>(dictionary);
-    }
-
-    internal static IDictionary<string, Java.Lang.Ref.WeakReference> ConvertEmbeddedViewsToWeakReferenceDictionary(Dictionary<string, RoktEmbeddedView> embeddedViews)
-    {
-        if (embeddedViews == null || embeddedViews.Count == 0)
-            return null;
-
-        var dictionary = new Dictionary<string, Java.Lang.Ref.WeakReference>();
-        foreach (var kvp in embeddedViews)
-        {
-            Com.Mparticle.Rokt.RoktEmbeddedView androidEmbeddedView = null;
-            
-            if (kvp.Value?.Handler?.PlatformView is Com.Mparticle.Rokt.RoktEmbeddedView platformView)
-            {
-                androidEmbeddedView = platformView;
-            }
-            else
-            {
-                androidEmbeddedView = new Com.Mparticle.Rokt.RoktEmbeddedView(Platform.CurrentActivity);
-            }
-
-            var weakRef = new Java.Lang.Ref.WeakReference(androidEmbeddedView);
-            dictionary[kvp.Key] = weakRef;
-        }
-        return dictionary;
-    }
-
-    internal static Com.Mparticle.Rokt.RoktConfig ConvertToRoktConfig(RoktConfig config)
-    {
-        if (config == null)
-            return null;
-
-        var builder = new Com.Mparticle.Rokt.RoktConfig.Builder();
-        builder.ColorMode(ConvertToRoktColorMode(config.ColorMode));
-
-        if (config.CacheDuration.HasValue || (config.CacheAttributes != null && config.CacheAttributes.Count > 0))
-        {
-            var cacheDuration = config.CacheDuration ?? Com.Mparticle.Rokt.CacheConfig.DefaultCacheDurationSecs;
-            var cacheConfig = new Com.Mparticle.Rokt.CacheConfig(cacheDuration, config.CacheAttributes);
-            builder.CacheConfig(cacheConfig);
-        }
-
-        return builder.Build();
-    }
-
-    internal static Com.Mparticle.Rokt.RoktConfig.ColorMode ConvertToRoktColorMode(RoktColorMode colorMode)
-    {
-        switch (colorMode)
-        {
-            case RoktColorMode.Light:
-                return Com.Mparticle.Rokt.RoktConfig.ColorMode.Light!;
-            case RoktColorMode.Dark:
-                return Com.Mparticle.Rokt.RoktConfig.ColorMode.Dark!;
-            case RoktColorMode.System:
-            default:
-                return Com.Mparticle.Rokt.RoktConfig.ColorMode.System!;
-        }
-    }
-
-    internal static Com.Mparticle.Mparticlebinding.IRoktFlowEventListener ConvertToRoktFlowEventListener(Action<RoktEvent> onEvent)
-    {
-        return new RoktFlowEventListenerWrapper(onEvent);
-    }
-
-    public class RoktFlowEventListenerWrapper : Java.Lang.Object, Com.Mparticle.Mparticlebinding.IRoktFlowEventListener
-    {
-        private readonly Action<RoktEvent> _onEvent;
-
-        public RoktFlowEventListenerWrapper(Action<RoktEvent> onEvent)
-        {
-            _onEvent = onEvent;
-        }
-
-        public void OnEvent(AndroidBinding.IRoktEvent e)
-        {
-            var crossPlatformEvent = ConvertToCrossPlatformRoktEvent(e);
-            if (crossPlatformEvent != null)
-            {
-                _onEvent?.Invoke(crossPlatformEvent);
-            }
-        }
-    }
-
-    internal static RoktEvent ConvertToCrossPlatformRoktEvent(AndroidBinding.IRoktEvent roktEvent)
-    {
-        switch (roktEvent)
-        {
-            case AndroidBinding.IRoktEvent.InitComplete e:
-                return new RoktInitComplete(e.Success);
-            case AndroidBinding.IRoktEvent.ShowLoadingIndicator:
-                return new RoktShowLoadingIndicator();
-            case AndroidBinding.IRoktEvent.HideLoadingIndicator:
-                return new RoktHideLoadingIndicator();
-            case AndroidBinding.IRoktEvent.PlacementReady e:
-                return new RoktPlacementReady(e.PlacementId);
-            case AndroidBinding.IRoktEvent.PlacementInteractive e:
-                return new RoktPlacementInteractive(e.PlacementId);
-            case AndroidBinding.IRoktEvent.PlacementClosed e:
-                return new RoktPlacementClosed(e.PlacementId);
-            case AndroidBinding.IRoktEvent.PlacementCompleted e:
-                return new RoktPlacementCompleted(e.PlacementId);
-            case AndroidBinding.IRoktEvent.PlacementFailure e:
-                return new RoktPlacementFailure(e.PlacementId);
-            case AndroidBinding.IRoktEvent.OfferEngagement e:
-                return new RoktOfferEngagement(e.PlacementId);
-            case AndroidBinding.IRoktEvent.PositiveEngagement e:
-                return new RoktPositiveEngagement(e.PlacementId);
-            case AndroidBinding.IRoktEvent.FirstPositiveEngagement e:
-                return new RoktFirstPositiveEngagement(
-                    e.PlacementId,
-                    _ => Console.WriteLine("[mParticle MAUI SDK] SetFulfillmentAttributes is not supported on Android."));
-            case AndroidBinding.IRoktEvent.OpenUrl e:
-                return new RoktOpenUrl(e.PlacementId, e.Url);
-            case AndroidBinding.IRoktEvent.CartItemInstantPurchase e:
-                return new RoktCartItemInstantPurchase(
-                    e.PlacementId,
-                    null,
-                    e.CartItemId,
-                    e.CatalogItemId,
-                    e.Currency,
-                    e.Description,
-                    e.LinkedProductId,
-                    null,
-                        (decimal)e.Quantity,
-                        (decimal)e.TotalPrice,
-                        (decimal)e.UnitPrice);
-            default:
-                return null;
-        }
     }
 
     public class AttributionListenerWrapper : Java.Lang.Object, AndroidBinding.IAttributionListener

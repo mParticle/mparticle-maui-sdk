@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:sdk="clr-namespace:mParticle.MAUI;assembly=mParticle.Maui.Sdk"
+             xmlns:rokt="clr-namespace:mParticle.MAUI.Rokt;assembly=mParticle.Maui.Kits.Rokt"
              x:Class="VerifyApp.MainPage">
 
     <ScrollView>
@@ -47,7 +48,7 @@
                 Clicked="OnShowRoktOverlayClicked"
                 HorizontalOptions="Fill" />
 
-            <sdk:RoktEmbeddedView
+            <rokt:RoktEmbeddedView
                 x:Name="Location1"/>
             
             <Label
