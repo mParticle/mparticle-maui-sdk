@@ -32,7 +32,22 @@ android {
 }
 
 configurations {
-    create("copyDependencies")
+    create("copyDependencies") {
+        isCanBeConsumed = false
+        isCanBeResolved = true
+        // Rokt SDK 6 pulls in Kotlin-Multiplatform artifacts (coil3, skiko). Pin the
+        // Android/release variant so the AAR set resolves without variant ambiguity.
+        attributes {
+            attribute(
+                com.android.build.api.attributes.BuildTypeAttr.ATTRIBUTE,
+                objects.named(com.android.build.api.attributes.BuildTypeAttr::class.java, "release"),
+            )
+            attribute(
+                org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.attribute,
+                org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.androidJvm,
+            )
+        }
+    }
 }
 
 dependencies {
@@ -50,7 +65,7 @@ project.afterEvaluate {
             if (this.name.contains(".aar")) {
                 // Rename mparticle AAR to the expected name
                 if (this.name.contains("android-rokt-kit")) {
-                    this.name = "com.mparticle-android-rokt-kit-5.79.0.aar"
+                    this.name = "com.mparticle-android-rokt-kit-6.0.0.aar"
                 } else {
                     val groupName = this.file.parentFile.parentFile.parentFile.parentFile.name
                     this.name = groupName + "-" + this.name

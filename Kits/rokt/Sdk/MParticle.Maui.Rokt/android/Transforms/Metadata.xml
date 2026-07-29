@@ -1,2 +1,17 @@
 <metadata>
+  <!--
+    The managed Rokt kit talks to the native android-rokt-kit exclusively through the
+    com.mparticle.mparticleroktbinding helper, so the Kotlin Rokt API surface (which returns
+    kotlinx Flow / roktsdk contract types that do not project to C#) does not need binding.
+    We only bind com.mparticle.kits.RoktEmbeddedView (+ its dimension callback).
+
+    Removing com.mparticle.kits.Rokt also resolves a namespace/class collision: the native
+    package com.mparticle.kits.rokt and the class com.mparticle.kits.Rokt both map to the
+    C# identifier Com.Mparticle.Kits.Rokt.
+  -->
+  <remove-node path="/api/package[@name='com.mparticle.kits']/class[@name='Rokt']" />
+  <remove-node path="/api/package[@name='com.mparticle.kits']/class[@name='MParticleRokt']" />
+  <remove-node path="/api/package[@name='com.mparticle.kits']/class[@name='MParticleRoktKt']" />
+  <remove-node path="/api/package[@name='com.mparticle.kits']/class[@name='RoktKitKt']" />
+  <remove-node path="/api/package[@name='com.mparticle.kits']/class[@name='RoktLayoutKt']" />
 </metadata>

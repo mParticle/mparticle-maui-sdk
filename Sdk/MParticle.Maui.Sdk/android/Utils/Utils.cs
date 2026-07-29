@@ -194,17 +194,19 @@ internal static class Utils
                 }
             }
         }
-        if (request.UserAliasHandler != null)
-        {
-            builder.UserAliasHandler(new UserAliasHandlerWrapper(request.UserAliasHandler));
-        }
+        // mParticle Android SDK 6 removed IdentityApiRequest.Builder.userAliasHandler; the
+        // request-scoped alias callback is no longer supported natively. Aliasing is now done
+        // explicitly via IdentityApi.aliasUsers(AliasRequest). The public UserAliasHandler
+        // surface is retained for API compatibility but is a no-op on Android.
         return builder.Build();
     }
 
     internal static AndroidBinding.MParticleOptions ConvertToMpOptions(MParticleOptions options)
     {
         var builder = AndroidBinding.MParticleOptions.InvokeBuilder(Application.Context);
-        builder.AndroidIdDisabled(options.IdDisabled);
+        // mParticle Android SDK 6 replaced androidIdDisabled(bool) with androidIdEnabled(bool)
+        // (inverted semantics). Map the unchanged public IdDisabled option accordingly.
+        builder.AndroidIdEnabled(!options.IdDisabled);
 
         if (options.AttributionListener != null)
         {
