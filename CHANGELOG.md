@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0] - 2026-07-29
+
 ### Changed
 
 - Upgraded the native Android bindings to mParticle Android SDK `6.0.0` (Kotlin `2.1.20`, Rokt SDK `6.0.1` / RoktUX `1.0.0`, coil3). The public MAUI C# API is unchanged.
@@ -88,7 +90,8 @@ This release upgrades the iOS binding to mParticle Apple SDK 9 and contains brea
 
 - First release of the new MAUI only package: mParticle.MAUI
 
-[unreleased]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.2.0...HEAD
+[unreleased]: https://github.com/mParticle/mparticle-maui-sdk/compare/5.0.0...HEAD
+[5.0.0]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.2.0...5.0.0
 [4.2.0]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.1.1...4.2.0
 [4.1.1]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/mParticle/mparticle-maui-sdk/compare/4.0.1...4.1.0
