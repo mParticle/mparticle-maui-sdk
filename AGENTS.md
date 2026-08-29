@@ -1,113 +1,98 @@
 # AGENTS.md
 
-## Role for agents
+.NET MAUI bindings over the native mParticle Apple and Android SDKs, published to NuGet. This file
+holds only what the repo cannot tell you itself: the traps, what the gates cover, and the
+conventions no config enforces. Versions, target frameworks and layout are deliberately absent —
+read `global.json`, the `.csproj` files and `.github/workflows/pull-request.yml`, which cannot go
+stale. API usage is in [`README.MD`](README.MD), releasing in [`RELEASING.md`](RELEASING.md).
 
-You are a senior cross-platform SDK engineer specializing in .NET MAUI customer data platform (CDP) SDK development.
+## Scope of change
 
-- Treat this as a **public SDK package** (published to NuGet), not a full consumer app.
-- This is the mParticle MAUI SDK — it provides .NET MAUI bindings for the mParticle Apple and Android native SDKs.
-- Prioritize: API stability, correct native binding behavior, backward compatibility (net8.0-ios / net8.0-android), privacy compliance.
-- This is a **binding project** wrapping native iOS (Objective-C) and Android (Java) mParticle SDKs for .NET MAUI consumption.
-- Avoid proposing big refactors unless explicitly asked; prefer additive changes + deprecations.
+- Public NuGet SDK, not an app: keep the C# surface additive and deprecate rather than remove.
+- Never edit a binding definition without checking it against the native header or Java API it
+  wraps — a wrong signature compiles and fails at runtime.
+- Do not change `.github/`, `global.json` or NuGet configuration unless asked.
 
-## Quick Start for Agents
+## Toolchain
 
-- Requires .NET 8 SDK and MAUI workload: `dotnet workload install maui`.
-- macOS required for iOS builds (Xcode 16.4 must be installed).
-- Primary commands:
-  - Build SDK: `dotnet build Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj`
-  - Build sample app: `dotnet build SampleApp/SampleApp.csproj`
-  - Pack NuGet: `dotnet pack Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj -c Release`
-  - Build Rokt Kit: `dotnet build Kits/rokt/Sdk/MParticle.Maui.Rokt/MParticle.Maui.Rokt.csproj`
-  - Trunk check: `trunk check` (primary enforcement tool)
-- Always validate changes with the full sequence in "Code style, quality, and validation" below before proposing or committing.
+`global.json` pins the .NET SDK with `rollForward: latestPatch`, so an older SDK — or a newer
+feature band — does not satisfy it and **every** `dotnet` command in the tree fails with
+`A compatible .NET SDK was not found`, including `dotnet --version`. That reads like a broken
+install rather than a version mismatch, so check `global.json` first.
 
-## Strict Do's and Don'ts
+The MAUI workload is required (`dotnet workload install maui`) and iOS work needs macOS with Xcode.
+CI pins the SDK, workload and Xcode versions in `.github/workflows/pull-request.yml`; take them
+from there, not from this file or `README.MD`.
 
-### Always Do
+## Commands
 
-- Keep the C# public API surface additive; deprecate instead of remove.
-- Document all public C# APIs with XML documentation comments (`/// <summary>`).
-- Ensure native binding definitions accurately reflect the underlying native SDK APIs.
-- Build for both iOS and Android targets before committing.
-- Test via sample apps on both platforms when binding code changes.
+That workflow is the source of truth for the build sequence: `trunk check`, then per project
+resolve SPM → build the native Xcode project → `dotnet build` → `dotnet pack`. Lint with
+`trunk check --all`, build one project with `dotnet build <path-to-csproj>`.
 
-### Never
+### Command traps
 
-- Introduce new third-party dependencies without size/performance justification and approval.
-- Modify native binding definitions without verifying against the actual native SDK headers/APIs.
-- Touch CI configs (`.github/`), release scripts, or NuGet configuration without explicit request.
-- Modify `global.json` .NET SDK version without explicit request.
-- Mix manual binding edits with auto-generated binding output without explicit coordination.
+1. **A kit's `.csproj` filename does not match its directory.**
+   `Kits/rokt/Sdk/MParticle.Maui.Rokt/` contains `mParticle.Maui.Kits.Rokt.csproj`, not
+   `MParticle.Maui.Rokt.csproj`; the Payments kit has the same shape. Guessing the path fails.
+2. **`trunk check` with no arguments checks only changed files**, while CI runs it with
+   `check-mode: all`. A clean local run can still fail the `trunk-check` gate.
+3. **The root `mParticle.MAUI.sln` is not the whole repo.** It omits the Payments kit and
+   `Kits/rokt/VerifyApp`, so a solution-wide build does not cover them. CI builds each project by
+   path; do the same.
+4. **The native Xcode binding has to exist before the iOS target framework builds.** CI runs
+   `xcodebuild -resolvePackageDependencies` then `xcodebuild ... build` against each
+   `macios/native/*/*.xcodeproj` before `dotnet build`. If an iOS build cannot find the
+   `.xcframework`, run those two steps first.
+5. **NuGet package IDs are not the project names** (`MParticle.Maui.Sdk` ships as
+   `mParticle.MAUI`); check `<PackageId>` before referencing a package by name.
 
-## Project overview
+## Native SDK version coupling
 
-- mParticle MAUI SDK: provides .NET MAUI bindings for the mParticle customer data platform SDK.
-- Includes the core SDK (`MParticle.Maui.Sdk`) and the Rokt integration kit (`MParticle.Maui.Kits.Rokt`).
-- Solution structure:
-  - `MParticle.Maui.Sdk` — Core SDK bindings.
-  - `mParticleBinding` — Native binding project.
-  - `MParticle.Maui.Kits.Rokt` — Rokt kit integration.
-  - `SampleApp` — Core SDK sample app.
-  - `RoktSampleApp` — Rokt kit sample app.
+- **iOS** — one `exact:` pin per `macios/native/*/Package.swift`. Dependabot watches those
+  directories (`.github/dependabot.yml`).
+- **Android** — the version lives in `android/native/*/gradle/libs.versions.toml`, but the AAR
+  filename is hardcoded twice more: in the `copyDeps` rename in `build.gradle.kts`, and in the
+  `<AndroidLibrary Include="...">` path in the `.csproj`. No gradle entry exists in
+  `.github/dependabot.yml`, so these bumps are manual.
 
-## Key paths
+**Trap:** that `copyDeps` rename is a literal string. Bump `libs.versions.toml` alone and gradle
+renames the _new_ AAR to the _old_ filename, the `.csproj` reference still resolves, and the build
+stays green while the filename misstates the version that ships. Change all three together.
+Transitive AARs keep their real version, so those fail loudly on a missing file instead.
 
-- `Sdk/MParticle.Maui.Sdk/` — Main SDK project.
-  - `MParticle.cs` — Main SDK class.
-  - `MParticleAbstractions.cs` — Interface definitions.
-  - `macios/` — iOS native bindings (ApiDefinitions.cs, Xcode project, SPM).
-  - `android/` — Android native bindings (Gradle project, pre-built AAR).
-- `Kits/rokt/Sdk/MParticle.Maui.Rokt/` — Rokt kit integration.
-- `SampleApp/` — Core SDK sample application.
-- `Kits/rokt/SampleApp/` — Rokt kit sample application.
-- `mParticle.MAUI.sln` — Solution file.
-- `global.json` — .NET SDK version pinning.
-- `.trunk/trunk.yaml` — Trunk.io configuration.
-- `CHANGELOG.md` — Release notes.
-- `MIGRATING.md` — Migration guide.
-- `RELEASING.md` — Release procedures.
+## What the gates cover
 
-## Code style, quality, and validation
+The default branch requires two checks, `build` and `trunk-check`.
 
-- **Lint & format tools**:
+- **There are no test projects in this repo** and no test step in CI, so green means it compiled
+  and packed. Exercise behaviour changes by hand in `SampleApp/` or `Kits/rokt/SampleApp/`.
+- `Kits/rokt/VerifyApp/` is not built by CI.
+- No project sets `TreatWarningsAsErrors`, so warnings do not fail the build.
 
-  - **Primary enforcement tool**: `trunk check` (via Trunk.io).
-  - .NET analyzers via MSBuild.
-  - Important: Only add comments if absolutely necessary.
+## Conventions
 
-- **Strict post-change validation rule (always follow this)**:
-  After **any** code change — even small ones — you **must** run the full validation sequence:
+- **XML documentation on public APIs is expected but unenforced** — nothing sets
+  `GenerateDocumentationFile`, so a missing `/// <summary>` produces no warning.
+- Add code comments only where they earn their place.
+- Base work on `main`. `development` sits behind it and is not where PRs merge.
+- Branch names follow `<type>/<description>` and PR titles Conventional Commits, by convention; no
+  ruleset enforces either. `main` merges by squash only, so the PR title becomes the commit message.
+- Describe PRs using `.github/PULL_REQUEST_TEMPLATE.md`. Code-owner review is required
+  (`.github/CODEOWNERS`), threads must be resolved, and a push dismisses approvals.
 
-  1. `trunk check` — to lint, format-check, and catch style/quality issues.
-  2. `dotnet restore` — Restore dependencies.
-  3. Build SDK: `dotnet build Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj`.
-  4. Build SampleApp: `dotnet build SampleApp/SampleApp.csproj`.
-  5. Pack: `dotnet pack Sdk/MParticle.Maui.Sdk/MParticle.Maui.Sdk.csproj -c Release`.
-  6. If Rokt kit changed: build `Kits/rokt/Sdk/MParticle.Maui.Rokt/MParticle.Maui.Rokt.csproj` and its sample app.
+## Changelog, migration notes and versioning
 
-  - Only propose / commit changes if all steps pass cleanly.
+- Record user-visible changes in `CHANGELOG.md` under `## [Unreleased]`, using the Keep a
+  Changelog categories. The release workflow promotes that section, so an entry written elsewhere
+  is not picked up. Never invent an entry; leave it for review.
+- Breaking or behaviour-changing binding edits also need a note in `MIGRATING.md` under
+  `## Unreleased migration notes`.
+- **Do not hand-edit `VERSION` or the `<Version>` elements in the `.csproj` files.** The "Create
+  draft release" workflow bumps them and opens the release PR
+  (`.github/workflows/draft-release-publish.yml`).
 
-- **Style preferences**:
+## External resources
 
-  - Follow .NET/C# conventions and Microsoft coding guidelines.
-  - Prefer `readonly` fields and immutable types where possible.
-  - Use `async`/`await` for asynchronous operations.
-  - Write thorough XML documentation for all public APIs.
-
-- **CHANGELOG.md maintenance**:
-  - For **substantial changes**, **always add a clear entry** to `CHANGELOG.md`.
-  - Use standard categories: `Added`, `Changed`, `Deprecated`, `Fixed`, `Removed`, `Security`.
-  - Keep entries concise and written in imperative mood.
-  - Never auto-generate or hallucinate changelog entries — flag for human review.
-
-## Pull request and branching
-
-- CODEOWNERS: `* @mParticle/sdk-team`
-- Ensure the branch follows the standard feat/\* naming pattern.
-- When creating pull requests, use the template located at: `.github/pull_request_template.md` as the basis for the description.
-
-## External Resources
-
-- [mParticle Documentation](https://docs.mparticle.com/)
-- [Rokt mParticle Integration Docs](https://docs.rokt.com/developers/integration-guides/rokt-ads/customer-data-platforms/mparticle/)
+- [mParticle documentation](https://docs.mparticle.com/)
+- [Rokt mParticle integration guide](https://docs.rokt.com/developers/integration-guides/rokt-ads/customer-data-platforms/mparticle/)
