@@ -78,7 +78,7 @@ The default branch requires two checks, `build` and `trunk-check`.
 - Base work on `main`. `development` sits behind it and is not where PRs merge.
 - Branch names follow `<type>/<description>` and PR titles Conventional Commits, by convention; no
   ruleset enforces either. `main` merges by squash only, so the PR title becomes the commit message.
-- Describe PRs using `.github/PULL_REQUEST_TEMPLATE.md`. Code-owner review is required
+- Describe PRs using the org-wide default template published at `mParticle/.github`. Code-owner review is required
   (`.github/CODEOWNERS`), threads must be resolved, and a push dismisses approvals.
 
 ## Changelog, migration notes and versioning
