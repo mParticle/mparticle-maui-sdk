@@ -1,0 +1,78 @@
+{
+  "originHash" : "0f9ed244d63abc023b8a8d137bf1c5c11f8da235071816359e8823d7edab23bf",
+  "pins" : [
+    {
+      "identity" : "dcui-swift-schema",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ROKT/dcui-swift-schema.git",
+      "state" : {
+        "revision" : "7dc24008bfd9730042f6a237552eaba42913ae61",
+        "version" : "2.10.0"
+      }
+    },
+    {
+      "identity" : "mp-apple-integration-rokt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mparticle-integrations/mp-apple-integration-rokt.git",
+      "state" : {
+        "revision" : "6540b502ded11c5c17ccb5d8a8350a26832040da",
+        "version" : "9.7.3"
+      }
+    },
+    {
+      "identity" : "mparticle-apple-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mParticle/mparticle-apple-sdk",
+      "state" : {
+        "revision" : "16540b2839cb601b72041605ebe5acf6e6550373",
+        "version" : "9.7.3"
+      }
+    },
+    {
+      "identity" : "rokt-contracts-apple",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ROKT/rokt-contracts-apple.git",
+      "state" : {
+        "revision" : "4c450be00085eba6a16d846a66f44b96f1fc59c8",
+        "version" : "2.0.2"
+      }
+    },
+    {
+      "identity" : "rokt-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ROKT/rokt-sdk-ios",
+      "state" : {
+        "revision" : "6979894ec9d06d060bf991a83833ada79fcda484",
+        "version" : "5.5.5"
+      }
+    },
+    {
+      "identity" : "rokt-stripe-payment-extension-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ROKT/rokt-stripe-payment-extension-ios.git",
+      "state" : {
+        "revision" : "24dbdedc6005cf7d5a09a989850975cda9b81e89",
+        "version" : "2.0.3"
+      }
+    },
+    {
+      "identity" : "rokt-ux-helper-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ROKT/rokt-ux-helper-ios.git",
+      "state" : {
+        "revision" : "88154b7514f28bbe9f9e12d517c181f9989b77b8",
+        "version" : "2.1.4"
+      }
+    },
+    {
+      "identity" : "stripe-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stripe/stripe-ios.git",
+      "state" : {
+        "revision" : "55dbee993d8a4df8977f2c21dd07ad35e7cfd50e",
+        "version" : "25.17.0"
+      }
+    }
+  ],
+  "version" : 3
+}
