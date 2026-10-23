@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update the native iOS bindings to mParticle Apple SDK and Rokt integration `9.7.3`, including the Payments kit, with matching core versions in each dependency graph.
+
 ## [5.0.0] - 2026-07-29
 
 ### Changed

@@ -1,13 +1,13 @@
 {
-  "originHash" : "bc383cacdce12c953daa107fc621569c80e289569522f778fb697fe7ebf0f949",
+  "originHash" : "66997099096bdb248f2652ad0636a8deb1b4678a2e0eeacfe63ee7705f947e08",
   "pins" : [
     {
       "identity" : "dcui-swift-schema",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ROKT/dcui-swift-schema.git",
       "state" : {
-        "revision" : "1e69ee148840e67e658c57f001d8fa0017278f06",
-        "version" : "2.8.1"
+        "revision" : "7dc24008bfd9730042f6a237552eaba42913ae61",
+        "version" : "2.10.0"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mparticle-integrations/mp-apple-integration-rokt.git",
       "state" : {
-        "revision" : "eb828d32bc8d3deeaf4d84e1836e7ab57761fa28",
-        "version" : "9.3.1"
+        "revision" : "6540b502ded11c5c17ccb5d8a8350a26832040da",
+        "version" : "9.7.3"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mParticle/mparticle-apple-sdk",
       "state" : {
-        "revision" : "125689b15750301cafa0193d927767de4e5f60ad",
-        "version" : "9.2.0"
+        "revision" : "16540b2839cb601b72041605ebe5acf6e6550373",
+        "version" : "9.7.3"
       }
     },
     {
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ROKT/rokt-sdk-ios",
       "state" : {
-        "revision" : "d02f99894a4eb071e0173a2cf116d2820c14ad22",
-        "version" : "5.3.0"
+        "revision" : "6979894ec9d06d060bf991a83833ada79fcda484",
+        "version" : "5.5.5"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ROKT/rokt-ux-helper-ios.git",
       "state" : {
-        "revision" : "6102d1a5638f65ae9d96093582b06f97ca74f66e",
-        "version" : "1.0.0"
+        "revision" : "88154b7514f28bbe9f9e12d517c181f9989b77b8",
+        "version" : "2.1.4"
       }
     }
   ],
