@@ -19,7 +19,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/mparticle-integrations/mp-apple-integration-rokt.git", exact: "9.7.3"),
         // Keep the kit's independently resolved core aligned with the MAUI SDK.
-        .package(url: "https://github.com/mParticle/mparticle-apple-sdk", exact: "9.7.3")
+        .package(url: "https://github.com/mParticle/mparticle-apple-sdk", exact: "9.7.4")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
