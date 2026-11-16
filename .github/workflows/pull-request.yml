@@ -14,8 +14,6 @@ concurrency:
 permissions:
   contents: read
   pull-requests: read
-  checks: write
-  id-token: write
 
 env:
   SDK_PATH: Sdk/MParticle.Maui.Sdk
@@ -28,9 +26,15 @@ env:
 jobs:
   trunk-check:
     runs-on: macos-latest
+    permissions:
+      contents: read
+      checks: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Trunk Check
         uses: trunk-io/trunk-action@e1234e67a86010d61ddac8d8ebf4b783e2ffd2fa # v2.0.0
@@ -42,6 +46,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup .NET
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
@@ -179,12 +185,54 @@ jobs:
           name: ${{ env.PAYMENTS_KIT_PROJECT }}.nupkg
           path: ${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.nupkg
 
+      - name: Verify GitHub release CLI arguments and notes handling
+        run: |
+          TMP_DIR="$(mktemp -d)"
+          trap 'rm -rf "$TMP_DIR"' EXIT
+          cat > "$TMP_DIR/gh" << 'EOF'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          if [[ "${FAKE_GH_FAIL:-0}" == "1" ]]; then
+            exit 42
+          fi
+          printf '%s\n' "$@" > "$TMP_DIR/args.txt"
+          EOF
+          chmod +x "$TMP_DIR/gh"
+          export TMP_DIR
+          RUNNER_TEMP="$TMP_DIR"
+          FINAL_VERSION="1.2.3"
+          GITHUB_SHA="0123456789abcdef0123456789abcdef01234567"
+          RELEASE_NOTES=$'Line 1 with $VAR and `backticks`\nLine 2'
+          {
+            printf '## Release notes:\n%s\n' "$RELEASE_NOTES"
+          } > "$RUNNER_TEMP/release-notes.md"
+          PATH="$TMP_DIR:$PATH" gh release create "$FINAL_VERSION" \
+            "${SDK_PATH}/bin/Release/mParticle.MAUI.${FINAL_VERSION}.nupkg" \
+            "${ROKT_KIT_PATH}/bin/Release/${ROKT_KIT_PROJECT}.${FINAL_VERSION}.nupkg" \
+            "${PAYMENTS_KIT_PATH}/bin/Release/${PAYMENTS_KIT_PROJECT}.${FINAL_VERSION}.nupkg" \
+            --target "$GITHUB_SHA" \
+            --title "$FINAL_VERSION" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            --latest
+          grep -Fxq "${SDK_PATH}/bin/Release/mParticle.MAUI.1.2.3.nupkg" "$TMP_DIR/args.txt"
+          grep -Fxq "${ROKT_KIT_PATH}/bin/Release/${ROKT_KIT_PROJECT}.1.2.3.nupkg" "$TMP_DIR/args.txt"
+          grep -Fxq "${PAYMENTS_KIT_PATH}/bin/Release/${PAYMENTS_KIT_PROJECT}.1.2.3.nupkg" "$TMP_DIR/args.txt"
+          grep -Fxq 'Line 1 with $VAR and `backticks`' "$RUNNER_TEMP/release-notes.md"
+          grep -Fxq 'Line 2' "$RUNNER_TEMP/release-notes.md"
+          if FAKE_GH_FAIL=1 PATH="$TMP_DIR:$PATH" gh release create "$FINAL_VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"; then
+            echo "Expected failure propagation from gh"
+            exit 1
+          fi
+
   pr-notify:
     if: >
       github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false
     needs: [trunk-check, build]
     name: Notify GChat
-    uses: ROKT/rokt-workflows/.github/workflows/oss_pr_opened_notification.yml@main
+    permissions:
+      contents: read
+      id-token: write
+    uses: ROKT/rokt-workflows/.github/workflows/oss_pr_opened_notification.yml@da0c5fd5d38e9cf113a24ec9aaea079cc7d0bc40 # zizmor: ignore[ref-version-mismatch]
     secrets:
       gchat_webhook: ${{ secrets.GCHAT_PRS_WEBHOOK }}

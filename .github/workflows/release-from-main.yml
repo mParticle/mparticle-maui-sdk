@@ -7,9 +7,7 @@ on:
     paths:
       - VERSION
 
-permissions:
-  contents: write
-  id-token: write
+permissions: {}
 
 env:
   SDK_PATH: Sdk/MParticle.Maui.Sdk
@@ -22,11 +20,15 @@ env:
 jobs:
   setup-and-version:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       final_version: ${{ steps.version-file.outputs.release-version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Check if VERSION file changed
         id: version-changed
@@ -43,9 +45,16 @@ jobs:
   build-and-release:
     needs: setup-and-version
     runs-on: macos-latest
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      FINAL_VERSION: ${{ needs.setup-and-version.outputs.final_version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: NuGet login (OIDC → temp API key)
         uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
@@ -87,7 +96,9 @@ jobs:
         run: dotnet pack ${{ env.SDK_PATH }}/${{ env.SDK_PROJECT }}.csproj -c Release
 
       - name: Publish SDK to NuGet Gallery
-        run: dotnet nuget push ${{ env.SDK_PATH }}/bin/Release/mParticle.MAUI.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "${{ env.SDK_PATH }}/bin/Release/mParticle.MAUI.${FINAL_VERSION}.nupkg" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY"
 
       - name: Resolve SPM dependencies for Rokt Kit iOS binding
         run: |
@@ -107,7 +118,9 @@ jobs:
         run: dotnet pack ${{ env.ROKT_KIT_PATH }}/${{ env.ROKT_KIT_PROJECT }}.csproj -c Release
 
       - name: Publish Rokt Kit to NuGet Gallery
-        run: dotnet nuget push ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${FINAL_VERSION}.nupkg" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY"
 
       - name: Resolve SPM dependencies for Rokt Payments Kit iOS binding
         run: |
@@ -127,7 +140,9 @@ jobs:
         run: dotnet pack ${{ env.PAYMENTS_KIT_PATH }}/${{ env.PAYMENTS_KIT_PROJECT }}.csproj -c Release
 
       - name: Publish Rokt Payments Kit to NuGet Gallery
-        run: dotnet nuget push ${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.${FINAL_VERSION}.nupkg" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY"
 
       - name: Upload Package Artifact for SDK
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -153,17 +168,23 @@ jobs:
           changelog_file: CHANGELOG.md
 
       - name: Changelog
-        run: echo "${{ steps.extract-release-notes.outputs.release_notes }}"
+        env:
+          RELEASE_NOTES: ${{ steps.extract-release-notes.outputs.release_notes }}
+        run: echo "$RELEASE_NOTES"
 
       - name: Create Github release
-        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
-        with:
-          artifacts: |
-            ${{ env.SDK_PATH }}/bin/Release/mParticle.MAUI.${{ needs.setup-and-version.outputs.final_version }}.nupkg
-            ${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
-            ${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.${{ needs.setup-and-version.outputs.final_version }}.nupkg
-          makeLatest: true
-          tag: ${{ needs.setup-and-version.outputs.final_version }}
-          body: |
-            ## Release notes:
-            ${{ steps.extract-release-notes.outputs.release_notes }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_NOTES: ${{ steps.extract-release-notes.outputs.release_notes }}
+        run: |
+          {
+            printf '## Release notes:\n%s\n' "$RELEASE_NOTES"
+          } > "$RUNNER_TEMP/release-notes.md"
+          gh release create "$FINAL_VERSION" \
+            "${{ env.SDK_PATH }}/bin/Release/mParticle.MAUI.${FINAL_VERSION}.nupkg" \
+            "${{ env.ROKT_KIT_PATH }}/bin/Release/${{ env.ROKT_KIT_PROJECT }}.${FINAL_VERSION}.nupkg" \
+            "${{ env.PAYMENTS_KIT_PATH }}/bin/Release/${{ env.PAYMENTS_KIT_PROJECT }}.${FINAL_VERSION}.nupkg" \
+            --target "$GITHUB_SHA" \
+            --title "$FINAL_VERSION" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            --latest
