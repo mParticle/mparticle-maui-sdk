@@ -19,3 +19,9 @@ This workflow will:
 
 Once you have reviewed the generated PR, merge it to main. This will trigger
 the "Release .NET MAUI SDK" workflow which will publish the SDK to [nuget.org](https://nuget.org/). You may have to wait up to an hour for the package to be indexed.
+
+## Release environment
+
+"Create draft release" runs in the `release` GitHub environment, which holds
+the release GitHub App's credentials and allows only `main`. A run started from
+any other branch stops before its first step.
